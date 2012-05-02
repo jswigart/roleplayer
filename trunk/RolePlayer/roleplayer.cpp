@@ -4,10 +4,25 @@
 #include <QCompleter>
 #include <QMessageBox>
 #include <QFileDialog>
+#include <QStandardItemModel>
 
 #include "roleplayer.h"
 #include "flowlayout.h"
 #include "dialog_importtiles.h"
+
+//////////////////////////////////////////////////////////////////////////
+// TODO
+// allow tiles database to be saved/loaded
+// allow tiles to be assigned to arbitrary groups/layers
+// add show/hide group/layers so that subsets of tiles can be displayed for faster use
+// create a self sized tile map manager that manages the map in renderable chunks(atlas per chunk?)
+// add tile paint/drag/flood functionality
+// add hotkeyable 'palette' for favorite tiles
+// build texture atlas from currently used tiles(find a lib)
+// store tile source file? detect when file changes?
+// add support for arbitrary collision(polygons)
+// add support for marking collision cells, merge into larger collision primitives
+//////////////////////////////////////////////////////////////////////////
 
 RolePlayer::RolePlayer(QWidget *parent, Qt::WFlags flags)
 	: QMainWindow(parent, flags)
@@ -15,8 +30,18 @@ RolePlayer::RolePlayer(QWidget *parent, Qt::WFlags flags)
 	ui.setupUi(this);
 	uiTileGroup.setupUi( ui.tileTools );
 
-	uiTileGroup.tileScrollAreaContents->setLayout( new QFlowLayout( ui.materialScrollAreaContents ) );
-
+	uiTileGroup.tileScrollAreaContents->setLayout( new QFlowLayout() );
+	
+	tiles.model = new QStandardItemModel( uiTileGroup.tileScrollAreaContents );
+	uiTileGroup.treeViewLayers->setModel( tiles.model );
+	
+	// http://standards.freedesktop.org/icon-naming-spec/icon-naming-spec-latest.html
+	
+	tiles.model->setColumnCount( 2 );
+	tiles.model->setHorizontalHeaderItem( 0, new QStandardItem( "Layer" ) );
+	tiles.model->setHorizontalHeaderItem( 1, new QStandardItem( "Num Tiles" ) );
+	tiles.model->appendRow( new QStandardItem( QIcon::fromTheme( "folder" ), "Base" ) );
+	
 	//////////////////////////////////////////////////////////////////////////
 	// test prop window
 	ui.propTree->AddBool( NULL, "Bool Tooltip", "Bool", true );
@@ -37,12 +62,12 @@ RolePlayer::RolePlayer(QWidget *parent, Qt::WFlags flags)
 
 	PopulateTileList();
 
-	connect(ui.actionImport_Tiles, SIGNAL(triggered(bool)), this, SLOT(Action_ImportTiles()));
+	connect( ui.actionImport_Tiles, SIGNAL(triggered(bool)), this, SLOT(Action_ImportTiles()) );
+	connect( &fileList.futureWatcher_LoadTiles, SIGNAL(resultReadyAt(int)), this, SLOT(Async_ImageLoadedAt(int)) );
+	connect( &fileList.futureWatcher_LoadTiles, SIGNAL(finished()), this, SLOT(Async_ImageLoadFinished()) );
 }
 
-RolePlayer::~RolePlayer()
-{
-
+RolePlayer::~RolePlayer() {
 }
 
 void RolePlayer::PopulateTileList() {
@@ -53,13 +78,9 @@ void RolePlayer::PopulateTileList() {
 	FindAllFileTypes( QDir( "./resources/tiles" ).path(), imageExtensions, fileList.tiles );
 	
 	//fileWatcher.addPath( "./resources/tiles" );
-
 	if ( !fileList.tiles.isEmpty() ) {
 		fileList.future_LoadTiles = QtConcurrent::mapped( fileList.tiles, &RolePlayer::Async_LoadImages );
 		fileList.futureWatcher_LoadTiles.setFuture( fileList.future_LoadTiles );
-
-		connect(&fileList.futureWatcher_LoadTiles, SIGNAL(resultReadyAt(int)), this, SLOT(Async_ImageLoadedAt(int)));
-		connect(&fileList.futureWatcher_LoadTiles, SIGNAL(finished()), this, SLOT(Async_ImageLoadFinished()));
 	}
 }
 
@@ -98,14 +119,12 @@ void RolePlayer::Async_ImageLoadFinished() {
 }
 
 void RolePlayer::RebuildTileThumbnails() {
-	const int pixSize = 64;
-	
 	for ( int i = 0; i < fileList.future_LoadTiles.resultCount(); ++i ) {
 		QImage image = fileList.future_LoadTiles.resultAt( i );
 		if ( !image.isNull() ) {
-			QLabel * label = new QLabel( ui.materialScrollAreaContents );
+			QLabel * label = new QLabel();
 
-			QPixmap thumb = QPixmap::fromImage( image.scaled( pixSize, pixSize, Qt::KeepAspectRatio, Qt::SmoothTransformation ), Qt::AutoColor | Qt::NoOpaqueDetection );
+			QPixmap thumb = QPixmap::fromImage( image, Qt::AutoColor | Qt::NoOpaqueDetection );
 			label->setScaledContents( true );
 			label->setPixmap( thumb );
 			label->setAlignment( Qt::AlignCenter );
@@ -122,11 +141,18 @@ void RolePlayer::RebuildTileThumbnails() {
 void RolePlayer::Action_ImportTiles() {
 	QString fileName = QFileDialog::getOpenFileName(this, tr("Open Image"), "./", tr("Image Files (*.png *.jpg *.bmp *.tga)"));
 	if ( !fileName.isEmpty() ) {
-		QDialogImportTiles dlg( fileName, this );
-		dlg.exec();
+		QDialogImportTiles dlg( masterTileList, fileName, this );
+		if ( dlg.exec() == QDialog::Accepted ) {
+			QList< QDialogImportTiles::tileInfo_t > newTiles;
+			dlg.getImportedTiles( newTiles );
 
-		if ( dlg.getTiles().count() > 0 ) {
+			// save the imported tiles out as individual tiles
+			for ( int i = 0; i < newTiles.count(); ++i ) {
+				QString tileFile = "./resources/tiles/" + QFileInfo( fileName ).completeBaseName() + "_" + newTiles[ i ].name + ".png";
+				newTiles[ i ].tile.save( tileFile );
+			}
 
+			PopulateTileList();
 		}
 	}
 }

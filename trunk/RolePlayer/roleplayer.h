@@ -12,6 +12,7 @@
 #include "ui_tilesettools.h"
 
 class QFileSystemWatcher;
+class QStandardItemModel;
 
 class RolePlayer : public QMainWindow
 {
@@ -25,6 +26,10 @@ private:
 	Ui::RolePlayer			ui;
 	Ui::TileSetGroup		uiTileGroup;
 
+	struct tiles_t {
+		QStandardItemModel * model;
+	} tiles;
+
 	struct fileList_t {
 		QFileInfoList							tiles;
 
@@ -32,6 +37,8 @@ private:
 		QFuture<QImage>							future_LoadTiles;
 	} fileList;
 	//QFileSystemWatcher 		fileWatcher;
+
+	QList< QImage >		masterTileList;
 
 	void				FindAllFileTypes( const QString & path, const QStringList & fileTypes, QFileInfoList & files );
 

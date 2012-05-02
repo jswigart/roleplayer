@@ -55,37 +55,13 @@
     <ClCompile Include="GeneratedFiles\Release\moc_tiletools.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Qt\4.8.1\tools\shared\qtpropertybrowser\qtbuttonpropertybrowser.cpp">
+    <ClCompile Include="qtpropertybrowser\qtbuttonpropertybrowser.cpp">
       <Filter>Tools\qtpropertybrowser</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Qt\4.8.1\tools\shared\qtpropertybrowser\qtgroupboxpropertybrowser.cpp">
-      <Filter>Tools\qtpropertybrowser</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\Qt\4.8.1\tools\shared\qtpropertybrowser\qtpropertybrowser.cpp">
-      <Filter>Tools\qtpropertybrowser</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\Qt\4.8.1\tools\shared\qtpropertybrowser\qtpropertybrowserutils.cpp">
-      <Filter>Tools\qtpropertybrowser</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\Qt\4.8.1\tools\shared\qtpropertybrowser\qtvariantproperty.cpp">
-      <Filter>Tools\qtpropertybrowser</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_qttreepropertybrowser.cpp">
+    <ClCompile Include="GeneratedFiles\Debug\moc_qtbuttonpropertybrowser.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_qttreepropertybrowser.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_qtpropertymanager.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_qtpropertymanager.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_qtpropertybrowserutils_p.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_qtpropertybrowserutils_p.cpp">
+    <ClCompile Include="GeneratedFiles\Release\moc_qtbuttonpropertybrowser.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_qteditorfactory.cpp">
@@ -94,11 +70,8 @@
     <ClCompile Include="GeneratedFiles\Release\moc_qteditorfactory.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_qtvariantproperty.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_qtvariantproperty.cpp">
-      <Filter>Generated Files\Release</Filter>
+    <ClCompile Include="qtpropertybrowser\qtgroupboxpropertybrowser.cpp">
+      <Filter>Tools\qtpropertybrowser</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_qtgroupboxpropertybrowser.cpp">
       <Filter>Generated Files\Debug</Filter>
@@ -106,11 +79,8 @@
     <ClCompile Include="GeneratedFiles\Release\moc_qtgroupboxpropertybrowser.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_qtbuttonpropertybrowser.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_qtbuttonpropertybrowser.cpp">
-      <Filter>Generated Files\Release</Filter>
+    <ClCompile Include="qtpropertybrowser\qtpropertybrowser.cpp">
+      <Filter>Tools\qtpropertybrowser</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_qtpropertybrowser.cpp">
       <Filter>Generated Files\Debug</Filter>
@@ -118,13 +88,43 @@
     <ClCompile Include="GeneratedFiles\Release\moc_qtpropertybrowser.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Qt\4.8.1\tools\shared\qtpropertybrowser\qttreepropertybrowser.cpp">
+    <ClCompile Include="qtpropertybrowser\qtpropertybrowserutils.cpp">
       <Filter>Tools\qtpropertybrowser</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Qt\4.8.1\tools\shared\qtpropertybrowser\qtpropertymanager.cpp">
+    <ClCompile Include="GeneratedFiles\Debug\moc_qtpropertybrowserutils_p.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_qtpropertybrowserutils_p.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_qtpropertymanager.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_qtpropertymanager.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_qttreepropertybrowser.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_qttreepropertybrowser.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="qtpropertybrowser\qtvariantproperty.cpp">
       <Filter>Tools\qtpropertybrowser</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Qt\4.8.1\tools\shared\qtpropertybrowser\qteditorfactory.cpp">
+    <ClCompile Include="GeneratedFiles\Debug\moc_qtvariantproperty.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_qtvariantproperty.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="qtpropertybrowser\qttreepropertybrowser.cpp">
+      <Filter>Tools\qtpropertybrowser</Filter>
+    </ClCompile>
+    <ClCompile Include="qtpropertybrowser\qtpropertymanager.cpp">
+      <Filter>Tools\qtpropertybrowser</Filter>
+    </ClCompile>
+    <ClCompile Include="qtpropertybrowser\qteditorfactory.cpp">
       <Filter>Tools\qtpropertybrowser</Filter>
     </ClCompile>
   </ItemGroup>
@@ -135,17 +135,8 @@
     <CustomBuild Include="tiletoolsplugin.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="GeneratedFiles\Debug\qttreepropertybrowser.moc">
-      <Filter>Generated Files\Debug</Filter>
-    </CustomBuild>
-    <CustomBuild Include="GeneratedFiles\Release\qttreepropertybrowser.moc">
-      <Filter>Generated Files\Release</Filter>
-    </CustomBuild>
-    <CustomBuild Include="GeneratedFiles\Debug\qtpropertymanager.moc">
-      <Filter>Generated Files\Debug</Filter>
-    </CustomBuild>
-    <CustomBuild Include="GeneratedFiles\Release\qtpropertymanager.moc">
-      <Filter>Generated Files\Release</Filter>
+    <CustomBuild Include="qtpropertybrowser\qtbuttonpropertybrowser.h">
+      <Filter>Tools\qtpropertybrowser</Filter>
     </CustomBuild>
     <CustomBuild Include="GeneratedFiles\Debug\qteditorfactory.moc">
       <Filter>Generated Files\Debug</Filter>
@@ -153,29 +144,94 @@
     <CustomBuild Include="GeneratedFiles\Release\qteditorfactory.moc">
       <Filter>Generated Files\Release</Filter>
     </CustomBuild>
-    <CustomBuild Include="..\..\..\..\Qt\4.8.1\tools\shared\qtpropertybrowser\qttreepropertybrowser.h">
+    <CustomBuild Include="qtpropertybrowser\qteditorfactory.h">
       <Filter>Tools\qtpropertybrowser</Filter>
     </CustomBuild>
-    <CustomBuild Include="..\..\..\..\Qt\4.8.1\tools\shared\qtpropertybrowser\qtpropertymanager.h">
+    <CustomBuild Include="qtpropertybrowser\qtgroupboxpropertybrowser.h">
       <Filter>Tools\qtpropertybrowser</Filter>
     </CustomBuild>
-    <CustomBuild Include="..\..\..\..\Qt\4.8.1\tools\shared\qtpropertybrowser\qtpropertybrowserutils_p.h">
+    <CustomBuild Include="qtpropertybrowser\qtpropertybrowser.h">
       <Filter>Tools\qtpropertybrowser</Filter>
     </CustomBuild>
-    <CustomBuild Include="..\..\..\..\Qt\4.8.1\tools\shared\qtpropertybrowser\qteditorfactory.h">
+    <CustomBuild Include="qtpropertybrowser\qtpropertybrowserutils_p.h">
       <Filter>Tools\qtpropertybrowser</Filter>
     </CustomBuild>
-    <CustomBuild Include="..\..\..\..\Qt\4.8.1\tools\shared\qtpropertybrowser\qtvariantproperty.h">
+    <CustomBuild Include="GeneratedFiles\Debug\qtpropertymanager.moc">
+      <Filter>Generated Files\Debug</Filter>
+    </CustomBuild>
+    <CustomBuild Include="GeneratedFiles\Release\qtpropertymanager.moc">
+      <Filter>Generated Files\Release</Filter>
+    </CustomBuild>
+    <CustomBuild Include="qtpropertybrowser\qtpropertymanager.h">
       <Filter>Tools\qtpropertybrowser</Filter>
     </CustomBuild>
-    <CustomBuild Include="..\..\..\..\Qt\4.8.1\tools\shared\qtpropertybrowser\qtgroupboxpropertybrowser.h">
+    <CustomBuild Include="GeneratedFiles\Debug\qttreepropertybrowser.moc">
+      <Filter>Generated Files\Debug</Filter>
+    </CustomBuild>
+    <CustomBuild Include="GeneratedFiles\Release\qttreepropertybrowser.moc">
+      <Filter>Generated Files\Release</Filter>
+    </CustomBuild>
+    <CustomBuild Include="qtpropertybrowser\qttreepropertybrowser.h">
       <Filter>Tools\qtpropertybrowser</Filter>
     </CustomBuild>
-    <CustomBuild Include="..\..\..\..\Qt\4.8.1\tools\shared\qtpropertybrowser\qtbuttonpropertybrowser.h">
+    <CustomBuild Include="qtpropertybrowser\qtvariantproperty.h">
       <Filter>Tools\qtpropertybrowser</Filter>
     </CustomBuild>
-    <CustomBuild Include="..\..\..\..\Qt\4.8.1\tools\shared\qtpropertybrowser\qtpropertybrowser.h">
-      <Filter>Tools\qtpropertybrowser</Filter>
-    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="qtpropertybrowser\images\cursor-arrow.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="qtpropertybrowser\images\cursor-busy.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="qtpropertybrowser\images\cursor-closedhand.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="qtpropertybrowser\images\cursor-cross.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="qtpropertybrowser\images\cursor-forbidden.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="qtpropertybrowser\images\cursor-hand.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="qtpropertybrowser\images\cursor-hsplit.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="qtpropertybrowser\images\cursor-ibeam.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="qtpropertybrowser\images\cursor-openhand.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="qtpropertybrowser\images\cursor-sizeall.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="qtpropertybrowser\images\cursor-sizeb.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="qtpropertybrowser\images\cursor-sizef.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="qtpropertybrowser\images\cursor-sizeh.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="qtpropertybrowser\images\cursor-sizev.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="qtpropertybrowser\images\cursor-uparrow.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="qtpropertybrowser\images\cursor-vsplit.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="qtpropertybrowser\images\cursor-wait.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="qtpropertybrowser\images\cursor-whatsthis.png">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>
