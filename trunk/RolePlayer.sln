@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RolePlayer", "RolePlayer\RolePlayer.vcxproj", "{E7E0AF39-D6AC-4DB2-B519-54F240CF2941}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TileTools", "TileTools\TileTools.vcxproj", "{75BCBD24-E895-4DD1-BF89-74D68F79D65B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Debug|x64 = Debug|x64
+		Release|Win32 = Release|Win32
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E7E0AF39-D6AC-4DB2-B519-54F240CF2941}.Debug|Win32.ActiveCfg = Debug|Win32
+		{E7E0AF39-D6AC-4DB2-B519-54F240CF2941}.Debug|Win32.Build.0 = Debug|Win32
+		{E7E0AF39-D6AC-4DB2-B519-54F240CF2941}.Debug|x64.ActiveCfg = Debug|Win32
+		{E7E0AF39-D6AC-4DB2-B519-54F240CF2941}.Release|Win32.ActiveCfg = Release|Win32
+		{E7E0AF39-D6AC-4DB2-B519-54F240CF2941}.Release|Win32.Build.0 = Release|Win32
+		{E7E0AF39-D6AC-4DB2-B519-54F240CF2941}.Release|x64.ActiveCfg = Release|Win32
+		{75BCBD24-E895-4DD1-BF89-74D68F79D65B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{75BCBD24-E895-4DD1-BF89-74D68F79D65B}.Debug|Win32.Build.0 = Debug|Win32
+		{75BCBD24-E895-4DD1-BF89-74D68F79D65B}.Debug|x64.ActiveCfg = Debug|x64
+		{75BCBD24-E895-4DD1-BF89-74D68F79D65B}.Debug|x64.Build.0 = Debug|x64
+		{75BCBD24-E895-4DD1-BF89-74D68F79D65B}.Release|Win32.ActiveCfg = Release|Win32
+		{75BCBD24-E895-4DD1-BF89-74D68F79D65B}.Release|Win32.Build.0 = Release|Win32
+		{75BCBD24-E895-4DD1-BF89-74D68F79D65B}.Release|x64.ActiveCfg = Release|x64
+		{75BCBD24-E895-4DD1-BF89-74D68F79D65B}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
