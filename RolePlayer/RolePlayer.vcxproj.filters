@@ -5,14 +5,6 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;cxx;c;def</Extensions>
     </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h</Extensions>
-    </Filter>
-    <Filter Include="Form Files">
-      <UniqueIdentifier>{99349809-55BA-4b9d-BF79-8FDBB0286EB3}</UniqueIdentifier>
-      <Extensions>ui</Extensions>
-    </Filter>
     <Filter Include="Resource Files">
       <UniqueIdentifier>{D9D6E242-F8AF-46E4-B9FD-80ECBC20BA3E}</UniqueIdentifier>
       <Extensions>qrc;*</Extensions>
@@ -33,11 +25,12 @@
       <Extensions>cpp;moc</Extensions>
       <SourceControlFiles>False</SourceControlFiles>
     </Filter>
-    <Filter Include="Tools">
-      <UniqueIdentifier>{7c3f8a71-d17e-4a2b-816e-c2bdb4e57675}</UniqueIdentifier>
+    <Filter Include="UI Files">
+      <UniqueIdentifier>{99349809-55BA-4b9d-BF79-8FDBB0286EB3}</UniqueIdentifier>
+      <Extensions>ui</Extensions>
     </Filter>
-    <Filter Include="Tools\qtpropertybrowser">
-      <UniqueIdentifier>{f0bb4b23-a6c4-4439-8b41-3b9b7d7c25a0}</UniqueIdentifier>
+    <Filter Include="Source Files\Dialogs">
+      <UniqueIdentifier>{ab0fb383-ff26-41e9-9337-518dc5e4cf35}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -56,82 +49,7 @@
     <ClCompile Include="GeneratedFiles\qrc_roleplayer.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\4.8.1\tools\shared\qtpropertybrowser\qtbuttonpropertybrowser.cpp">
-      <Filter>Tools\qtpropertybrowser</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_qtbuttonpropertybrowser.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_qtbuttonpropertybrowser.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_qteditorfactory.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_qteditorfactory.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\4.8.1\tools\shared\qtpropertybrowser\qtgroupboxpropertybrowser.cpp">
-      <Filter>Tools\qtpropertybrowser</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_qtgroupboxpropertybrowser.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_qtgroupboxpropertybrowser.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\4.8.1\tools\shared\qtpropertybrowser\qtpropertybrowser.cpp">
-      <Filter>Tools\qtpropertybrowser</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_qtpropertybrowser.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_qtpropertybrowser.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\4.8.1\tools\shared\qtpropertybrowser\qtpropertybrowserutils.cpp">
-      <Filter>Tools\qtpropertybrowser</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_qtpropertybrowserutils_p.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_qtpropertybrowserutils_p.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_qtpropertymanager.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_qtpropertymanager.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_qttreepropertybrowser.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_qttreepropertybrowser.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\4.8.1\tools\shared\qtpropertybrowser\qtvariantproperty.cpp">
-      <Filter>Tools\qtpropertybrowser</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_qtvariantproperty.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_qtvariantproperty.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\4.8.1\tools\shared\qtpropertybrowser\qttreepropertybrowser.cpp">
-      <Filter>Tools\qtpropertybrowser</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\4.8.1\tools\shared\qtpropertybrowser\qtpropertymanager.cpp">
-      <Filter>Tools\qtpropertybrowser</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\4.8.1\tools\shared\qtpropertybrowser\qteditorfactory.cpp">
-      <Filter>Tools\qtpropertybrowser</Filter>
-    </ClCompile>
     <ClCompile Include="flowlayout.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="dialog_importtiles.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_dialog_importtiles.cpp">
@@ -140,70 +58,31 @@
     <ClCompile Include="GeneratedFiles\Release\moc_dialog_importtiles.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="dialog_importtiles.cpp">
+      <Filter>Source Files\Dialogs</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="roleplayer.qrc">
       <Filter>Resource Files</Filter>
     </CustomBuild>
     <CustomBuild Include="charactersheet.ui">
-      <Filter>Form Files</Filter>
+      <Filter>UI Files</Filter>
     </CustomBuild>
     <CustomBuild Include="roleplayer.ui">
-      <Filter>Form Files</Filter>
+      <Filter>UI Files</Filter>
     </CustomBuild>
     <CustomBuild Include="tilesettools.ui">
-      <Filter>Form Files</Filter>
+      <Filter>UI Files</Filter>
     </CustomBuild>
     <CustomBuild Include="roleplayer.h">
       <Filter>Source Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="..\..\..\4.8.1\tools\shared\qtpropertybrowser\qtbuttonpropertybrowser.h">
-      <Filter>Tools\qtpropertybrowser</Filter>
-    </CustomBuild>
-    <CustomBuild Include="GeneratedFiles\Debug\qteditorfactory.moc">
-      <Filter>Generated Files\Debug</Filter>
-    </CustomBuild>
-    <CustomBuild Include="GeneratedFiles\Release\qteditorfactory.moc">
-      <Filter>Generated Files\Release</Filter>
-    </CustomBuild>
-    <CustomBuild Include="..\..\..\4.8.1\tools\shared\qtpropertybrowser\qteditorfactory.h">
-      <Filter>Tools\qtpropertybrowser</Filter>
-    </CustomBuild>
-    <CustomBuild Include="..\..\..\4.8.1\tools\shared\qtpropertybrowser\qtgroupboxpropertybrowser.h">
-      <Filter>Tools\qtpropertybrowser</Filter>
-    </CustomBuild>
-    <CustomBuild Include="..\..\..\4.8.1\tools\shared\qtpropertybrowser\qtpropertybrowser.h">
-      <Filter>Tools\qtpropertybrowser</Filter>
-    </CustomBuild>
-    <CustomBuild Include="..\..\..\4.8.1\tools\shared\qtpropertybrowser\qtpropertybrowserutils_p.h">
-      <Filter>Tools\qtpropertybrowser</Filter>
-    </CustomBuild>
-    <CustomBuild Include="GeneratedFiles\Debug\qtpropertymanager.moc">
-      <Filter>Generated Files\Debug</Filter>
-    </CustomBuild>
-    <CustomBuild Include="GeneratedFiles\Release\qtpropertymanager.moc">
-      <Filter>Generated Files\Release</Filter>
-    </CustomBuild>
-    <CustomBuild Include="..\..\..\4.8.1\tools\shared\qtpropertybrowser\qtpropertymanager.h">
-      <Filter>Tools\qtpropertybrowser</Filter>
-    </CustomBuild>
-    <CustomBuild Include="GeneratedFiles\Debug\qttreepropertybrowser.moc">
-      <Filter>Generated Files\Debug</Filter>
-    </CustomBuild>
-    <CustomBuild Include="GeneratedFiles\Release\qttreepropertybrowser.moc">
-      <Filter>Generated Files\Release</Filter>
-    </CustomBuild>
-    <CustomBuild Include="..\..\..\4.8.1\tools\shared\qtpropertybrowser\qttreepropertybrowser.h">
-      <Filter>Tools\qtpropertybrowser</Filter>
-    </CustomBuild>
-    <CustomBuild Include="..\..\..\4.8.1\tools\shared\qtpropertybrowser\qtvariantproperty.h">
-      <Filter>Tools\qtpropertybrowser</Filter>
-    </CustomBuild>
     <CustomBuild Include="tileset_import.ui">
-      <Filter>Form Files</Filter>
+      <Filter>UI Files</Filter>
     </CustomBuild>
     <CustomBuild Include="dialog_importtiles.h">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Dialogs</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
