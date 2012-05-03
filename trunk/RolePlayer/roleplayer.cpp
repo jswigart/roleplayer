@@ -1,10 +1,12 @@
 #include <QtConcurrentMap>
 #include <QDir>
+#include <QScrollBar>
 #include <QLabel>
 #include <QCompleter>
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QStandardItemModel>
+#include <QWindowsStyle.h>
 
 #include "roleplayer.h"
 #include "flowlayout.h"
@@ -24,26 +26,43 @@
 // add support for marking collision cells, merge into larger collision primitives
 //////////////////////////////////////////////////////////////////////////
 
+// Helper functions
+QImage RolePlayer::Async_LoadImages( const QFileInfo & file ) {
+	return QImage( file.canonicalFilePath() );
+}
+
 RolePlayer::RolePlayer(QWidget *parent, Qt::WFlags flags)
 	: QMainWindow(parent, flags)
 {
+	QApplication::setStyle(new QWindowsStyle);
+	
 	ui.setupUi(this);
 	uiTileGroup.setupUi( ui.tileTools );
-
+	
 	uiTileGroup.tileScrollAreaContents->setLayout( new QFlowLayout() );
 	
-	tiles.model = new QStandardItemModel( uiTileGroup.tileScrollAreaContents );
-	uiTileGroup.treeViewLayers->setModel( tiles.model );
+	// cache some useful icons
+	icons.critical = QApplication::style()->standardIcon( QStyle::SP_MessageBoxCritical );
+	icons.folderOpen = QApplication::style()->standardIcon( QStyle::SP_DirOpenIcon );
+	icons.folderClosed = QApplication::style()->standardIcon( QStyle::SP_DirClosedIcon );
+
+	layers.model = new QStandardItemModel( uiTileGroup.tileScrollAreaContents );
+	uiTileGroup.treeViewLayers->setModel( layers.model );
+	layers.model->setColumnCount( 2 );
+	layers.model->setHorizontalHeaderItem( 0, new QStandardItem( "Layer" ) );
+	layers.model->setHorizontalHeaderItem( 1, new QStandardItem( "Num Tiles" ) );
+
+	// Create some default layers
+	layers.rootItems.insert( "Base", new QStandardItem( icons.folderClosed, "Base" ) );
 	
-	// http://standards.freedesktop.org/icon-naming-spec/icon-naming-spec-latest.html
-	
-	tiles.model->setColumnCount( 2 );
-	tiles.model->setHorizontalHeaderItem( 0, new QStandardItem( "Layer" ) );
-	tiles.model->setHorizontalHeaderItem( 1, new QStandardItem( "Num Tiles" ) );
-	tiles.model->appendRow( new QStandardItem( QIcon::fromTheme( "folder" ), "Base" ) );
-	
+	(*layers.rootItems.find( "Base" ))->appendRow( new QStandardItem( "Test" ) );
+
+	for ( ItemMap::iterator it = layers.rootItems.begin(); it != layers.rootItems.end(); ++it ) {
+		layers.model->appendRow( *it );
+	}
+
 	//////////////////////////////////////////////////////////////////////////
-	// test prop window
+	// TEST
 	ui.propTree->AddBool( NULL, "Bool Tooltip", "Bool", true );
 	ui.propTree->AddColor( NULL, "Color Tooltip", "Color", QColor( "red" ) );
 	ui.propTree->AddDate( NULL, "Date Tooltip", "Date", QDate( 1979, 7,31 ) );
@@ -59,18 +78,104 @@ RolePlayer::RolePlayer(QWidget *parent, Qt::WFlags flags)
 	ui.propTree->AddFloat( group, "y", "y", 24.0, -10, 10 );
 	ui.propTree->AddFloat( group, "z", "z", 25.0, -10, 10 );
 	//////////////////////////////////////////////////////////////////////////
-
-	PopulateTileList();
-
+	
+	connect( ui.actionNew, SIGNAL(triggered(bool)), this, SLOT(Action_NewEditTab()) );
+	connect( ui.actionExit, SIGNAL(triggered(bool)), this, SLOT(close()) );
 	connect( ui.actionImport_Tiles, SIGNAL(triggered(bool)), this, SLOT(Action_ImportTiles()) );
-	connect( &fileList.futureWatcher_LoadTiles, SIGNAL(resultReadyAt(int)), this, SLOT(Async_ImageLoadedAt(int)) );
-	connect( &fileList.futureWatcher_LoadTiles, SIGNAL(finished()), this, SLOT(Async_ImageLoadFinished()) );
+	connect( ui.actionImport_Tiles, SIGNAL(triggered(bool)), this, SLOT(Action_ImportTiles()) );
+	connect( ui.actionSave, SIGNAL(triggered(bool)), this, SLOT(Action_Save()) );
+	connect( ui.actionSave_All, SIGNAL(triggered(bool)), this, SLOT(Action_SaveAll()) );	
+
+	connect( ui.actionWindowTiles, SIGNAL(toggled(bool)), ui.dockWidgetTiles, SLOT(setVisible(bool)) );
+	connect( ui.actionWindowResources, SIGNAL(toggled(bool)), ui.dockWidgetAssets, SLOT(setVisible(bool)) );
+	connect( ui.dockWidgetTiles, SIGNAL(visibilityChanged(bool)), ui.actionWindowTiles, SLOT(setChecked(bool)) );
+	connect( ui.dockWidgetAssets, SIGNAL(visibilityChanged(bool)), ui.actionWindowResources, SLOT(setChecked(bool)) );	
+	connect( &fileList.async_LoadTiles, SIGNAL(resultReadyAt(int)), this, SLOT(Slot_ImageLoadedAt(int)) );
+	connect( &fileList.async_LoadTiles, SIGNAL(finished()), this, SLOT(Slot_ImageLoadFinished()) );
+	connect( uiTileGroup.treeViewLayers, SIGNAL(expanded(QModelIndex)),this,SLOT(Slot_TreeItemExpanded(QModelIndex)) );
+	connect( uiTileGroup.treeViewLayers, SIGNAL(collapsed(QModelIndex)),this,SLOT(Slot_TreeItemCollapse(QModelIndex)) );
+	connect( &fileWatcher, SIGNAL(directoryChanged(QString)), this, SLOT(Slot_DirectoryChanged(QString)) );
+	connect( &fileWatcher, SIGNAL(fileChanged(QString)), this, SLOT(Slot_FileChanged(QString)) );
+	connect( &fileRefresh, SIGNAL(timeout()), this, SLOT(Slot_PopulateTileList()));
+
+	fileWatcher.addPath( "./resources/tiles/" );
+	fileRefresh.setSingleShot( true );
+	
+	Slot_PopulateTileList();
+
+	AddMapEditTab( "untitled1" );
 }
 
 RolePlayer::~RolePlayer() {
 }
 
-void RolePlayer::PopulateTileList() {
+void RolePlayer::AddMapEditTab( const QString & name ) {
+	// handle name collisions
+	int suffix = 1;
+	QString tabName;
+	while( true ) {
+		QString testTabName = "untitled" + QString::number( suffix );
+		bool nameConflict = false;
+		for ( int i = 0; i < ui.editorTabs->count(); ++i ) {
+			if ( ui.editorTabs->tabText( i ) == testTabName ) {
+				nameConflict = true;
+			}
+		}
+		if ( !nameConflict ) {
+			tabName = testTabName;
+			break;
+		}
+		++suffix;
+	}	
+
+	QGraphicsTileView * editView = new QGraphicsTileView( ui.editorTabs );
+	editView->setDragMode( QGraphicsView::ScrollHandDrag );
+	editView->setObjectName( "view" );
+	editView->setDrawGrid( true );
+	editView->setGridSize( 32 );
+	editView->setScene( new QGraphicsScene );
+	editView->setResizeAnchor( QGraphicsView::AnchorViewCenter );
+	
+	editView->scene()->addEllipse( rand() % 2000, rand() % 2000, 50 + rand() % 100, 50 + rand() % 100, QPen(), QBrush( QColor( "yellow" ) ) );
+	editView->scene()->addEllipse( rand() % 2000, rand() % 2000, 50 + rand() % 100, 50 + rand() % 100, QPen(), QBrush( QColor( "yellow" ) ) );
+
+	ui.editorTabs->addTab( editView, tabName );
+}
+
+void RolePlayer::Slot_DirectoryChanged( const QString & path ) {
+	// delay the refresh to avoid repeated updates in cases
+	// where the file watcher spams us with updates
+	fileRefresh.stop();	
+	fileRefresh.start( 1000 );
+}
+
+void RolePlayer::Slot_FileChanged( const QString & path ) {
+	// delay the refresh to avoid repeated updates in cases
+	// where the file watcher spams us with updates
+	fileRefresh.stop();
+	fileRefresh.start( 1000 );
+}
+
+void RolePlayer::Slot_TreeItemExpanded( const QModelIndex & index ) {
+	QStandardItem * treeItem = layers.model->itemFromIndex( index );
+	if ( treeItem != NULL ) {
+		treeItem->setIcon( icons.folderOpen );
+	}
+}
+
+void RolePlayer::Slot_TreeItemCollapse( const QModelIndex & index ) {
+	QStandardItem * treeItem = layers.model->itemFromIndex( index );
+	if ( treeItem != NULL ) {
+		treeItem->setIcon( icons.folderClosed );
+	}
+}
+
+void RolePlayer::Slot_PopulateTileList() {
+	QList<QWidget *> widgets = uiTileGroup.tileScrollAreaContents->findChildren<QWidget *>();
+	foreach(QWidget * widget, widgets) {
+		delete widget;
+	}
+
 	fileList.tiles.clear();
 
 	QStringList imageExtensions;
@@ -79,8 +184,7 @@ void RolePlayer::PopulateTileList() {
 	
 	//fileWatcher.addPath( "./resources/tiles" );
 	if ( !fileList.tiles.isEmpty() ) {
-		fileList.future_LoadTiles = QtConcurrent::mapped( fileList.tiles, &RolePlayer::Async_LoadImages );
-		fileList.futureWatcher_LoadTiles.setFuture( fileList.future_LoadTiles );
+		fileList.async_LoadTiles.setFuture( QtConcurrent::mapped( fileList.tiles, &RolePlayer::Async_LoadImages ) );
 	}
 }
 
@@ -98,30 +202,44 @@ void RolePlayer::FindAllFileTypes( const QString & path, const QStringList & fil
 	}
 }
 
-QImage RolePlayer::Async_LoadImages( const QFileInfo & file ) {
-	QImage img( file.canonicalFilePath() );
-	if ( img.isNull() ) {
-		qDebug() << "async_LoadImages: " << file.canonicalFilePath() << " failed";
-	} else {
-		qDebug() << "async_LoadImages: " << file.canonicalFilePath() << " success";
-	}
-	return img;
-}
-
-void RolePlayer::Async_ImageLoadedAt( int index ) {
+void RolePlayer::Slot_ImageLoadedAt( int index ) {
 	qDebug() << "async_ImageLoadedAt:( " << index << " / " << fileList.tiles.count() <<  " ) : " << fileList.tiles.at( index ).canonicalFilePath();
 }
 
-void RolePlayer::Async_ImageLoadFinished() {
+void RolePlayer::Slot_ImageLoadFinished() {
 	qDebug() << "async_ImageLoadFinished";
-
 	RebuildTileThumbnails();
 }
 
 void RolePlayer::RebuildTileThumbnails() {
-	for ( int i = 0; i < fileList.future_LoadTiles.resultCount(); ++i ) {
-		QImage image = fileList.future_LoadTiles.resultAt( i );
+	masterTileList.clear();
+
+	for ( int i = 0; i < fileList.async_LoadTiles.future().resultCount(); ++i ) {
+		QImage image = fileList.async_LoadTiles.resultAt( i );
 		if ( !image.isNull() ) {
+			// ignore dupes
+			int dupeIndex = -1;
+			for ( int m = 0; m < masterTileList.count(); ++m ) {
+				if ( masterTileList[ m ] == image ) {
+					dupeIndex = m;
+					break;
+				}
+			}
+			
+			if ( dupeIndex != -1 ) {
+				QString error = QString( "Dupe Image <a href=\"%1\">%2</a> same as <a href=\"%3\">%4</a>, ignoring" )
+					.arg( fileList.tiles.at( i ).dir().canonicalPath() )
+					.arg( fileList.tiles.at( i ).canonicalFilePath() )
+					.arg( fileList.tiles.at( dupeIndex ).dir().canonicalPath() )
+					.arg( fileList.tiles.at( dupeIndex ).canonicalFilePath() );
+				ui.textBrowserLog->append( error );
+
+				ui.tabWidgetResources->setTabIcon( 0, icons.critical );
+				continue;
+			}
+
+			masterTileList.append( image );
+
 			QLabel * label = new QLabel();
 
 			QPixmap thumb = QPixmap::fromImage( image, Qt::AutoColor | Qt::NoOpaqueDetection );
@@ -138,6 +256,21 @@ void RolePlayer::RebuildTileThumbnails() {
 	uiTileGroup.tileScrollAreaContents->layout()->invalidate();
 }
 
+void RolePlayer::Action_NewEditTab() {
+	AddMapEditTab( "untitled" );
+}
+
+void RolePlayer::Action_Save() {
+	QWidget * currentTab = ui.editorTabs->widget( ui.editorTabs->currentIndex() );
+	if ( currentTab != NULL ) {
+		
+	}
+}
+
+void RolePlayer::Action_SaveAll() {
+
+}
+
 void RolePlayer::Action_ImportTiles() {
 	QString fileName = QFileDialog::getOpenFileName(this, tr("Open Image"), "./", tr("Image Files (*.png *.jpg *.bmp *.tga)"));
 	if ( !fileName.isEmpty() ) {
@@ -145,14 +278,14 @@ void RolePlayer::Action_ImportTiles() {
 		if ( dlg.exec() == QDialog::Accepted ) {
 			QList< QDialogImportTiles::tileInfo_t > newTiles;
 			dlg.getImportedTiles( newTiles );
-
+			
 			// save the imported tiles out as individual tiles
 			for ( int i = 0; i < newTiles.count(); ++i ) {
 				QString tileFile = "./resources/tiles/" + QFileInfo( fileName ).completeBaseName() + "_" + newTiles[ i ].name + ".png";
 				newTiles[ i ].tile.save( tileFile );
 			}
 
-			PopulateTileList();
+			Slot_PopulateTileList();
 		}
 	}
 }
