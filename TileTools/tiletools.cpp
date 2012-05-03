@@ -1,3 +1,6 @@
+#include <QDebug>
+#include <QVarLengthArray>
+
 #include "tiletools.h"
 
 QGraphicsTileViewPlugin::QGraphicsTileViewPlugin( QObject *parent /* = 0 */ ) {
@@ -62,14 +65,17 @@ QString QGraphicsTileViewPlugin::includeFile() const {
 //////////////////////////////////////////////////////////////////////////
 
 QGraphicsTileView::QGraphicsTileView( QWidget *parent ) :
-	QDeclarativeView( parent ) {
+	QGraphicsView( parent ) {
 	init();
 }
-
-QGraphicsTileView::QGraphicsTileView( const QUrl &source, QWidget *parent ) :
-	QDeclarativeView( source, parent ) {
+QGraphicsTileView::QGraphicsTileView( QGraphicsScene *scene, QWidget *parent ) :
+	QGraphicsView( scene, parent ) {
 	init();
 }
+//QGraphicsTileView::QGraphicsTileView( const QUrl &source, QWidget *parent ) :
+//	QGraphicsView( source, parent ) {
+//	init();
+//}
 
 void QGraphicsTileView::init() {
 	gridSize = 32.0f;
@@ -83,33 +89,37 @@ void QGraphicsTileView::init() {
 QGraphicsTileView::~QGraphicsTileView() {
 }
 
-void QGraphicsTileView::drawBackground ( QPainter * painter, const QRectF & rect ) {
-	QDeclarativeView::drawBackground( painter, rect );
+void QGraphicsTileView::drawBackground( QPainter * painter, const QRectF & rect ) {
+	QGraphicsView::drawBackground( painter, rect );
 
 	static float GRID_SCALE = 1.0f;
-	static float GRID_SIZE = 32.0f;
 
-	if ( getDrawGrid() ) {
-		painter->save();
+	if ( getDrawGrid() ) {		
+		qDebug() << "DRAW GRID " << this << " " << rect;
+		
+		//painter->setPen( Qt::DashLine );
+		//painter->setWorldMatrixEnabled(true);
+		QPen gridPen( QColor( 127, 127, 127, 127 ) );
+		painter->setPen( gridPen );
 
-		painter->setPen( Qt::DashLine );
+		qreal left = int(rect.left()) - (int(rect.left()) % getGridSize() );
+		qreal top = int(rect.top()) - (int(rect.top()) % getGridSize() );
 
-		// draw vertical lines
-		for ( QPointF hPt = rect.topLeft(); hPt.x() <= rect.topRight().x(); hPt.rx() += getGridSize() * GRID_SCALE ) {
-			painter->drawLine( hPt, hPt + QPointF( 0.0f, rect.height() ) );	
-		}
+		QVarLengthArray<QLineF, 100> linesX;
+		for (qreal x = left; x < rect.right(); x += getGridSize() )
+			linesX.append(QLineF(x, rect.top(), x, rect.bottom()));
 
-		// draw horizontal lines
-		for ( QPointF vPt = rect.topLeft(); vPt.y() <= rect.bottomLeft().y(); vPt.ry() += getGridSize() * GRID_SCALE ) {
-			painter->drawLine( vPt, vPt + QPointF( rect.width(), 0.0f ) );
-		}
+		QVarLengthArray<QLineF, 100> linesY;
+		for (qreal y = top; y < rect.bottom(); y += getGridSize() )
+			linesY.append(QLineF(rect.left(), y, rect.right(), y));
 
-		painter->restore();
+		painter->drawLines(linesX.data(), linesX.size());
+		painter->drawLines(linesY.data(), linesY.size());
 	}
 }
 
-void QGraphicsTileView::drawForeground ( QPainter * painter, const QRectF & rect ) {
-	QDeclarativeView::drawForeground( painter, rect );
+void QGraphicsTileView::drawForeground( QPainter * painter, const QRectF & rect ) {
+	QGraphicsView::drawForeground( painter, rect );
 }
 
 void QGraphicsTileView::redrawView() {

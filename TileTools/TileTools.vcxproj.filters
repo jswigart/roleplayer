@@ -5,10 +5,6 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;cxx;c;def</Extensions>
     </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h</Extensions>
-    </Filter>
     <Filter Include="Generated Files">
       <UniqueIdentifier>{71ED8ED8-ACB9-4CE9-BBE1-E00B30144E11}</UniqueIdentifier>
       <Extensions>moc;h;cpp</Extensions>
@@ -129,20 +125,8 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="tiletools.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="tiletoolsplugin.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
     <CustomBuild Include="qtpropertybrowser\qtbuttonpropertybrowser.h">
       <Filter>Tools\qtpropertybrowser</Filter>
-    </CustomBuild>
-    <CustomBuild Include="GeneratedFiles\Debug\qteditorfactory.moc">
-      <Filter>Generated Files\Debug</Filter>
-    </CustomBuild>
-    <CustomBuild Include="GeneratedFiles\Release\qteditorfactory.moc">
-      <Filter>Generated Files\Release</Filter>
     </CustomBuild>
     <CustomBuild Include="qtpropertybrowser\qteditorfactory.h">
       <Filter>Tools\qtpropertybrowser</Filter>
@@ -156,26 +140,38 @@
     <CustomBuild Include="qtpropertybrowser\qtpropertybrowserutils_p.h">
       <Filter>Tools\qtpropertybrowser</Filter>
     </CustomBuild>
-    <CustomBuild Include="GeneratedFiles\Debug\qtpropertymanager.moc">
-      <Filter>Generated Files\Debug</Filter>
-    </CustomBuild>
-    <CustomBuild Include="GeneratedFiles\Release\qtpropertymanager.moc">
-      <Filter>Generated Files\Release</Filter>
-    </CustomBuild>
     <CustomBuild Include="qtpropertybrowser\qtpropertymanager.h">
       <Filter>Tools\qtpropertybrowser</Filter>
-    </CustomBuild>
-    <CustomBuild Include="GeneratedFiles\Debug\qttreepropertybrowser.moc">
-      <Filter>Generated Files\Debug</Filter>
-    </CustomBuild>
-    <CustomBuild Include="GeneratedFiles\Release\qttreepropertybrowser.moc">
-      <Filter>Generated Files\Release</Filter>
     </CustomBuild>
     <CustomBuild Include="qtpropertybrowser\qttreepropertybrowser.h">
       <Filter>Tools\qtpropertybrowser</Filter>
     </CustomBuild>
     <CustomBuild Include="qtpropertybrowser\qtvariantproperty.h">
       <Filter>Tools\qtpropertybrowser</Filter>
+    </CustomBuild>
+    <CustomBuild Include="tiletools.h">
+      <Filter>Source Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="tiletoolsplugin.h">
+      <Filter>Source Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="GeneratedFiles\Debug\qteditorfactory.moc">
+      <Filter>Generated Files\Debug</Filter>
+    </CustomBuild>
+    <CustomBuild Include="GeneratedFiles\Debug\qtpropertymanager.moc">
+      <Filter>Generated Files\Debug</Filter>
+    </CustomBuild>
+    <CustomBuild Include="GeneratedFiles\Debug\qttreepropertybrowser.moc">
+      <Filter>Generated Files\Debug</Filter>
+    </CustomBuild>
+    <CustomBuild Include="GeneratedFiles\Release\qteditorfactory.moc">
+      <Filter>Generated Files\Release</Filter>
+    </CustomBuild>
+    <CustomBuild Include="GeneratedFiles\Release\qtpropertymanager.moc">
+      <Filter>Generated Files\Release</Filter>
+    </CustomBuild>
+    <CustomBuild Include="GeneratedFiles\Release\qttreepropertybrowser.moc">
+      <Filter>Generated Files\Release</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

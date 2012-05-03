@@ -14,6 +14,7 @@
 // add context menu to 'ignore tiles like' to ignore tiles with the same content
 //////////////////////////////////////////////////////////////////////////
 
+// Helper functions
 QImage Async_LoadImageFile( const QString & file ) {
 	return QImage( file );
 }

@@ -12,34 +12,6 @@
 #include "qtpropertybrowser/qtvariantproperty.h"
 #include "qtpropertybrowser/qteditorfactory.h"
 
-//////////////////////////////////////////////////////////////////////////
-
-class QTileGroup : public QObject {
-	Q_OBJECT
-public:
-	QTileGroup() {}
-	~QTileGroup() {}
-};
-
-//class QTileManager : public QObject {
-//	Q_OBJECT
-//public:
-//	struct Tile {
-//		QPixmap		image;
-//	};
-//};
-
-class QTileMap : public QObject {
-	Q_OBJECT
-public:
-
-	QTileMap( QObject *parent = 0 );
-private:
-	QString			fileName; // the file name source of the image
-};
-
-//////////////////////////////////////////////////////////////////////////
-
 class QGraphicsTileViewPlugin : public QObject, public QDesignerCustomWidgetInterface
 {
 	Q_OBJECT
@@ -59,30 +31,30 @@ public:
 	QString whatsThis() const;
 	QWidget *createWidget(QWidget *parent);
 	void initialize(QDesignerFormEditorInterface *core);
-
 private:
 	bool initialized;
 };
 
-class QDESIGNER_WIDGET_EXPORT QGraphicsTileView : public QDeclarativeView {
+class QDESIGNER_WIDGET_EXPORT QGraphicsTileView : public QGraphicsView/*QDeclarativeView*/ {
 public:
 	Q_OBJECT
 	Q_PROPERTY(bool drawGrid READ getDrawGrid WRITE setDrawGrid DESIGNABLE true NOTIFY gridEnabledChanged);
 	Q_PROPERTY(int cellSize READ getGridSize WRITE setGridSize DESIGNABLE gridEnabled NOTIFY gridSizeChanged);
 public:
-	QGraphicsTileView( QWidget *parent = 0 );
-	QGraphicsTileView( const QUrl &source, QWidget *parent );
-	~QGraphicsTileView();
-protected:
-	void drawBackground ( QPainter * painter, const QRectF & rect );
-	void drawForeground ( QPainter * painter, const QRectF & rect );
-protected:
 	bool gridEnabled() const { return gridRender; }
 	int getGridSize() const { return gridSize; }
 	void setGridSize( int size ) { gridSize = size; }
 
 	bool getDrawGrid() const { return gridRender; }
 	void setDrawGrid( bool b ) { gridRender = b; }
+
+	QGraphicsTileView( QWidget *parent = 0 );
+	QGraphicsTileView(QGraphicsScene *scene, QWidget *parent = 0);
+	//QGraphicsTileView( const QUrl &source, QWidget *parent );
+	~QGraphicsTileView();
+protected:
+	void drawBackground ( QPainter * painter, const QRectF & rect );
+	void drawForeground ( QPainter * painter, const QRectF & rect );
 Q_SIGNALS:
 	void gridEnabledChanged(bool);
 	void gridSizeChanged(float);
