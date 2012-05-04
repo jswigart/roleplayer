@@ -66,7 +66,6 @@ RolePlayer::RolePlayer(QWidget *parent, Qt::WFlags flags)
 	connect( ui.actionNew, SIGNAL(triggered(bool)), this, SLOT(Action_NewEditTab()) );
 	connect( ui.actionExit, SIGNAL(triggered(bool)), this, SLOT(close()) );
 	connect( ui.actionImport_Tiles, SIGNAL(triggered(bool)), this, SLOT(Action_ImportTiles()) );
-	connect( ui.actionImport_Tiles, SIGNAL(triggered(bool)), this, SLOT(Action_ImportTiles()) );
 	connect( ui.actionSave, SIGNAL(triggered(bool)), this, SLOT(Action_Save()) );
 	connect( ui.actionSave_All, SIGNAL(triggered(bool)), this, SLOT(Action_SaveAll()) );	
 
@@ -214,9 +213,8 @@ void RolePlayer::Slot_PopulateTileList() {
 
 	QStringList imageExtensions;
 	imageExtensions << "*.png";
-	FindAllFileTypes( QDir( "./resources/tiles" ).path(), imageExtensions, fileList.tiles );
-	
-	//fileWatcher.addPath( "./resources/tiles" );
+	FindAllFileTypes( QDir( "./resources/images/tiles" ).path(), imageExtensions, fileList.tiles );
+
 	if ( !fileList.tiles.isEmpty() ) {
 		fileList.async_LoadTiles.setFuture( QtConcurrent::mapped( fileList.tiles, &RolePlayer::Async_LoadImages ) );
 	}
