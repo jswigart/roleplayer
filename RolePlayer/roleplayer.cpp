@@ -60,7 +60,7 @@ RolePlayer::RolePlayer(QWidget *parent, Qt::WFlags flags)
 	for ( ItemMap::iterator it = layers.rootItems.begin(); it != layers.rootItems.end(); ++it ) {
 		layers.model->appendRow( *it );
 	}
-		
+
 	connect( ui.actionMapProperties, SIGNAL(triggered(bool)), this, SLOT(Action_MapProperties()) );
 	connect( ui.actionNew, SIGNAL(triggered(bool)), this, SLOT(Action_NewEditTab()) );
 	connect( ui.actionExit, SIGNAL(triggered(bool)), this, SLOT(close()) );
@@ -83,7 +83,7 @@ RolePlayer::RolePlayer(QWidget *parent, Qt::WFlags flags)
 	connect( ui.editorTabs, SIGNAL(tabCloseRequested(int)), this, SLOT(Slot_TabCloseRequested(int)));
 	connect( ui.editorTabs, SIGNAL(currentChanged(int)), this, SLOT(Slot_TabChanged(int)));
 
-	fileWatcher.addPath( "./resources/tiles/" );
+	fileWatcher.addPath( "./resources/images/tiles/" );
 	fileRefresh.setSingleShot( true );
 	
 	Slot_PopulateTileList();
@@ -326,7 +326,7 @@ void RolePlayer::Action_ImportTiles() {
 			
 			// save the imported tiles out as individual tiles
 			for ( int i = 0; i < newTiles.count(); ++i ) {
-				QString tileFile = "./resources/tiles/" + QFileInfo( fileName ).completeBaseName() + "_" + newTiles[ i ].name + ".png";
+				QString tileFile = "./resources/images/tiles/" + QFileInfo( fileName ).completeBaseName() + "_" + newTiles[ i ].name + ".png";
 				newTiles[ i ].tile.save( tileFile );
 			}
 
