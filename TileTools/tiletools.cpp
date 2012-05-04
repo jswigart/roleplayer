@@ -1,7 +1,7 @@
-#include <QDebug>
 #include <QVarLengthArray>
 
 #include "tiletools.h"
+#include "dialog_mapproperties.h"
 
 QGraphicsTileViewPlugin::QGraphicsTileViewPlugin( QObject *parent /* = 0 */ ) {
 }
@@ -83,7 +83,7 @@ void QGraphicsTileView::init() {
 	initialized = false;
 
 	connect(this, SIGNAL(gridEnabledChanged(bool)), this, SLOT(redrawView()));
-	connect(this, SIGNAL(gridSizeChanged(float)), this, SLOT(redrawView()));
+	connect(this, SIGNAL(gridSizeChanged(int)), this, SLOT(redrawView()));
 }
 
 QGraphicsTileView::~QGraphicsTileView() {
@@ -123,11 +123,22 @@ void QGraphicsTileView::drawForeground( QPainter * painter, const QRectF & rect 
 }
 
 void QGraphicsTileView::redrawView() {
-	resetCachedContent();
+	scene()->invalidate();
+}
+
+void QGraphicsTileView::save() const {
+
+}
+bool QGraphicsTileView::load( const QString & file ) {
+	return false;
+}
+
+void QGraphicsTileView::changeMapPropertyDialog() {
+	QDialogMapProperties dlg( this, this );
+	dlg.exec();
 }
 
 //////////////////////////////////////////////////////////////////////////
-
 
 QPropertyTreePlugin::QPropertyTreePlugin( QObject *parent /* = 0 */ ) {
 }
@@ -212,7 +223,7 @@ QPropertyTree::QPropertyTree( QWidget *parent ) :
 	propManagers.editTime = new QtTimePropertyManager( parent );
 	propManagers.editVariant = new QtVariantPropertyManager( parent );
 	propManagers.editKeySequence = new QtKeySequencePropertyManager( parent );
-
+	
 	setFactoryForManager( propManagers.editBool, new QtCheckBoxFactory );
 	setFactoryForManager( propManagers.editColor, new QtColorEditorFactory );
 	setFactoryForManager( propManagers.editDate, new QtDateEditFactory );

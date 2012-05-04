@@ -59,6 +59,8 @@ private:
 	static QImage		Async_LoadImages( const QFileInfo & file );
 private Q_SLOTS:
 	void				Slot_PopulateTileList();
+	void				Slot_TabChanged( int index );
+	void				Slot_TabCloseRequested( int index );
 	void				Slot_DirectoryChanged( const QString & path );
 	void				Slot_FileChanged( const QString & path );
 	void				Slot_TreeItemExpanded( const QModelIndex & index );
@@ -67,6 +69,7 @@ private Q_SLOTS:
 	void				Slot_ImageLoadFinished();
 
 	// menu actions
+	void				Action_MapProperties();
 	void				Action_NewEditTab();
 	void				Action_Save();
 	void				Action_SaveAll();

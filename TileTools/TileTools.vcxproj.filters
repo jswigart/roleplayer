@@ -31,6 +31,12 @@
     <Filter Include="Tools\qtpropertybrowser">
       <UniqueIdentifier>{5db65e44-0429-4f7a-b282-3cbd827a8c32}</UniqueIdentifier>
     </Filter>
+    <Filter Include="UI Files">
+      <UniqueIdentifier>{d2bb9912-5892-4c92-bbeb-0cc4398f18c6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Dialogs">
+      <UniqueIdentifier>{c0a44f5e-2345-4e16-b1dd-bc6cd824e6c6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="tiletools.cpp">
@@ -123,6 +129,15 @@
     <ClCompile Include="qtpropertybrowser\qteditorfactory.cpp">
       <Filter>Tools\qtpropertybrowser</Filter>
     </ClCompile>
+    <ClCompile Include="dialog_mapproperties.cpp">
+      <Filter>Source Files\Dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_dialog_mapproperties.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_dialog_mapproperties.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="qtpropertybrowser\qtbuttonpropertybrowser.h">
@@ -172,6 +187,12 @@
     </CustomBuild>
     <CustomBuild Include="GeneratedFiles\Release\qttreepropertybrowser.moc">
       <Filter>Generated Files\Release</Filter>
+    </CustomBuild>
+    <CustomBuild Include="dialog_mapproperties.ui">
+      <Filter>UI Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="dialog_mapproperties.h">
+      <Filter>Source Files\Dialogs</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
@@ -229,5 +250,10 @@
     <None Include="qtpropertybrowser\images\cursor-whatsthis.png">
       <Filter>Resource Files</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="GeneratedFiles\ui_dialog_mapproperties.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
