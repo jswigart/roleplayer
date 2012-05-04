@@ -1,6 +1,7 @@
 #ifndef TILETOOLS_H
 #define TILETOOLS_H
 
+#include <QDeclarativeExtensionPlugin>
 #include <QtDesigner/QDesignerExportWidget>
 #include <QtDesigner/QDesignerCustomWidgetInterface>
 #include <QtDeclarative/QDeclarativeView>
@@ -11,6 +12,7 @@
 #include "qtpropertybrowser/qtpropertymanager.h"
 #include "qtpropertybrowser/qtvariantproperty.h"
 #include "qtpropertybrowser/qteditorfactory.h"
+
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -142,6 +144,19 @@ private:
 
 	void		init();
 };
+
+//class QCharacterSheet : public QDeclarativeExtensionPlugin
+//{
+//	Q_OBJECT
+//public:
+//	void registerTypes(const char *uri)
+//	{
+//		Q_ASSERT(uri == QLatin1String("com.nokia.TimeExample"));
+//		qmlRegisterType<TimeModel>(uri, 1, 0, "Time");
+//	}
+//};
+//
+//Q_EXPORT_PLUGIN2(qmlqtimeexampleplugin, QExampleQmlPlugin);
 
 //////////////////////////////////////////////////////////////////////////
 
