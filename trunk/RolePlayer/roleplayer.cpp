@@ -83,6 +83,8 @@ RolePlayer::RolePlayer(QWidget *parent, Qt::WFlags flags)
 	connect( ui.editorTabs, SIGNAL(tabCloseRequested(int)), this, SLOT(Slot_TabCloseRequested(int)));
 	connect( ui.editorTabs, SIGNAL(currentChanged(int)), this, SLOT(Slot_TabChanged(int)));
 
+	// always work from the executable
+	QDir::setCurrent( QApplication::applicationDirPath() );
 	fileWatcher.addPath( "./resources/images/tiles/" );
 	fileRefresh.setSingleShot( true );
 	
