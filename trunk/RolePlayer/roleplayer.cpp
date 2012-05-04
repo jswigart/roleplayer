@@ -8,6 +8,7 @@
 #include <QStandardItemModel>
 #include <QWindowsStyle.h>
 
+#include "tiletools.h"
 #include "roleplayer.h"
 #include "flowlayout.h"
 #include "dialog_importtiles.h"
