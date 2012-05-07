@@ -33,8 +33,11 @@ void QGameCharacter::mousePressEvent( QGraphicsSceneMouseEvent *event ) {
 void QGameCharacter::mouseMoveEvent( QGraphicsSceneMouseEvent * event ) {
 	QGameTileMap * map = qobject_cast<QGameTileMap *>( parentItem() );
 	if ( map != NULL ) {
-		const int mapSizeX = ( map->boundingRect().width() / map->getGridSize() ) - 1;
-		const int mapSizeY = ( map->boundingRect().height() / map->getGridSize() ) - 1;
+		const int cellSizeX = boundingRect().width() / map->getGridSize();
+		const int cellSizeY = boundingRect().height() / map->getGridSize();
+
+		const int mapSizeX = ( map->boundingRect().width() / map->getGridSize() ) - cellSizeX;
+		const int mapSizeY = ( map->boundingRect().height() / map->getGridSize() ) - cellSizeY;
 
 		int cellX = event->scenePos().x() / map->getGridSize();
 		int cellY = event->scenePos().y() / map->getGridSize();
