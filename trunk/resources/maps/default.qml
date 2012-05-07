@@ -9,7 +9,7 @@ GameTileMap {
     gridSize: 32
 
     property int cellX: 15
-    property int cellY: 10
+    property int cellY: 15
 
 //    Component {
 //        id: avatar
@@ -25,8 +25,8 @@ GameTileMap {
         id: avatar
         x: 64
         y: 64
-        width: 64
-        height: 64
+        width: 32
+        height: 32
         Rectangle {
             id: gfx
             width: 32
