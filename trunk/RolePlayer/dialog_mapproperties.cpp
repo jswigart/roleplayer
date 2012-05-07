@@ -5,12 +5,12 @@
 
 #include "dialog_mapproperties.h"
 #include "ui_dialog_mapproperties.h"
-#include "mapobject.h"
+#include "gametilemap.h"
 
 //////////////////////////////////////////////////////////////////////////
 class QDialogMapPropertiesImpl {
 public:
-	QDialogMapPropertiesImpl( QTileMap * map, QDialogMapProperties * widget ) :
+	QDialogMapPropertiesImpl( QGameTileMap * map, QDialogMapProperties * widget ) :
 		tileMap( map ) {
 		ui.setupUi( widget );
 
@@ -27,7 +27,7 @@ public:
 	}
 private:
 	Ui::DialogMapProperties			ui;
-	QTileMap *						tileMap;
+	QGameTileMap *						tileMap;
 
 	struct properties_t {
 		QtProperty *	propGridSize;
@@ -35,9 +35,9 @@ private:
 	} props;
 };
 
-QDialogMapProperties::QDialogMapProperties( QGraphicsTileView * view, QWidget *parent, Qt::WindowFlags f ) :
+QDialogMapProperties::QDialogMapProperties( QGameTileMap * map, QWidget *parent, Qt::WindowFlags f ) :
 	QDialog( parent, f ),
-	impl( new QDialogMapPropertiesImpl( view, this ) ) {	
+	impl( new QDialogMapPropertiesImpl( map, this ) ) {	
 	
 	connect( this, SIGNAL(finished(int)), this, SLOT(Slot_Finished(int)) );
 }

@@ -3,6 +3,7 @@
 #include <QtConcurrentMap>
 #include <QTime>
 
+#include "widget_labelclickable.h"
 #include "dialog_importtiles.h"
 #include "flowlayout.h"
 
@@ -21,8 +22,9 @@ QImage Async_LoadImageFile( const QString & file ) {
 
 //////////////////////////////////////////////////////////////////////////
 
-QDialogImportTiles::QDialogImportTiles( const QList< QImage > & existingTiles, const QString & tileSetFile, QWidget *parent, Qt::WindowFlags f ) :
-	QDialog( parent, f ) {
+QDialogImportTiles::QDialogImportTiles( const QList< QImage > & tilelist, const QString & tileSetFile, QWidget *parent, Qt::WindowFlags f ) :
+	QDialog( parent, f ),
+	existingTiles( tilelist ) {
 	ui.setupUi( this );
 	ui.scrollAreaWidgetContents->setLayout( new QFlowLayout( ui.scrollAreaWidgetContents ) );
 	
@@ -117,12 +119,15 @@ void QDialogImportTiles::Slot_PopulateTileView() {
 		}
 
 		QPixmap thumb = QPixmap::fromImage( tileResult.tile, Qt::AutoColor | Qt::NoOpaqueDetection );
-		QLabel * label = new QLabel( ui.scrollAreaWidgetContents );
+		QLabelClickable * label = new QLabelClickable( ui.scrollAreaWidgetContents );
 		label->setScaledContents( true );
 		label->setPixmap( thumb );
 		label->setAlignment( Qt::AlignCenter );
 		label->setFixedSize( thumb.width(), thumb.height() );
 		label->setToolTip( tileResult.name );
+		label->setProperty( "TileState", dupeImage ? TILE_IMPORT_EXCLUDE : TILE_IMPORT );
+		
+		connect( label, SIGNAL(clicked(QLabelClickable*)), this, SLOT(Slot_TileLabelClicked(QLabelClickable*)));
 
 		ui.scrollAreaWidgetContents->layout()->addWidget( label );
 	}
@@ -133,4 +138,8 @@ void QDialogImportTiles::getImportedTiles( QList< tileInfo_t > & tilesOut ) {
 		const tileInfo_t tileResult = async_CreateTiles.resultAt( i );
 		tilesOut.append( tileResult );
 	}
+}
+
+void QDialogImportTiles::Slot_TileLabelClicked( QLabelClickable * label ) {
+	const int tileState = label->property( "TileState" ).toInt();
 }

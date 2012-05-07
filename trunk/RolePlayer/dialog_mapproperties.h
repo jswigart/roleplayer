@@ -6,13 +6,13 @@
 #include <QFuture>
 #include <QFutureWatcher>
 
-class QTileMap;
+class QGameTileMap;
 class QDialogMapPropertiesImpl;
 class QDialogMapProperties : public QDialog
 {
 	Q_OBJECT
 public:
-	QDialogMapProperties( QTileMap * view, QWidget *parent = 0, Qt::WindowFlags f = 0 );
+	QDialogMapProperties( QGameTileMap * view, QWidget *parent = 0, Qt::WindowFlags f = 0 );
 	~QDialogMapProperties();	
 private:
 	QDialogMapPropertiesImpl *		impl;

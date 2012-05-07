@@ -13,7 +13,6 @@
 #include "qtpropertybrowser/qtvariantproperty.h"
 #include "qtpropertybrowser/qteditorfactory.h"
 
-
 //////////////////////////////////////////////////////////////////////////
 
 class QPropertyTreePlugin : public QObject, public QDesignerCustomWidgetInterface
@@ -84,79 +83,64 @@ private:
 	
 };
 
-class QGraphicsTileViewPlugin : public QObject, public QDesignerCustomWidgetInterface
-{
-	Q_OBJECT
-		Q_INTERFACES(QDesignerCustomWidgetInterface)
-
-public:
-	QGraphicsTileViewPlugin(QObject *parent = 0);
-
-	bool isContainer() const;
-	bool isInitialized() const;
-	QIcon icon() const;
-	QString domXml() const;
-	QString group() const;
-	QString includeFile() const;
-	QString name() const;
-	QString toolTip() const;
-	QString whatsThis() const;
-	QWidget *createWidget(QWidget *parent);
-	void initialize(QDesignerFormEditorInterface *core);
-private:
-	bool initialized;
-};
-
-class QDESIGNER_WIDGET_EXPORT QGraphicsTileView : public QGraphicsView/*QDeclarativeView*/ {
-public:
-	Q_OBJECT
-	Q_PROPERTY(bool drawGrid READ getDrawGrid WRITE setDrawGrid DESIGNABLE true NOTIFY gridEnabledChanged);
-	Q_PROPERTY(int cellSize READ getGridSize WRITE setGridSize DESIGNABLE gridEnabled NOTIFY gridSizeChanged);
-public:
-	bool gridEnabled() const { return gridRender; }
-	int getGridSize() const { return gridSize; }
-	
-	bool getDrawGrid() const { return gridRender; }
-	
-	void save() const;
-	bool load( const QString & file );
-	
-	QGraphicsTileView( QWidget *parent = 0 );
-	QGraphicsTileView(QGraphicsScene *scene, QWidget *parent = 0);
-	//QGraphicsTileView( const QUrl &source, QWidget *parent );
-	~QGraphicsTileView();
-protected:
-	void drawBackground ( QPainter * painter, const QRectF & rect );
-	void drawForeground ( QPainter * painter, const QRectF & rect );
-Q_SIGNALS:
-	void gridEnabledChanged(bool);
-	void gridSizeChanged(int);
-public Q_SLOTS:
-	void changeMapPropertyDialog();
-	void setDrawGrid( bool b ) { gridRender = b; }
-	void setGridSize( int size ) { gridSize = size; }
-	void redrawView();
-private:
-	int			gridSize;
-	bool		gridRender;
-
-	bool		initialized;
-
-	void		init();
-};
-
-//class QCharacterSheet : public QDeclarativeExtensionPlugin
+//class QGraphicsTileViewPlugin : public QObject, public QDesignerCustomWidgetInterface
 //{
 //	Q_OBJECT
+//		Q_INTERFACES(QDesignerCustomWidgetInterface)
+//
 //public:
-//	void registerTypes(const char *uri)
-//	{
-//		Q_ASSERT(uri == QLatin1String("com.nokia.TimeExample"));
-//		qmlRegisterType<TimeModel>(uri, 1, 0, "Time");
-//	}
+//	QGraphicsTileViewPlugin(QObject *parent = 0);
+//
+//	bool isContainer() const;
+//	bool isInitialized() const;
+//	QIcon icon() const;
+//	QString domXml() const;
+//	QString group() const;
+//	QString includeFile() const;
+//	QString name() const;
+//	QString toolTip() const;
+//	QString whatsThis() const;
+//	QWidget *createWidget(QWidget *parent);
+//	void initialize(QDesignerFormEditorInterface *core);
+//private:
+//	bool initialized;
 //};
 //
-//Q_EXPORT_PLUGIN2(qmlqtimeexampleplugin, QExampleQmlPlugin);
+//class QDESIGNER_WIDGET_EXPORT QGraphicsTileView : public QDeclarativeView {
+//public:
+//	Q_OBJECT
+//	Q_PROPERTY(bool drawGrid READ getDrawGrid WRITE setDrawGrid DESIGNABLE true NOTIFY gridEnabledChanged);
+//	Q_PROPERTY(int cellSize READ getGridSize WRITE setGridSize DESIGNABLE gridEnabled NOTIFY gridSizeChanged);
+//public:
+//	bool gridEnabled() const { return gridRender; }
+//	int getGridSize() const { return gridSize; }
+//	
+//	bool getDrawGrid() const { return gridRender; }
+//	
+//	void save() const;
+//	bool load( const QString & file );
+//	
+//	QGraphicsTileView( QWidget *parent = 0 );
+//	//QGraphicsTileView(QGraphicsScene *scene, QWidget *parent = 0);
+//	QGraphicsTileView( const QUrl &source, QWidget *parent );
+//	~QGraphicsTileView();
+//protected:
+//	void drawBackground ( QPainter * painter, const QRectF & rect );
+//	void drawForeground ( QPainter * painter, const QRectF & rect );
+//Q_SIGNALS:
+//	void gridEnabledChanged(bool);
+//	void gridSizeChanged(int);
+//public Q_SLOTS:
+//	void changeMapPropertyDialog();
+//	void setDrawGrid( bool b ) { gridRender = b; }
+//	void setGridSize( int size ) { gridSize = size; }
+//	void redrawView();
+//private:
+//	int			gridSize;
+//	bool		gridRender;
+//	
+//	void		init();
+//};
 
 //////////////////////////////////////////////////////////////////////////
 
