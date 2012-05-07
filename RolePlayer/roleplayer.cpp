@@ -9,8 +9,10 @@
 #include <QWindowsStyle.h>
 
 #include "tiletools.h"
+#include "gametilemap.h"
 #include "roleplayer.h"
 #include "flowlayout.h"
+
 #include "dialog_importtiles.h"
 #include "dialog_mapproperties.h"
 
@@ -37,17 +39,20 @@ RolePlayer::RolePlayer(QWidget *parent, Qt::WFlags flags)
 	: QMainWindow(parent, flags) {
 	QApplication::setStyle(new QWindowsStyle);
 	
-	ui.setupUi(this);
-	uiTileGroup.setupUi( ui.tileTools );
-	
-	uiTileGroup.tileScrollAreaContents->setLayout( new QFlowLayout() );
+	ui.setupUi(this);	
+	ui.tileScrollAreaContents->setLayout( new QFlowLayout() );
 	
 	// cache some useful icons
 	icons.critical = QApplication::style()->standardIcon( QStyle::SP_MessageBoxCritical );
 	icons.folderOpen = QApplication::style()->standardIcon( QStyle::SP_DirOpenIcon );
 	icons.folderClosed = QApplication::style()->standardIcon( QStyle::SP_DirClosedIcon );
 
-	layers.model = new QStandardItemModel( uiTileGroup.tileScrollAreaContents );
+	ui.mainToolBar->addAction( QApplication::style()->standardIcon( QStyle::SP_FileDialogNewFolder ), "New", 
+		this, SLOT(Action_NewEditTab())  );
+	ui.mainToolBar->addAction( QApplication::style()->standardIcon( QStyle::SP_DialogSaveButton ), "Save", 
+		this, SLOT(Action_Save())  );
+	
+	layers.model = new QStandardItemModel( ui.tileScrollAreaContents );
 	ui.treeViewLayers->setModel( layers.model );
 	layers.model->setColumnCount( 2 );
 	layers.model->setHorizontalHeaderItem( 0, new QStandardItem( "Layer" ) );
@@ -62,17 +67,18 @@ RolePlayer::RolePlayer(QWidget *parent, Qt::WFlags flags)
 		layers.model->appendRow( *it );
 	}
 
-	connect( ui.actionMapProperties, SIGNAL(triggered(bool)), this, SLOT(Action_MapProperties()) );
-	connect( ui.actionNew, SIGNAL(triggered(bool)), this, SLOT(Action_NewEditTab()) );
-	connect( ui.actionExit, SIGNAL(triggered(bool)), this, SLOT(close()) );
-	connect( ui.actionImport_Tiles, SIGNAL(triggered(bool)), this, SLOT(Action_ImportTiles()) );
-	connect( ui.actionSave, SIGNAL(triggered(bool)), this, SLOT(Action_Save()) );
-	connect( ui.actionSave_All, SIGNAL(triggered(bool)), this, SLOT(Action_SaveAll()) );	
-
-	connect( ui.actionWindowTiles, SIGNAL(toggled(bool)), ui.dockWidgetTiles, SLOT(setVisible(bool)) );
-	connect( ui.actionWindowResources, SIGNAL(toggled(bool)), ui.dockWidgetAssets, SLOT(setVisible(bool)) );
-	connect( ui.dockWidgetTiles, SIGNAL(visibilityChanged(bool)), ui.actionWindowTiles, SLOT(setChecked(bool)) );
-	connect( ui.dockWidgetAssets, SIGNAL(visibilityChanged(bool)), ui.actionWindowResources, SLOT(setChecked(bool)) );	
+	connect( ui.action_MapProperties, SIGNAL(triggered(bool)), this, SLOT(Action_MapProperties()) );
+	connect( ui.action_New, SIGNAL(triggered(bool)), this, SLOT(Action_NewEditTab()) );
+	connect( ui.action_Exit, SIGNAL(triggered(bool)), this, SLOT(close()) );
+	connect( ui.action_ImportTiles, SIGNAL(triggered(bool)), this, SLOT(Action_ImportTiles()) );
+	connect( ui.action_Save, SIGNAL(triggered(bool)), this, SLOT(Action_Save()) );
+	connect( ui.action_SaveMapImage, SIGNAL(triggered(bool)), this, SLOT(Action_SaveMapImage()) );
+	connect( ui.action_SaveAll, SIGNAL(triggered(bool)), this, SLOT(Action_SaveAll()) );
+	connect( ui.action_WindowTiles, SIGNAL(toggled(bool)), ui.dockWidgetTiles, SLOT(setVisible(bool)) );
+	connect( ui.action_WindowResources, SIGNAL(toggled(bool)), ui.dockWidgetAssets, SLOT(setVisible(bool)) );
+	
+	connect( ui.dockWidgetTiles, SIGNAL(visibilityChanged(bool)), ui.action_WindowTiles, SLOT(setChecked(bool)) );
+	connect( ui.dockWidgetAssets, SIGNAL(visibilityChanged(bool)), ui.action_WindowResources, SLOT(setChecked(bool)) );	
 	connect( &fileList.async_LoadTiles, SIGNAL(resultReadyAt(int)), this, SLOT(Slot_ImageLoadedAt(int)) );
 	connect( &fileList.async_LoadTiles, SIGNAL(finished()), this, SLOT(Slot_ImageLoadFinished()) );
 	connect( ui.treeViewLayers, SIGNAL(expanded(QModelIndex)),this,SLOT(Slot_TreeItemExpanded(QModelIndex)) );
@@ -114,31 +120,28 @@ void RolePlayer::AddMapEditTab( const QString & name ) {
 		}
 		++suffix;
 	}	
-
-	QGraphicsTileView * editView = new QGraphicsTileView( ui.editorTabs );
-	editView->setBackgroundBrush( QBrush( Qt::gray ) );
-	editView->setDragMode( QGraphicsView::ScrollHandDrag );
-	editView->setObjectName( "view" );
-	editView->setDrawGrid( true );
-	editView->setGridSize( 32 );
-	editView->setScene( new QGraphicsScene );
-	editView->setResizeAnchor( QGraphicsView::AnchorViewCenter );
 	
-	editView->scene()->addEllipse( rand() % 20000, rand() % 20000, 50 + rand() % 100, 50 + rand() % 100, QPen(), QBrush( QColor( "yellow" ) ) );
-	editView->scene()->addEllipse( rand() % 20000, rand() % 20000, 50 + rand() % 100, 50 + rand() % 100, QPen(), QBrush( QColor( "yellow" ) ) );
-
+	QDeclarativeView * editView = new QDeclarativeView( ui.editorTabs );
+	editView->setHorizontalScrollBarPolicy( Qt::ScrollBarAsNeeded );
+	editView->setVerticalScrollBarPolicy( Qt::ScrollBarAsNeeded );
+	editView->setSource( QUrl( "./resources/maps/default.qml" ) );
+	//editView->setResizeMode()
+	editView->setBackgroundBrush( QBrush( Qt::gray ) );
+	editView->setDragMode( QGraphicsView::NoDrag );
+	editView->setObjectName( "view" );
+	editView->setResizeAnchor( QGraphicsView::AnchorViewCenter );
 	ui.editorTabs->addTab( editView, tabName );
 }
 
 void RolePlayer::Slot_TabChanged( int index ) {
-	QGraphicsTileView * currentView = qobject_cast<QGraphicsTileView *>( ui.editorTabs->widget( index ) );
+	QDeclarativeView * currentView = qobject_cast<QDeclarativeView *>( ui.editorTabs->widget( index ) );
 	if ( currentView != NULL ) {
 		
 	}	
 }
 
 void RolePlayer::Slot_TabCloseRequested( int index ) {
-	QGraphicsTileView * currentView = qobject_cast<QGraphicsTileView *>( ui.editorTabs->widget( index ) );
+	QDeclarativeView * currentView = qobject_cast<QDeclarativeView *>( ui.editorTabs->widget( index ) );
 	if ( currentView != NULL ) {
 		QPixmap mapThumbnail( 200, 200 );
 		
@@ -164,7 +167,8 @@ void RolePlayer::Slot_TabCloseRequested( int index ) {
 		msgBox.setDefaultButton( QMessageBox::Save );
 		switch( msgBox.exec() ) {
 		case QMessageBox::Save:
-			currentView->save();
+			ui.editorTabs->setCurrentIndex( index );
+			Action_Save();
 			break;
 		case QMessageBox::Discard:
 			// just remove the tab
@@ -206,7 +210,7 @@ void RolePlayer::Slot_TreeItemCollapse( const QModelIndex & index ) {
 }
 
 void RolePlayer::Slot_PopulateTileList() {
-	QList<QWidget *> widgets = uiTileGroup.tileScrollAreaContents->findChildren<QWidget *>();
+	QList<QWidget *> widgets = ui.tileScrollAreaContents->findChildren<QWidget *>();
 	foreach(QWidget * widget, widgets) {
 		delete widget;
 	}
@@ -274,8 +278,7 @@ void RolePlayer::RebuildTileThumbnails() {
 
 			masterTileList.append( image );
 
-			QLabel * label = new QLabel();
-
+			QLabelClickable * label = new QLabelClickable( this );
 			QPixmap thumb = QPixmap::fromImage( image, Qt::AutoColor | Qt::NoOpaqueDetection );
 			label->setScaledContents( true );
 			label->setPixmap( thumb );
@@ -283,11 +286,13 @@ void RolePlayer::RebuildTileThumbnails() {
 			label->setFixedSize( thumb.width(), thumb.height() );
 			label->setToolTip( fileList.tiles.at( i ).baseName() );
 
-			uiTileGroup.tileScrollAreaContents->layout()->addWidget( label );
+			connect( label, SIGNAL(clicked(QLabelClickable*)), this, SLOT(Slot_TileLabelClicked(QLabelClickable*)));
+
+			ui.tileScrollAreaContents->layout()->addWidget( label );
 		}
 	}
 
-	uiTileGroup.tileScrollAreaContents->layout()->invalidate();
+	ui.tileScrollAreaContents->layout()->invalidate();
 }
 
 void RolePlayer::Action_NewEditTab() {
@@ -295,25 +300,88 @@ void RolePlayer::Action_NewEditTab() {
 }
 
 void RolePlayer::Action_Save() {
-	QGraphicsTileView * currentView = qobject_cast<QGraphicsTileView *>( ui.editorTabs->widget( ui.editorTabs->currentIndex() ) );
+	const int currentTab = ui.editorTabs->currentIndex();
+	QDeclarativeView * currentView = qobject_cast<QDeclarativeView *>( ui.editorTabs->widget( currentTab ) );
 	if ( currentView != NULL ) {
-		currentView->save();
+		QGameTileMap * map = qobject_cast<QGameTileMap *>( currentView->rootObject() );
+		if ( map != NULL ) {
+			QUrl saveFileUrl = map->getSaveFileUrl();			
+			if ( saveFileUrl.isEmpty() ) {
+				const QString defaultSavePath = QString( "./resources/maps/%1.map" )
+					.arg( ui.editorTabs->tabText( currentTab ) );
+				saveFileUrl = QFileDialog::getSaveFileName( this, 
+					tr("Save Map"), defaultSavePath, tr("Map Files (*.map)") );
+
+				if ( saveFileUrl.isEmpty() ) {
+					return;
+				}
+
+				QFileInfo saveFile( saveFileUrl.path() );
+				ui.editorTabs->setTabText( currentTab, saveFile.baseName() );
+			}
+			map->save( saveFileUrl );
+		}
 	}
 }
 
 void RolePlayer::Action_SaveAll() {
+	const int currentTab = ui.editorTabs->currentIndex();
 	for ( int i = 0; i < ui.editorTabs->count(); ++i ) {
-		QGraphicsTileView * currentView = qobject_cast<QGraphicsTileView *>( ui.editorTabs->widget( i ) );
-		if ( currentView != NULL ) {
-			currentView->save();
+		ui.editorTabs->setCurrentIndex( i );
+		Action_Save();
+	}
+	ui.editorTabs->setCurrentIndex( currentTab );
+}
+
+void RolePlayer::Action_SaveMapImage() {
+	const int currentTab = ui.editorTabs->currentIndex();
+	QDeclarativeView * currentView = qobject_cast<QDeclarativeView *>( ui.editorTabs->widget( currentTab ) );
+	if ( currentView != NULL ) {
+		const QSizeF sceneSize = currentView->scene()->sceneRect().size();
+
+		QPixmap mapRender( sceneSize.toSize() );
+
+		QPainter painter;
+		painter.begin( &mapRender );
+		currentView->scene()->render( &painter );
+		painter.end();
+
+		QString detailText;
+		QTextStream detailStream( &detailText );
+		detailStream << "File: " << "filename.map" << "\n";
+		detailStream << "Size: " << sceneSize.width() << " x " << sceneSize.height() << " pixels\n";
+
+		QMessageBox msgBox;
+		msgBox.setIconPixmap( mapRender.scaled( 200, 200, Qt::KeepAspectRatio, Qt::SmoothTransformation ) );
+		msgBox.setText( "The document has been modified." );
+		msgBox.setDetailedText( detailText );
+		msgBox.setInformativeText( "Do you want to save your changes?" );
+		msgBox.setStandardButtons( QMessageBox::Save | QMessageBox::Cancel );
+		msgBox.setDefaultButton( QMessageBox::Save );
+		switch( msgBox.exec() ) {
+		case QMessageBox::Save:				
+			{
+				QString saveFileName = QFileDialog::getSaveFileName( this, 
+					tr("Save File"), "./resources/maps/image.jpg", tr("Images (*.png *.jpg)") );
+				mapRender.save( saveFileName );
+			}
+			break;
+		case QMessageBox::Cancel:
+			// don't remove the tab
+			return;
 		}
 	}
 }
 
 void RolePlayer::Action_MapProperties() {
-	QGraphicsTileView * currentView = qobject_cast<QGraphicsTileView *>( ui.editorTabs->widget( ui.editorTabs->currentIndex() ) );
+	const int currentTab = ui.editorTabs->currentIndex();
+	QDeclarativeView * currentView = qobject_cast<QDeclarativeView *>( ui.editorTabs->widget( currentTab ) );
 	if ( currentView != NULL ) {
-		currentView->changeMapPropertyDialog();
+		QGameTileMap * mapItem = currentView->findChild<QGameTileMap*>( "map" );
+		if ( mapItem != NULL ) {
+			QDialogMapProperties dlg( mapItem, this );
+			dlg.exec();
+		}		
 	}
 }
 
@@ -333,5 +401,20 @@ void RolePlayer::Action_ImportTiles() {
 
 			Slot_PopulateTileList();
 		}
+	}
+}
+
+void RolePlayer::Slot_TileLabelClicked( QLabelClickable * label ) {
+	if ( selectedTile == label ) {
+
+	} else {
+		if ( !selectedTile.isNull() ) {
+			selectedTile->setOverlay( QPixmap() );
+		}
+		selectedTile = label;
+
+		QPixmap overlay( label->pixmap()->size() );
+		overlay.fill( QColor( 255, 0, 0, 100 ) );
+		selectedTile->setOverlay( overlay );
 	}
 }

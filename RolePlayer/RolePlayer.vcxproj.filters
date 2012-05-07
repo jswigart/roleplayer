@@ -32,6 +32,12 @@
     <Filter Include="Source Files\Dialogs">
       <UniqueIdentifier>{ab0fb383-ff26-41e9-9337-518dc5e4cf35}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Qml Object">
+      <UniqueIdentifier>{e9146661-ff83-4c79-bca6-0143b81942a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Widgets">
+      <UniqueIdentifier>{f4754658-29f8-42f3-9369-e4923afc645c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -61,6 +67,42 @@
     <ClCompile Include="dialog_importtiles.cpp">
       <Filter>Source Files\Dialogs</Filter>
     </ClCompile>
+    <ClCompile Include="dialog_mapproperties.cpp">
+      <Filter>Source Files\Dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_dialog_mapproperties.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_dialog_mapproperties.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_gamecharacter.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_gamecharacter.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_gametilemap.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_gametilemap.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="gamecharacter.cpp">
+      <Filter>Source Files\Qml Object</Filter>
+    </ClCompile>
+    <ClCompile Include="gametilemap.cpp">
+      <Filter>Source Files\Qml Object</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_widget_labelclickable.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_widget_labelclickable.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="widget_labelclickable.cpp">
+      <Filter>Source Files\Widgets</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="roleplayer.qrc">
@@ -72,9 +114,6 @@
     <CustomBuild Include="roleplayer.ui">
       <Filter>UI Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="tilesettools.ui">
-      <Filter>UI Files</Filter>
-    </CustomBuild>
     <CustomBuild Include="roleplayer.h">
       <Filter>Source Files</Filter>
     </CustomBuild>
@@ -84,6 +123,21 @@
     <CustomBuild Include="dialog_importtiles.h">
       <Filter>Source Files\Dialogs</Filter>
     </CustomBuild>
+    <CustomBuild Include="dialog_mapproperties.ui">
+      <Filter>UI Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="dialog_mapproperties.h">
+      <Filter>Source Files\Dialogs</Filter>
+    </CustomBuild>
+    <CustomBuild Include="gametilemap.h">
+      <Filter>Source Files\Qml Object</Filter>
+    </CustomBuild>
+    <CustomBuild Include="gamecharacter.h">
+      <Filter>Source Files\Qml Object</Filter>
+    </CustomBuild>
+    <CustomBuild Include="widget_labelclickable.h">
+      <Filter>Source Files\Widgets</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\ui_charactersheet.h">
@@ -92,13 +146,13 @@
     <ClInclude Include="GeneratedFiles\ui_roleplayer.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
-    <ClInclude Include="GeneratedFiles\ui_tilesettools.h">
-      <Filter>Generated Files</Filter>
-    </ClInclude>
     <ClInclude Include="flowlayout.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="GeneratedFiles\ui_tileset_import.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_dialog_mapproperties.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
   </ItemGroup>

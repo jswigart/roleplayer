@@ -6,13 +6,22 @@ Rectangle {
     width: 167
     height: 185
 
-    property int statAttack: 3
-    property int statDefend: 2
-    property int statBody: 8
-    property int statMind: 2
+    property int statBaseAttack: 3
+    property int statBaseDefend: 2
+    property int statBaseBody: 8
+    property int statBaseMind: 2
 
-    property int statCurrentHp: 0
-    property int statCurrentMind: 0
+    function calcCurrentAttack() {
+        return statBaseAttack;
+    }
+    function calcCurrentDefend() {
+        return statBaseDefend;
+    }
+
+    property int statCurrentAttack: calcCurrentAttack()
+    property int statCurrentDefend: calcCurrentDefend()
+    property int statCurrentBody: statBaseBody
+    property int statCurrentMind: statBaseMind
 
     Image {
         id: image
@@ -36,7 +45,7 @@ Rectangle {
             y: 0
             width: 6
             height: 14
-            text: character.statAttack
+            text: character.statCurrentAttack
             horizontalAlignment: Text.AlignHCenter
             font.pixelSize: 12
         }
@@ -47,7 +56,7 @@ Rectangle {
             y: 1
             width: 0
             height: 14
-            text: character.statDefend
+            text: character.statCurrentDefend
             horizontalAlignment: Text.AlignHCenter
             font.pixelSize: 12
         }
@@ -56,7 +65,7 @@ Rectangle {
             id: body
             x: 82
             y: 0
-            text: character.statBody
+            text: character.statCurrentBody
             horizontalAlignment: Text.AlignHCenter
             font.pixelSize: 12
         }
@@ -65,7 +74,7 @@ Rectangle {
             id: mind
             x: 114
             y: 0
-            text: character.statMind
+            text: character.statCurrentMind
             horizontalAlignment: Text.AlignHCenter
             font.pixelSize: 12
         }
@@ -76,10 +85,10 @@ Rectangle {
 
             PropertyChanges {
                 target: character
-                statAttack: 3
-                statDefend: 2
-                statBody: 8
-                statMind: 2
+                statBaseAttack: 3
+                statBaseDefend: 2
+                statBaseBody: 8
+                statBaseMind: 2
             }
             PropertyChanges {
                 target: image
@@ -91,10 +100,10 @@ Rectangle {
 
             PropertyChanges {
                 target: character
-                statAttack: 2
-                statDefend: 2
-                statBody: 7
-                statMind: 3
+                statBaseAttack: 2
+                statBaseDefend: 2
+                statBaseBody: 7
+                statBaseMind: 3
             }
             PropertyChanges {
                 target: image
@@ -105,10 +114,10 @@ Rectangle {
             name: "hero_elf"
             PropertyChanges {
                 target: character
-                statAttack: 2
-                statDefend: 2
-                statBody: 6
-                statMind: 4
+                statBaseAttack: 2
+                statBaseDefend: 2
+                statBaseBody: 6
+                statBaseMind: 4
             }
             PropertyChanges {
                 target: image
@@ -119,10 +128,10 @@ Rectangle {
             name: "hero_wizard"
             PropertyChanges {
                 target: character
-                statAttack: 1
-                statDefend: 2
-                statBody: 4
-                statMind: 6
+                statBaseAttack: 1
+                statBaseDefend: 2
+                statBaseBody: 4
+                statBaseMind: 6
             }
             PropertyChanges {
                 target: image

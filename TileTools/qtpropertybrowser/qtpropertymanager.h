@@ -42,6 +42,8 @@
 #ifndef QTPROPERTYMANAGER_H
 #define QTPROPERTYMANAGER_H
 
+#include <QtDesigner/QDesignerExportWidget>
+
 #include "qtpropertybrowser.h"
 
 QT_BEGIN_NAMESPACE
@@ -67,7 +69,7 @@ protected:
 
 class QtIntPropertyManagerPrivate;
 
-class QtIntPropertyManager : public QtAbstractPropertyManager
+class QDESIGNER_WIDGET_EXPORT QtIntPropertyManager : public QtAbstractPropertyManager
 {
     Q_OBJECT
 public:

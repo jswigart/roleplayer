@@ -1,6 +1,7 @@
 #ifndef ROLEPLAYER_H
 #define ROLEPLAYER_H
 
+#include <QPointer>
 #include <QMap>
 #include <QtGui/QMainWindow>
 #include <QFileInfo>
@@ -10,9 +11,10 @@
 #include <QFileSystemWatcher>
 #include <QTimer>
 
+#include "widget_labelclickable.h"
 #include "ui_roleplayer.h"
-#include "ui_tilesettools.h"
 
+class QLabelClickable;
 class QStandardItem;
 class QFileSystemWatcher;
 class QStandardItemModel;
@@ -25,7 +27,6 @@ public:
 
 private:
 	Ui::RolePlayer			ui;
-	Ui::TileSetGroup		uiTileGroup;
 
 	struct icons_t {
 		QIcon		critical;
@@ -50,6 +51,8 @@ private:
 
 	QList< QImage >		masterTileList;
 
+	QPointer<QLabelClickable>	selectedTile;
+
 	void				AddMapEditTab( const QString & name );
 
 	void				FindAllFileTypes( const QString & path, const QStringList & fileTypes, QFileInfoList & files );
@@ -67,12 +70,14 @@ private Q_SLOTS:
 	void				Slot_TreeItemCollapse( const QModelIndex & index );
 	void				Slot_ImageLoadedAt( int index );
 	void				Slot_ImageLoadFinished();
+	void				Slot_TileLabelClicked( QLabelClickable * label );
 
 	// menu actions
 	void				Action_MapProperties();
 	void				Action_NewEditTab();
 	void				Action_Save();
 	void				Action_SaveAll();
+	void				Action_SaveMapImage();
 	void				Action_ImportTiles();
 };
 

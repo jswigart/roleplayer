@@ -5,7 +5,6 @@
 #include "tiletools.h"
 
 TileWidgets::TileWidgets( QObject *parent ) {
-	widgets.append( new QGraphicsTileViewPlugin( this ) );
 	widgets.append( new QPropertyTreePlugin( this ) );
 }
 QList<QDesignerCustomWidgetInterface*> TileWidgets::customWidgets() const {
