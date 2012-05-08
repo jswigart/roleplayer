@@ -194,6 +194,15 @@ b2Shape *Box2DCircle::createShape()
 }
 
 
+b2Shape *Box2DEdge::createShape()
+{
+	b2EdgeShape *shape = new b2EdgeShape;
+	shape->Set( 
+		b2Vec2( mP0.x() * scaleRatio, mP0.y() * scaleRatio ),
+		b2Vec2( mP1.x() * scaleRatio, mP1.y() * scaleRatio ));
+	return shape;
+}
+
 b2Shape *Box2DPolygon::createShape()
 {
     const int count = mVertices.length();
@@ -212,4 +221,44 @@ b2Shape *Box2DPolygon::createShape()
     shape->Set(vertices, count);
     delete[] vertices;
     return shape;
+}
+
+b2Shape *Box2DChain::createShape()
+{
+	const int count = mVertices.length();
+	if (count < 2 || count > b2_maxPolygonVertices) {
+		qWarning() << "Polygon: Invalid number of vertices:" << count;
+		return 0;
+	}
+
+	b2Vec2 *vertices = new b2Vec2[count];
+	for (int i = 0; i < count; ++i) {
+		const QPointF &point = mVertices.at(i).toPointF();
+		vertices[i].Set(point.x() / scaleRatio, -point.y() / scaleRatio);
+	}
+
+	b2ChainShape *shape = new b2ChainShape;
+	shape->CreateChain(vertices, count);
+	delete[] vertices;
+	return shape;
+}
+
+b2Shape *Box2DChainLoop::createShape()
+{
+	const int count = mVertices.length();
+	if (count < 2 || count > b2_maxPolygonVertices) {
+		qWarning() << "Polygon: Invalid number of vertices:" << count;
+		return 0;
+	}
+
+	b2Vec2 *vertices = new b2Vec2[count];
+	for (int i = 0; i < count; ++i) {
+		const QPointF &point = mVertices.at(i).toPointF();
+		vertices[i].Set(point.x() / scaleRatio, -point.y() / scaleRatio);
+	}
+
+	b2ChainShape *shape = new b2ChainShape;
+	shape->CreateLoop(vertices, count);
+	delete[] vertices;
+	return shape;
 }

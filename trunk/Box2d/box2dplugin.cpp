@@ -43,7 +43,10 @@ void Box2DPlugin::registerTypes(const char *uri)
     qmlRegisterType<Box2DFixture>();
     qmlRegisterType<Box2DBox>(uri, 1, 0, "Box");
     qmlRegisterType<Box2DCircle>(uri, 1, 0, "Circle");
+	qmlRegisterType<Box2DEdge>(uri, 1, 0, "Edge");
     qmlRegisterType<Box2DPolygon>(uri, 1, 0, "Polygon");
+	qmlRegisterType<Box2DChain>(uri, 1, 0, "Chain");
+	qmlRegisterType<Box2DChainLoop>(uri, 1, 0, "ChainLoop");
     qmlRegisterType<Box2DDebugDraw>(uri, 1, 0, "DebugDraw");
     qmlRegisterType<Box2DJoint>();
     qmlRegisterType<Box2DDistanceJoint>(uri, 1, 0, "DistanceJoint");

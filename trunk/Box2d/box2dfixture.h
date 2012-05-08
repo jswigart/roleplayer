@@ -154,6 +154,46 @@ private:
     float mRadius;
 };
 
+class Box2DEdge : public Box2DFixture
+{
+	Q_OBJECT
+
+		Q_PROPERTY(QPointF p0 READ p0 WRITE setp0 NOTIFY p0Changed)
+		Q_PROPERTY(QPointF p1 READ p1 WRITE setp0 NOTIFY p1Changed)
+
+public:
+	explicit Box2DEdge(QDeclarativeItem *parent = 0) :
+		Box2DFixture(parent),
+		mP0( 0.0f, 0.0f ),
+		mP1( 0.0f, 0.0f )
+	{ }
+
+	QPointF p0() const { return mP0; }
+	QPointF p1() const { return mP1; }
+
+	void setp0(const QPointF & pt) {
+		if (mP0 == pt)
+			return;
+		mP0 = pt;
+		emit p0Changed();
+	}
+	void setp1(const QPointF & pt) {
+		if (mP1 == pt)
+			return;
+		mP1 = pt;
+		emit p1Changed();
+	}
+signals:
+	void p0Changed();
+	void p1Changed();
+protected:
+	b2Shape *createShape();
+
+private:
+	QPointF mP0;
+	QPointF mP1;
+};
+
 
 class Box2DPolygon : public Box2DFixture
 {
@@ -184,7 +224,63 @@ private:
     QVariantList mVertices;
 };
 
+class Box2DChain : public Box2DFixture
+{
+	Q_OBJECT
 
+	Q_PROPERTY(QVariantList vertices READ vertices WRITE setVertices NOTIFY verticesChanged)
+
+public:
+	explicit Box2DChain(QDeclarativeItem *parent = 0) :
+		Box2DFixture(parent)
+	{ }
+
+	QVariantList vertices() const { return mVertices; }
+	void setVertices(const QVariantList &vertices) {
+		if (vertices == mVertices)
+			return;
+		mVertices = vertices;
+		emit verticesChanged();
+	}
+
+signals:
+	void verticesChanged();
+
+protected:
+	b2Shape *createShape();
+
+private:
+	QVariantList mVertices;
+};
+
+class Box2DChainLoop : public Box2DFixture
+{
+	Q_OBJECT
+
+		Q_PROPERTY(QVariantList vertices READ vertices WRITE setVertices NOTIFY verticesChanged)
+
+public:
+	explicit Box2DChainLoop(QDeclarativeItem *parent = 0) :
+		Box2DFixture(parent)
+	{ }
+
+	QVariantList vertices() const { return mVertices; }
+	void setVertices(const QVariantList &vertices) {
+		if (vertices == mVertices)
+			return;
+		mVertices = vertices;
+		emit verticesChanged();
+	}
+
+signals:
+	void verticesChanged();
+
+protected:
+	b2Shape *createShape();
+
+private:
+	QVariantList mVertices;
+};
 /**
  * Convenience function to get the Box2DFixture wrapping a b2Fixture.
  */
