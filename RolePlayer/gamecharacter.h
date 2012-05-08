@@ -10,15 +10,14 @@ class QGameCharacter : public QDeclarativeItem
 public:
 	void paint( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget *widget );
 
-	QGameCharacter( QDeclarativeItem *parent = 0 );
+	QGameCharacter( QDeclarativeItem * parent = 0 );
 	~QGameCharacter();
 private:
 Q_SIGNALS:
+private Q_SLOTS:
 protected:
 	void mousePressEvent( QGraphicsSceneMouseEvent *event );
 	void mouseMoveEvent( QGraphicsSceneMouseEvent * event );
-
-
 private:
 };
 

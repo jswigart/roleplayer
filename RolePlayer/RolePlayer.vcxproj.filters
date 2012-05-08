@@ -103,6 +103,15 @@
     <ClCompile Include="widget_labelclickable.cpp">
       <Filter>Source Files\Widgets</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_widget_gameview.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_widget_gameview.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="widget_gameview.cpp">
+      <Filter>Source Files\Widgets</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="roleplayer.qrc">
@@ -136,6 +145,9 @@
       <Filter>Source Files\Qml Object</Filter>
     </CustomBuild>
     <CustomBuild Include="widget_labelclickable.h">
+      <Filter>Source Files\Widgets</Filter>
+    </CustomBuild>
+    <CustomBuild Include="widget_gameview.h">
       <Filter>Source Files\Widgets</Filter>
     </CustomBuild>
   </ItemGroup>

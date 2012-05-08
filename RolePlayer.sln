@@ -5,6 +5,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RolePlayer", "RolePlayer\Ro
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TileTools", "TileTools\TileTools.vcxproj", "{75BCBD24-E895-4DD1-BF89-74D68F79D65B}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Box2d", "Box2d\Box2d.vcxproj", "{CAB6FB74-52FB-4704-BCF9-39A533CA5B8D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -27,6 +29,12 @@ Global
 		{75BCBD24-E895-4DD1-BF89-74D68F79D65B}.Release|Win32.Build.0 = Release|Win32
 		{75BCBD24-E895-4DD1-BF89-74D68F79D65B}.Release|x64.ActiveCfg = Release|x64
 		{75BCBD24-E895-4DD1-BF89-74D68F79D65B}.Release|x64.Build.0 = Release|x64
+		{CAB6FB74-52FB-4704-BCF9-39A533CA5B8D}.Debug|Win32.ActiveCfg = Debug|Win32
+		{CAB6FB74-52FB-4704-BCF9-39A533CA5B8D}.Debug|Win32.Build.0 = Debug|Win32
+		{CAB6FB74-52FB-4704-BCF9-39A533CA5B8D}.Debug|x64.ActiveCfg = Debug|Win32
+		{CAB6FB74-52FB-4704-BCF9-39A533CA5B8D}.Release|Win32.ActiveCfg = Release|Win32
+		{CAB6FB74-52FB-4704-BCF9-39A533CA5B8D}.Release|Win32.Build.0 = Release|Win32
+		{CAB6FB74-52FB-4704-BCF9-39A533CA5B8D}.Release|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

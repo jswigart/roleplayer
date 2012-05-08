@@ -7,12 +7,14 @@
 #include <QFileDialog>
 #include <QStandardItemModel>
 #include <QWindowsStyle.h>
+#include <QDeclarativeEngine>
 
 #include "tiletools.h"
 #include "gametilemap.h"
 #include "roleplayer.h"
 #include "flowlayout.h"
 
+#include "widget_gameview.h"
 #include "dialog_importtiles.h"
 #include "dialog_mapproperties.h"
 
@@ -120,14 +122,18 @@ void RolePlayer::AddMapEditTab( const QString & name ) {
 		}
 		++suffix;
 	}	
-	
-	QDeclarativeView * editView = new QDeclarativeView( ui.editorTabs );
+
+	QStringList importPaths;
+	importPaths.append( "./resources/plugins" );
+
+	QGameView * editView = new QGameView( ui.editorTabs );
+	editView->engine()->setImportPathList( importPaths );
 	editView->setHorizontalScrollBarPolicy( Qt::ScrollBarAsNeeded );
 	editView->setVerticalScrollBarPolicy( Qt::ScrollBarAsNeeded );
 	editView->setSource( QUrl( "./resources/maps/default.qml" ) );
 	//editView->setResizeMode()
 	editView->setBackgroundBrush( QBrush( Qt::gray ) );
-	editView->setDragMode( QGraphicsView::NoDrag );
+	//editView->setDragMode( QGraphicsView::ScrollHandDrag );
 	editView->setObjectName( "view" );
 	editView->setResizeAnchor( QGraphicsView::AnchorViewCenter );
 	ui.editorTabs->addTab( editView, tabName );

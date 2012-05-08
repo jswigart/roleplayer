@@ -1,4 +1,5 @@
 #include <QtGui/QApplication>
+#include <QLibraryInfo>
 
 #include "roleplayer.h"
 
@@ -7,6 +8,11 @@
 
 int main( int argc, char *argv[] ) {
 	QApplication a( argc, argv );
+
+	//QLibraryInfo::location(QLibraryInfo::PluginsPath)
+	QStringList libPaths;
+	libPaths.append( "./resources/plugins" );
+	QCoreApplication::setLibraryPaths( libPaths );
 
 	qmlRegisterType<QGameTileMap>( "TileTools", 1, 0, "GameTileMap" );
 	qmlRegisterType<QGameCharacter>( "TileTools", 1, 0, "GameCharacter" );

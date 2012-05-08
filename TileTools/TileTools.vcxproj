@@ -87,7 +87,7 @@
       <AdditionalDependencies>qtmaind.lib;QtDesignerd4.lib;QtCored4.lib;QtGuid4.lib;QtDeclaratived4.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy /y $(OutDir)\$(ProjectName).dll $(QTDIR)\plugins\designer\$(ProjectName)d.dll</Command>
+      <Command>copy /y $(OutDir)\$(ProjectName).dll $(SolutionDir)resources\plugins\$(ProjectName).dll</Command>
       <Message>Copy To Plugins</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -125,7 +125,7 @@
       <AdditionalDependencies>qtmain.lib;QtDesigner4.lib;QtCore4.lib;QtGui4.lib;QtDeclarative4.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy /y $(OutDir)\$(ProjectName).dll $(QTDIR)\plugins\designer\$(ProjectName).dll</Command>
+      <Command>copy /y $(OutDir)\$(ProjectName).dll $(SolutionDir)resources\plugins\$(ProjectName).dll</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>Copy To Plugins</Message>

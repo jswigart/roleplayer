@@ -1,5 +1,5 @@
 #ifndef WIDGET_LABEL_CLICKABLE
-#define WIDGET_SELECTABLELABEL
+#define WIDGET_LABEL_CLICKABLE
 
 #include <QLabel>
 
@@ -24,4 +24,4 @@ Q_SIGNALS:
 	void clicked( QLabelClickable * label );
 };
 
-#endif // FLOW_LAYOUT_H
+#endif // WIDGET_LABEL_CLICKABLE
