@@ -18,6 +18,8 @@ public:
 
 	bool getDrawGrid() const { return gridRender; }
 	
+	void snapToGrid( QDeclarativeItem * item, const QPointF & scenePos );
+
 	void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0 );
 	
 	void save( const QUrl & file );
@@ -37,6 +39,7 @@ public Q_SLOTS:
 	void redrawView();
 protected:
 	void mousePressEvent( QGraphicsSceneMouseEvent *event );
+	void wheelEvent( QWheelEvent * event );
 private:
 	int			gridSize;
 	bool		gridRender;

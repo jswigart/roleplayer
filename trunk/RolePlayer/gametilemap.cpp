@@ -20,6 +20,29 @@ QGameTileMap::QGameTileMap( QDeclarativeItem *parent ) :
 QGameTileMap::~QGameTileMap() {
 }
 
+void QGameTileMap::snapToGrid( QDeclarativeItem * item, const QPointF & scenePos ) {
+	const int cellSizeX = item->boundingRect().width() / getGridSize();
+	const int cellSizeY = item->boundingRect().height() / getGridSize();
+
+	const int mapSizeX = ( boundingRect().width() / getGridSize() ) - cellSizeX;
+	const int mapSizeY = ( boundingRect().height() / getGridSize() ) - cellSizeY;
+
+	int cellX = scenePos.x() / getGridSize();
+	int cellY = scenePos.y() / getGridSize();
+
+	if ( cellX < 0 ) {
+		cellX = 0;
+	} else if ( cellX > mapSizeX ) {
+		cellX = mapSizeX;
+	}
+	if ( cellY < 0 ) {
+		cellY = 0;
+	} else if ( cellY > mapSizeY ) {
+		cellY = mapSizeY;
+	}
+	item->setPos( QPointF( cellX, cellY ) * getGridSize() );
+}
+
 void QGameTileMap::paint( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget *widget ) {
 	if ( getDrawGrid() ) {
 		//painter->setPen( Qt::DashLine );
@@ -70,7 +93,6 @@ void QGameTileMap::save( const QUrl & file ) {
 
 	saveFile.close();
 }
-
 void QGameTileMap::mousePressEvent( QGraphicsSceneMouseEvent *event ) {
-	
+	QDeclarativeItem::mousePressEvent( event );
 }
