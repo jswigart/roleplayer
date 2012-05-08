@@ -20,7 +20,18 @@ QGameTileMap::QGameTileMap( QDeclarativeItem *parent ) :
 QGameTileMap::~QGameTileMap() {
 }
 
-void QGameTileMap::snapToGrid( QDeclarativeItem * item, const QPointF & scenePos ) {
+//QGameTileMap * QGameTileMap::getTileAtPosition( const QPointF & scenePos ) {
+//	QList<QGraphicsItem *> objects = items( scenePos, Qt::IntersectsItemShape, Qt::DescendingOrder );
+//	for ( int i = 0; i < objects.count(); ++i ) {
+//		QGameTileMap * tileMap = qobject_cast<QGameTileMap*>( objects[ i ] );
+//		if ( tileMap != NULL ) {
+//			return tileMap;
+//		}
+//	}
+//	return NULL;
+//}
+
+void QGameTileMap::snapToGrid( QGraphicsItem * item, const QPointF & scenePos ) {
 	const int cellSizeX = item->boundingRect().width() / getGridSize();
 	const int cellSizeY = item->boundingRect().height() / getGridSize();
 
@@ -72,27 +83,7 @@ void QGameTileMap::paint( QPainter * painter, const QStyleOptionGraphicsItem * o
 void QGameTileMap::redrawView() {
 	scene()->invalidate();
 }
-void QGameTileMap::save( const QUrl & file ) {
-	setSaveFileUrl( file );
 
-	QFile saveFile( file.path() );
-	if ( !saveFile.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate) ) {
-		return;
-	}
-	
-	QTextStream out( &saveFile );
-
-	out << "Render: " << gridRender << "\n";
-	out << "CellSize: " << gridSize << "\n";
-	out << "GridColor: " << gridColor.red() << " " << gridColor.green() << " " << gridColor.blue() << " " << gridColor.alpha()  << "\n";
-	
-	QList<QByteArray> dynProps = dynamicPropertyNames();
-	for ( int i = 0; i < dynProps.count(); ++i ) {
-		out << QString( dynProps[ i ] ) << "\n";
-	}
-
-	saveFile.close();
-}
 void QGameTileMap::mousePressEvent( QGraphicsSceneMouseEvent *event ) {
 	QDeclarativeItem::mousePressEvent( event );
 }

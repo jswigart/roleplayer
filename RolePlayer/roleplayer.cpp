@@ -14,9 +14,14 @@
 #include "roleplayer.h"
 #include "flowlayout.h"
 
+#include "tool.h"
+
 #include "widget_gameview.h"
 #include "dialog_importtiles.h"
 #include "dialog_mapproperties.h"
+
+#include "tool.h"
+#include "gamescene.h"
 
 //////////////////////////////////////////////////////////////////////////
 // TODO
@@ -44,41 +49,71 @@ RolePlayer::RolePlayer(QWidget *parent, Qt::WFlags flags)
 	ui.setupUi(this);	
 	ui.tileScrollAreaContents->setLayout( new QFlowLayout() );
 	
-	// cache some useful icons
-	icons.critical = QApplication::style()->standardIcon( QStyle::SP_MessageBoxCritical );
-	icons.folderOpen = QApplication::style()->standardIcon( QStyle::SP_DirOpenIcon );
-	icons.folderClosed = QApplication::style()->standardIcon( QStyle::SP_DirClosedIcon );
+	// always work from the executable path
+	QDir::setCurrent( QApplication::applicationDirPath() );
+	fileWatcher.addPath( "./resources/images/tiles/" );
+	fileRefresh.setSingleShot( true );
 
-	ui.mainToolBar->addAction( QApplication::style()->standardIcon( QStyle::SP_FileDialogNewFolder ), "New", 
-		this, SLOT(Action_NewEditTab())  );
-	ui.mainToolBar->addAction( QApplication::style()->standardIcon( QStyle::SP_DialogSaveButton ), "Save", 
-		this, SLOT(Action_Save())  );
+	QStandardItemModel * layerModel = new QStandardItemModel( ui.treeViewLayers );
+	layerModel->setColumnCount( 2 );
+	layerModel->setHorizontalHeaderItem( 0, new QStandardItem( "Layer" ) );
+	layerModel->setHorizontalHeaderItem( 1, new QStandardItem( "Visible" ) );
+	layerModel->setHorizontalHeaderItem( 2, new QStandardItem( "Locked" ) );
+	ui.treeViewLayers->setModel( layerModel );
 	
-	layers.model = new QStandardItemModel( ui.tileScrollAreaContents );
-	ui.treeViewLayers->setModel( layers.model );
-	layers.model->setColumnCount( 2 );
-	layers.model->setHorizontalHeaderItem( 0, new QStandardItem( "Layer" ) );
-	layers.model->setHorizontalHeaderItem( 1, new QStandardItem( "Num Tiles" ) );
+	CacheIcons();
+	SetupToolBars();
+	ConnectSlots();
+		
+	Slot_PopulateTileList();
 
-	// Create some default layers
-	layers.rootItems.insert( "Base", new QStandardItem( icons.folderClosed, "Base" ) );
+	// add a default edit window
+	// todo: open last edited files from save info
+	AddMapEditTab( "untitled1" );
+}
+
+RolePlayer::~RolePlayer() {
+}
+
+void RolePlayer::CacheIcons() {
+	QStyle * style = QApplication::style();
+	icons.critical = style->standardIcon( QStyle::SP_MessageBoxCritical );
+	icons.folderOpen = style->standardIcon( QStyle::SP_DirOpenIcon );
+	icons.folderClosed = style->standardIcon( QStyle::SP_DirClosedIcon );
+	icons.folderNew = style->standardIcon( QStyle::SP_FileDialogNewFolder );
+	icons.saveFile = style->standardIcon( QStyle::SP_DialogSaveButton );
+}
+
+void RolePlayer::SetupToolBars() {
+	ui.mainToolBar->addAction( icons.folderNew, "New", this, SLOT(Action_NewFile()) );
+	ui.mainToolBar->addAction( icons.saveFile, "Save", this, SLOT(Action_SaveFile()) );
+
+	toolBarTools = new QToolBar( this );
+	toolBarTools->setToolButtonStyle( Qt::ToolButtonTextUnderIcon );
+
+	QToolPaintTile * toolPaint = new QToolPaintTile( this );
+	QToolCreatePolygon * toolPolygon = new QToolCreatePolygon( this );
+
+	toolPaint->setupAction( toolBarTools );
+	toolPolygon->setupAction( toolBarTools );
 	
-	(*layers.rootItems.find( "Base" ))->appendRow( new QStandardItem( "Test" ) );
+	// the tile tool must be notified when the tile selection changes
+	connect( this, SIGNAL(TileSelected(QLabelClickable*)), toolPaint, SLOT(Slot_TileSelected(QLabelClickable*)));
 
-	for ( ItemMap::iterator it = layers.rootItems.begin(); it != layers.rootItems.end(); ++it ) {
-		layers.model->appendRow( *it );
-	}
+	addToolBar( Qt::TopToolBarArea, toolBarTools );
+}
 
+void RolePlayer::ConnectSlots() {
 	connect( ui.action_MapProperties, SIGNAL(triggered(bool)), this, SLOT(Action_MapProperties()) );
-	connect( ui.action_New, SIGNAL(triggered(bool)), this, SLOT(Action_NewEditTab()) );
+	connect( ui.action_New, SIGNAL(triggered(bool)), this, SLOT(Action_NewFile()) );
 	connect( ui.action_Exit, SIGNAL(triggered(bool)), this, SLOT(close()) );
 	connect( ui.action_ImportTiles, SIGNAL(triggered(bool)), this, SLOT(Action_ImportTiles()) );
-	connect( ui.action_Save, SIGNAL(triggered(bool)), this, SLOT(Action_Save()) );
+	connect( ui.action_Save, SIGNAL(triggered(bool)), this, SLOT(Action_SaveFile()) );
 	connect( ui.action_SaveMapImage, SIGNAL(triggered(bool)), this, SLOT(Action_SaveMapImage()) );
-	connect( ui.action_SaveAll, SIGNAL(triggered(bool)), this, SLOT(Action_SaveAll()) );
+	connect( ui.action_SaveAll, SIGNAL(triggered(bool)), this, SLOT(Action_SaveFileAll()) );
 	connect( ui.action_WindowTiles, SIGNAL(toggled(bool)), ui.dockWidgetTiles, SLOT(setVisible(bool)) );
 	connect( ui.action_WindowResources, SIGNAL(toggled(bool)), ui.dockWidgetAssets, SLOT(setVisible(bool)) );
-	
+
 	connect( ui.dockWidgetTiles, SIGNAL(visibilityChanged(bool)), ui.action_WindowTiles, SLOT(setChecked(bool)) );
 	connect( ui.dockWidgetAssets, SIGNAL(visibilityChanged(bool)), ui.action_WindowResources, SLOT(setChecked(bool)) );	
 	connect( &fileList.async_LoadTiles, SIGNAL(resultReadyAt(int)), this, SLOT(Slot_ImageLoadedAt(int)) );
@@ -91,17 +126,7 @@ RolePlayer::RolePlayer(QWidget *parent, Qt::WFlags flags)
 	connect( ui.editorTabs, SIGNAL(tabCloseRequested(int)), this, SLOT(Slot_TabCloseRequested(int)));
 	connect( ui.editorTabs, SIGNAL(currentChanged(int)), this, SLOT(Slot_TabChanged(int)));
 
-	// always work from the executable
-	QDir::setCurrent( QApplication::applicationDirPath() );
-	fileWatcher.addPath( "./resources/images/tiles/" );
-	fileRefresh.setSingleShot( true );
-	
-	Slot_PopulateTileList();
-
-	AddMapEditTab( "untitled1" );
-}
-
-RolePlayer::~RolePlayer() {
+	connect( toolBarTools, SIGNAL(actionTriggered(QAction*)), this, SLOT(Slot_ToolTriggered(QAction*)) );
 }
 
 void RolePlayer::AddMapEditTab( const QString & name ) {
@@ -109,7 +134,7 @@ void RolePlayer::AddMapEditTab( const QString & name ) {
 	int suffix = 1;
 	QString tabName;
 	while( true ) {
-		QString testTabName = "untitled" + QString::number( suffix );
+		QString testTabName = "untitled" + QString::number( suffix++ );
 		bool nameConflict = false;
 		for ( int i = 0; i < ui.editorTabs->count(); ++i ) {
 			if ( ui.editorTabs->tabText( i ) == testTabName ) {
@@ -120,13 +145,14 @@ void RolePlayer::AddMapEditTab( const QString & name ) {
 			tabName = testTabName;
 			break;
 		}
-		++suffix;
 	}	
 
 	QStringList importPaths;
 	importPaths.append( "./resources/plugins" );
 
 	QGameView * editView = new QGameView( ui.editorTabs );
+	editView->setMouseTracking( true );
+	editView->setScene( new QGameScene( this, ui.editorTabs ) );
 	editView->engine()->setImportPathList( importPaths );
 	editView->setHorizontalScrollBarPolicy( Qt::ScrollBarAsNeeded );
 	editView->setVerticalScrollBarPolicy( Qt::ScrollBarAsNeeded );
@@ -139,15 +165,56 @@ void RolePlayer::AddMapEditTab( const QString & name ) {
 	ui.editorTabs->addTab( editView, tabName );
 }
 
-void RolePlayer::Slot_TabChanged( int index ) {
-	QDeclarativeView * currentView = qobject_cast<QDeclarativeView *>( ui.editorTabs->widget( index ) );
+void RolePlayer::AppendToLog( const QString & msg ) {
+	ui.textBrowserLog->append( msg );
+}
+
+void RolePlayer::Slot_ToolTriggered( QAction * action ) {
+	const int currentTab = ui.editorTabs->currentIndex();
+	QGameView * currentView = qobject_cast<QGameView *>( ui.editorTabs->widget( currentTab ) );
 	if ( currentView != NULL ) {
+		QTool * selectedTool = action->data().value<QTool*>();
+		if ( selectedTool != NULL ) {
+			currentView->getGameScene()->setCurrentTool( selectedTool );
+		}
+	}
+}
+
+void RolePlayer::Slot_TabChanged( int index ) {
+	QGameView * currentView = qobject_cast<QGameView *>( ui.editorTabs->widget( index ) );
+	if ( currentView != NULL ) {
+		QGameScene * scene = currentView->getGameScene();
+		scene->setCurrentTool( NULL );
+
+		// repopulate the layer list
 		
+		QStandardItemModel * layerModel = qobject_cast<QStandardItemModel*>( ui.treeViewLayers->model() );
+		layerModel->removeRows( 0, layerModel->rowCount() );
+
+		QStringList layers;
+		scene->getLayerNames( layers );
+
+		for ( int i = 0; i < layers.count(); ++i ) {
+			QGameLayer * layer = scene->getLayer( layers[ i ] );
+			
+			QStandardItem * visible = new QStandardItem();
+			visible->setCheckable( true );
+			visible->setCheckState( !layer->getHidden() ? Qt::Checked : Qt::Unchecked );
+			
+			QStandardItem * locked = new QStandardItem();
+			locked->setCheckable( true );
+			locked->setCheckState( layer->getLocked() ? Qt::Checked : Qt::Unchecked );
+
+			const int row = layerModel->rowCount();
+			layerModel->setItem( row, 0, new QStandardItem( layers[ i ] ) );
+			layerModel->setItem( row, 1, visible );
+			layerModel->setItem( row, 2, locked );
+		}
 	}	
 }
 
 void RolePlayer::Slot_TabCloseRequested( int index ) {
-	QDeclarativeView * currentView = qobject_cast<QDeclarativeView *>( ui.editorTabs->widget( index ) );
+	QGameView * currentView = qobject_cast<QGameView *>( ui.editorTabs->widget( index ) );
 	if ( currentView != NULL ) {
 		QPixmap mapThumbnail( 200, 200 );
 		
@@ -174,7 +241,7 @@ void RolePlayer::Slot_TabCloseRequested( int index ) {
 		switch( msgBox.exec() ) {
 		case QMessageBox::Save:
 			ui.editorTabs->setCurrentIndex( index );
-			Action_Save();
+			Action_SaveFile();
 			break;
 		case QMessageBox::Discard:
 			// just remove the tab
@@ -202,17 +269,17 @@ void RolePlayer::Slot_FileChanged( const QString & path ) {
 }
 
 void RolePlayer::Slot_TreeItemExpanded( const QModelIndex & index ) {
-	QStandardItem * treeItem = layers.model->itemFromIndex( index );
+	/*QStandardItem * treeItem = layers.model->itemFromIndex( index );
 	if ( treeItem != NULL ) {
 		treeItem->setIcon( icons.folderOpen );
-	}
+	}*/
 }
 
 void RolePlayer::Slot_TreeItemCollapse( const QModelIndex & index ) {
-	QStandardItem * treeItem = layers.model->itemFromIndex( index );
+	/*QStandardItem * treeItem = layers.model->itemFromIndex( index );
 	if ( treeItem != NULL ) {
 		treeItem->setIcon( icons.folderClosed );
-	}
+	}*/
 }
 
 void RolePlayer::Slot_PopulateTileList() {
@@ -224,7 +291,7 @@ void RolePlayer::Slot_PopulateTileList() {
 	fileList.tiles.clear();
 
 	QStringList imageExtensions;
-	imageExtensions << "*.png";
+	imageExtensions << "*.png" << "*.jpg" << "*.jpeg" << "*.tga";
 	FindAllFileTypes( QDir( "./resources/images/tiles" ).path(), imageExtensions, fileList.tiles );
 
 	if ( !fileList.tiles.isEmpty() ) {
@@ -292,7 +359,7 @@ void RolePlayer::RebuildTileThumbnails() {
 			label->setFixedSize( thumb.width(), thumb.height() );
 			label->setToolTip( fileList.tiles.at( i ).baseName() );
 
-			connect( label, SIGNAL(clicked(QLabelClickable*)), this, SLOT(Slot_TileLabelClicked(QLabelClickable*)));
+			connect( label, SIGNAL(clicked(QLabelClickable*)), this, SLOT(Slot_TileSelected(QLabelClickable*)));
 
 			ui.tileScrollAreaContents->layout()->addWidget( label );
 		}
@@ -301,20 +368,21 @@ void RolePlayer::RebuildTileThumbnails() {
 	ui.tileScrollAreaContents->layout()->invalidate();
 }
 
-void RolePlayer::Action_NewEditTab() {
+void RolePlayer::Action_NewFile() {
 	AddMapEditTab( "untitled" );
 }
 
-void RolePlayer::Action_Save() {
+void RolePlayer::Action_SaveFile() {
 	const int currentTab = ui.editorTabs->currentIndex();
-	QDeclarativeView * currentView = qobject_cast<QDeclarativeView *>( ui.editorTabs->widget( currentTab ) );
+	QGameView * currentView = qobject_cast<QGameView *>( ui.editorTabs->widget( currentTab ) );
 	if ( currentView != NULL ) {
-		QGameTileMap * map = qobject_cast<QGameTileMap *>( currentView->rootObject() );
-		if ( map != NULL ) {
-			QUrl saveFileUrl = map->getSaveFileUrl();			
+		QGameScene * scene = currentView->getGameScene();
+		if ( scene != NULL ) {
+			QUrl saveFileUrl = scene->getSaveFileUrl();			
 			if ( saveFileUrl.isEmpty() ) {
 				const QString defaultSavePath = QString( "./resources/maps/%1.map" )
 					.arg( ui.editorTabs->tabText( currentTab ) );
+
 				saveFileUrl = QFileDialog::getSaveFileName( this, 
 					tr("Save Map"), defaultSavePath, tr("Map Files (*.map)") );
 
@@ -325,23 +393,23 @@ void RolePlayer::Action_Save() {
 				QFileInfo saveFile( saveFileUrl.path() );
 				ui.editorTabs->setTabText( currentTab, saveFile.baseName() );
 			}
-			map->save( saveFileUrl );
+			scene->save( saveFileUrl );
 		}
 	}
 }
 
-void RolePlayer::Action_SaveAll() {
+void RolePlayer::Action_SaveFileAll() {
 	const int currentTab = ui.editorTabs->currentIndex();
 	for ( int i = 0; i < ui.editorTabs->count(); ++i ) {
 		ui.editorTabs->setCurrentIndex( i );
-		Action_Save();
+		Action_SaveFile();
 	}
 	ui.editorTabs->setCurrentIndex( currentTab );
 }
 
-void RolePlayer::Action_SaveMapImage() {
+void RolePlayer::Action_SaveFileMapImage() {
 	const int currentTab = ui.editorTabs->currentIndex();
-	QDeclarativeView * currentView = qobject_cast<QDeclarativeView *>( ui.editorTabs->widget( currentTab ) );
+	QGameView * currentView = qobject_cast<QGameView *>( ui.editorTabs->widget( currentTab ) );
 	if ( currentView != NULL ) {
 		const QSizeF sceneSize = currentView->scene()->sceneRect().size();
 
@@ -381,7 +449,7 @@ void RolePlayer::Action_SaveMapImage() {
 
 void RolePlayer::Action_MapProperties() {
 	const int currentTab = ui.editorTabs->currentIndex();
-	QDeclarativeView * currentView = qobject_cast<QDeclarativeView *>( ui.editorTabs->widget( currentTab ) );
+	QGameView * currentView = qobject_cast<QGameView *>( ui.editorTabs->widget( currentTab ) );
 	if ( currentView != NULL ) {
 		QGameTileMap * mapItem = currentView->findChild<QGameTileMap*>( "map" );
 		if ( mapItem != NULL ) {
@@ -410,17 +478,6 @@ void RolePlayer::Action_ImportTiles() {
 	}
 }
 
-void RolePlayer::Slot_TileLabelClicked( QLabelClickable * label ) {
-	if ( selectedTile == label ) {
-
-	} else {
-		if ( !selectedTile.isNull() ) {
-			selectedTile->setOverlay( QPixmap() );
-		}
-		selectedTile = label;
-
-		QPixmap overlay( label->pixmap()->size() );
-		overlay.fill( QColor( 255, 0, 0, 100 ) );
-		selectedTile->setOverlay( overlay );
-	}
+void RolePlayer::Slot_TileSelected( QLabelClickable * label ) {
+	emit TileSelected( label );
 }

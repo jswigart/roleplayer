@@ -18,13 +18,13 @@ GameTileMap {
         height: parent.height
         //gravity: Qt.point(0,0,0)
 
-        Body {
-            bodyType: Body.Dynamic
-            x: 100
-            y: 100
-            rotation: 32
-            fixtures: Box { width: 32; height: 32; density: 1 }
-        }
+//        Body {
+//            bodyType: Body.Dynamic
+//            x: 100
+//            y: 100
+//            rotation: 32
+//            fixtures: Box { width: 32; height: 32; density: 1 }
+//        }
         Body {
             bodyType: Body.Static
 
