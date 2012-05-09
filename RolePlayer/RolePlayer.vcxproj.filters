@@ -130,6 +130,27 @@
     <ClCompile Include="GeneratedFiles\Release\moc_gamescene.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="dialog_preferences.cpp">
+      <Filter>Source Files\Dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_dialog_preferences.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_dialog_preferences.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="texturepacker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="gametileset.cpp">
+      <Filter>Source Files\Qml Object</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_gametileset.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_gametileset.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="roleplayer.qrc">
@@ -174,6 +195,15 @@
     <CustomBuild Include="gamescene.h">
       <Filter>Source Files\Qml Object</Filter>
     </CustomBuild>
+    <CustomBuild Include="dialog_preferences.h">
+      <Filter>Source Files\Dialogs</Filter>
+    </CustomBuild>
+    <CustomBuild Include="dialog_preferences.ui">
+      <Filter>UI Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="gametileset.h">
+      <Filter>Source Files\Qml Object</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\ui_charactersheet.h">
@@ -189,6 +219,12 @@
       <Filter>Generated Files</Filter>
     </ClInclude>
     <ClInclude Include="GeneratedFiles\ui_dialog_mapproperties.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_dialog_preferences.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="texturepacker.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
   </ItemGroup>

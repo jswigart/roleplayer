@@ -15,10 +15,13 @@
 #include "gametilemap.h"
 #include "roleplayer.h"
 #include "flowlayout.h"
+#include "texturepacker.h"
 
 #include "tool.h"
 
 #include "widget_gameview.h"
+
+#include "dialog_preferences.h"
 #include "dialog_importtiles.h"
 #include "dialog_mapproperties.h"
 
@@ -110,6 +113,7 @@ void RolePlayer::SetupToolBars() {
 }
 
 void RolePlayer::ConnectSlots() {
+	connect( ui.action_Preferences, SIGNAL(triggered(bool)), this, SLOT(Action_Preferences()) );
 	connect( ui.action_MapProperties, SIGNAL(triggered(bool)), this, SLOT(Action_MapProperties()) );
 	connect( ui.action_New, SIGNAL(triggered(bool)), this, SLOT(Action_NewFile()) );
 	connect( ui.action_Exit, SIGNAL(triggered(bool)), this, SLOT(close()) );
@@ -157,11 +161,17 @@ QDeclarativeComponent * RolePlayer::CacheQMLComponent( QDeclarativeEngine * engi
 }
 
 void RolePlayer::InitObjectPallette() {
-	QDeclarativeComponent * character = CacheQMLComponent( ui.viewObjectPalette->engine(), QUrl::fromLocalFile("./resources/ruleset/heroquest/character.qml") );
-	QDeclarativeItem * item = qobject_cast<QDeclarativeItem*>( character->create() );
-	item->setObjectName( "Code Character" );
-	item->setToolTip( "Character Object" );
-	ui.viewObjectPalette->scene()->addItem( item );
+	QFileInfoList objectFiles;
+
+	FindAllFileTypes( QDir( "./resources/ruleset/heroquest/objects/" ).path(), QStringList( "*.qml" ), objectFiles );
+
+	for ( int i = 0; i < objectFiles.count(); ++i ) {
+		QDeclarativeComponent * component = CacheQMLComponent( ui.viewObjectPalette->engine(), QUrl::fromLocalFile( objectFiles[ i ].canonicalFilePath() ) );
+		if ( component != NULL ) {
+			QDeclarativeItem * item = qobject_cast<QDeclarativeItem*>( component->create() );
+			ui.viewObjectPalette->scene()->addItem( item );
+		}
+	};
 }
 
 void RolePlayer::AddMapEditTab( const QString & name ) {
@@ -187,8 +197,6 @@ void RolePlayer::AddMapEditTab( const QString & name ) {
 
 	QGameView * editView = new QGameView( ui.editorTabs );
 	
-	QDeclarativeComponent * character = CacheQMLComponent( editView->engine(), QUrl::fromLocalFile("./resources/ruleset/heroquest/character.qml") );
-
 	editView->setMouseTracking( true );
 	editView->setScene( new QGameScene( this, ui.editorTabs ) );
 	editView->engine()->setImportPathList( importPaths );
@@ -386,7 +394,7 @@ void RolePlayer::Slot_ImageLoadFinished() {
 
 void RolePlayer::RebuildTileThumbnails() {
 	masterTileList.clear();
-
+	
 	for ( int i = 0; i < fileList.async_LoadTiles.future().resultCount(); ++i ) {
 		QImage image = fileList.async_LoadTiles.resultAt( i );
 		if ( !image.isNull() ) {
@@ -413,7 +421,7 @@ void RolePlayer::RebuildTileThumbnails() {
 
 			masterTileList.append( image );
 
-			QLabelClickable * label = new QLabelClickable( this );
+			/*QLabelClickable * label = new QLabelClickable( this );
 			QPixmap thumb = QPixmap::fromImage( image, Qt::AutoColor | Qt::NoOpaqueDetection );
 			label->setScaledContents( true );
 			label->setPixmap( thumb );
@@ -423,11 +431,52 @@ void RolePlayer::RebuildTileThumbnails() {
 
 			connect( label, SIGNAL(clicked(QLabelClickable*)), this, SLOT(Slot_TileSelected(QLabelClickable*)));
 
-			ui.tileScrollAreaContents->layout()->addWidget( label );
+			ui.tileScrollAreaContents->layout()->addWidget( label );*/
 		}
 	}
+	
+	using namespace TEXTURE_PACKER;
+	TexturePacker * packer = createTexturePacker();
 
-	ui.tileScrollAreaContents->layout()->invalidate();
+	packer->setTextureCount( masterTileList.count() );
+	for ( int i = 0; i < masterTileList.count(); ++i ) {
+		packer->addTexture( masterTileList[ i ].width(), masterTileList[ i ].height() );
+	}
+	int packedWidth = 0, packedHeight = 0;
+
+	TexturePacker::options_t options;
+	options.allowRotationToFit = false;
+	options.minWidth = 1024;
+	packer->packTextures( packedWidth, packedHeight, options );
+
+	QImage atlas( packedWidth, packedHeight, QImage::Format_RGB32 );
+	
+	QPainter painter;
+	painter.begin( &atlas );
+	painter.fillRect( atlas.rect(), QColor( 0, 0, 0, 0 ) );
+	
+	for ( int i = 0; i < masterTileList.count(); ++i ) {
+		int x, y, w, h;
+		packer->getTextureLocation( i, x, y, w, h );
+		painter.drawImage( x, y, masterTileList[ i ] );
+	}
+
+	painter.end();
+
+	releaseTexturePacker( packer );
+
+	//ui.tileScrollAreaContents->layout()->invalidate();
+
+	QLabelClickable * label = new QLabelClickable( this );
+	QPixmap thumb = QPixmap::fromImage( atlas, Qt::AutoColor | Qt::NoOpaqueDetection );
+	label->setScaledContents( true );
+	label->setPixmap( thumb );
+	label->setAlignment( Qt::AlignCenter );
+	label->setFixedSize( thumb.width(), thumb.height() );
+
+	//connect( label, SIGNAL(clicked(QLabelClickable*)), this, SLOT(Slot_TileSelected(QLabelClickable*)));
+
+	ui.tileScrollAreaContents->layout()->addWidget( label );
 }
 
 void RolePlayer::Action_NewFile() {
@@ -519,6 +568,11 @@ void RolePlayer::Action_MapProperties() {
 			dlg.exec();
 		}		
 	}
+}
+
+void RolePlayer::Action_Preferences() {
+	QDialogPreferences dlg( this );
+	dlg.exec();
 }
 
 void RolePlayer::Action_ImportTiles() {

@@ -51,7 +51,7 @@ QT_BEGIN_NAMESPACE
 class QtAbstractPropertyManager;
 class QtPropertyPrivate;
 
-class QtProperty
+class QDESIGNER_WIDGET_EXPORT QtProperty
 {
 public:
     virtual ~QtProperty();
@@ -70,6 +70,7 @@ public:
     bool hasValue() const;
     QIcon valueIcon() const;
     QString valueText() const;
+	QVariant data() const;
 
     void setToolTip(const QString &text);
     void setStatusTip(const QString &text);
@@ -77,6 +78,7 @@ public:
     void setPropertyName(const QString &text);
     void setEnabled(bool enable);
     void setModified(bool modified);
+	void setData( const QVariant & data );
 
     void addSubProperty(QtProperty *property);
     void insertSubProperty(QtProperty *property, QtProperty *afterProperty);
