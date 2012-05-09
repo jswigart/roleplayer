@@ -43,6 +43,7 @@
 #include <QtCore/QSet>
 #include <QtCore/QMap>
 #include <QtGui/QIcon>
+#include <QtCore/QVariant>
 
 #if defined(Q_CC_MSVC)
 #    pragma warning(disable: 4786) /* MS VS 6: truncating debug info after 255 characters */
@@ -65,6 +66,8 @@ public:
     QString m_name;
     bool m_enabled;
     bool m_modified;
+
+	QVariant m_data;
 
     QtAbstractPropertyManager * const m_manager;
 };
@@ -296,6 +299,10 @@ QString QtProperty::valueText() const
     return d_ptr->m_manager->valueText(this);
 }
 
+QVariant QtProperty::data() const {
+	return d_ptr->m_data;
+}
+
 /*!
     Sets the property's tool tip to the given \a text.
 
@@ -381,6 +388,15 @@ void QtProperty::setModified(bool modified)
     d_ptr->m_modified = modified;
     propertyChanged();
 }
+
+void QtProperty::setData( const QVariant & data ) {
+	if ( d_ptr->m_data == data )
+		return;
+
+	d_ptr->m_data = data;
+	propertyChanged();
+}
+
 
 /*!
     Appends the given \a property to this property's subproperties.

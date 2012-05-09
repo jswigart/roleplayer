@@ -27,6 +27,9 @@ public:
 	RolePlayer(QWidget *parent = 0, Qt::WFlags flags = 0);
 	~RolePlayer();
 
+	QToolBar *			GetMainToolBar() { return ui.mainToolBar; }
+	QToolBar *			GetToolsToolBar() { return toolBarTools; }	
+
 	void				AppendToLog( const QString & msg );
 signals:
 	void				TileSelected( QLabelClickable * label );
@@ -45,6 +48,7 @@ private Q_SLOTS:
 	void				Slot_RefreshPropertyList();
 
 	// menu actions
+	void				Action_Preferences();
 	void				Action_MapProperties();
 	void				Action_NewFile();
 	void				Action_SaveFile();

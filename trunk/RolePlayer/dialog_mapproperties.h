@@ -21,4 +21,4 @@ private Q_SLOTS:
 	void Slot_Finished( int result );
 };
 
-#endif // DIALOG_IMPORT_TILES
+#endif // DIALOG_MAP_PROPERTIES
