@@ -8,8 +8,10 @@
 #include <QStandardItemModel>
 #include <QWindowsStyle.h>
 #include <QDeclarativeEngine>
+#include <QGraphicsWidget>
 
 #include "tiletools.h"
+#include "gamecharacter.h"
 #include "gametilemap.h"
 #include "roleplayer.h"
 #include "flowlayout.h"
@@ -67,6 +69,8 @@ RolePlayer::RolePlayer(QWidget *parent, Qt::WFlags flags)
 		
 	Slot_PopulateTileList();
 
+	InitObjectPallette();
+
 	// add a default edit window
 	// todo: open last edited files from save info
 	AddMapEditTab( "untitled1" );
@@ -91,16 +95,18 @@ void RolePlayer::SetupToolBars() {
 	toolBarTools = new QToolBar( this );
 	toolBarTools->setToolButtonStyle( Qt::ToolButtonTextUnderIcon );
 
+	QToolSelector * toolSelect = new QToolSelector( this );
 	QToolPaintTile * toolPaint = new QToolPaintTile( this );
 	QToolCreatePolygon * toolPolygon = new QToolCreatePolygon( this );
 
-	toolPaint->setupAction( toolBarTools );
-	toolPolygon->setupAction( toolBarTools );
+	toolSelect->setupAction( toolBarTools, QKeySequence( "1" ) );
+	toolPaint->setupAction( toolBarTools, QKeySequence( "2" ) );
+	toolPolygon->setupAction( toolBarTools, QKeySequence( "3" ) );
 	
 	// the tile tool must be notified when the tile selection changes
 	connect( this, SIGNAL(TileSelected(QLabelClickable*)), toolPaint, SLOT(Slot_TileSelected(QLabelClickable*)));
 
-	addToolBar( Qt::TopToolBarArea, toolBarTools );
+	addToolBar( Qt::LeftToolBarArea, toolBarTools );
 }
 
 void RolePlayer::ConnectSlots() {
@@ -109,7 +115,7 @@ void RolePlayer::ConnectSlots() {
 	connect( ui.action_Exit, SIGNAL(triggered(bool)), this, SLOT(close()) );
 	connect( ui.action_ImportTiles, SIGNAL(triggered(bool)), this, SLOT(Action_ImportTiles()) );
 	connect( ui.action_Save, SIGNAL(triggered(bool)), this, SLOT(Action_SaveFile()) );
-	connect( ui.action_SaveMapImage, SIGNAL(triggered(bool)), this, SLOT(Action_SaveMapImage()) );
+	connect( ui.action_SaveMapImage, SIGNAL(triggered(bool)), this, SLOT(Action_SaveFileMapImage()) );
 	connect( ui.action_SaveAll, SIGNAL(triggered(bool)), this, SLOT(Action_SaveFileAll()) );
 	connect( ui.action_WindowTiles, SIGNAL(toggled(bool)), ui.dockWidgetTiles, SLOT(setVisible(bool)) );
 	connect( ui.action_WindowResources, SIGNAL(toggled(bool)), ui.dockWidgetAssets, SLOT(setVisible(bool)) );
@@ -127,6 +133,35 @@ void RolePlayer::ConnectSlots() {
 	connect( ui.editorTabs, SIGNAL(currentChanged(int)), this, SLOT(Slot_TabChanged(int)));
 
 	connect( toolBarTools, SIGNAL(actionTriggered(QAction*)), this, SLOT(Slot_ToolTriggered(QAction*)) );
+}
+
+QDeclarativeComponent * RolePlayer::CacheQMLComponent( QDeclarativeEngine * engine, const QUrl & file ) {
+	QDeclarativeComponent * component = new QDeclarativeComponent( engine, engine );
+	component->setObjectName( file.path() );
+
+	component->loadUrl( file );
+	
+	if ( component->errors().count() > 0 ) {
+		qDebug() << component->errors();
+
+		QMessageBox msgBox(this);
+		msgBox.setText("Component Not Found.");
+		msgBox.setInformativeText( component->errorString() );
+		msgBox.setStandardButtons( QMessageBox::Ok );
+		msgBox.exec();
+
+		delete component;
+		component = NULL;
+	}
+	return component;
+}
+
+void RolePlayer::InitObjectPallette() {
+	QDeclarativeComponent * character = CacheQMLComponent( ui.viewObjectPalette->engine(), QUrl::fromLocalFile("./resources/ruleset/heroquest/character.qml") );
+	QDeclarativeItem * item = qobject_cast<QDeclarativeItem*>( character->create() );
+	item->setObjectName( "Code Character" );
+	item->setToolTip( "Character Object" );
+	ui.viewObjectPalette->scene()->addItem( item );
 }
 
 void RolePlayer::AddMapEditTab( const QString & name ) {
@@ -151,6 +186,9 @@ void RolePlayer::AddMapEditTab( const QString & name ) {
 	importPaths.append( "./resources/plugins" );
 
 	QGameView * editView = new QGameView( ui.editorTabs );
+	
+	QDeclarativeComponent * character = CacheQMLComponent( editView->engine(), QUrl::fromLocalFile("./resources/ruleset/heroquest/character.qml") );
+
 	editView->setMouseTracking( true );
 	editView->setScene( new QGameScene( this, ui.editorTabs ) );
 	editView->engine()->setImportPathList( importPaths );
@@ -163,6 +201,8 @@ void RolePlayer::AddMapEditTab( const QString & name ) {
 	editView->setObjectName( "view" );
 	editView->setResizeAnchor( QGraphicsView::AnchorViewCenter );
 	ui.editorTabs->addTab( editView, tabName );
+	
+	connect( editView->scene(), SIGNAL(selectionChanged()), this, SLOT(Slot_RefreshPropertyList()));
 }
 
 void RolePlayer::AppendToLog( const QString & msg ) {
@@ -210,7 +250,8 @@ void RolePlayer::Slot_TabChanged( int index ) {
 			layerModel->setItem( row, 1, visible );
 			layerModel->setItem( row, 2, locked );
 		}
-	}	
+	}
+	Slot_RefreshPropertyList();
 }
 
 void RolePlayer::Slot_TabCloseRequested( int index ) {
@@ -252,6 +293,27 @@ void RolePlayer::Slot_TabCloseRequested( int index ) {
 		}
 	}
 	ui.editorTabs->removeTab( index );
+
+	Slot_RefreshPropertyList();
+}
+
+void RolePlayer::Slot_RefreshPropertyList() {
+	ui.propTree->clear();
+
+	const int currentTab = ui.editorTabs->currentIndex();
+	QGameView * currentView = qobject_cast<QGameView *>( ui.editorTabs->widget( currentTab ) );
+	if ( currentView != NULL ) {
+		QList<QGraphicsItem *> selected = currentView->getGameScene()->selectedItems();
+
+		for( int i = 0; i < selected.count(); ++i ) {
+			QGameCharacter * gfxObj = qgraphicsitem_cast<QGameCharacter*>( selected[ i ] );
+			if ( gfxObj != NULL ) {
+				ui.propTree->AddGroup( NULL, 
+					gfxObj->objectName(), 
+					gfxObj->objectName() );	
+			}
+		}
+	}
 }
 
 void RolePlayer::Slot_DirectoryChanged( const QString & path ) {

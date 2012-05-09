@@ -23,6 +23,61 @@ void QTool::setScene( QGameScene * scene ) {
 
 //////////////////////////////////////////////////////////////////////////
 
+QToolSelector::QToolSelector( QObject * parent ) :
+	QTool( parent ) {
+}
+
+QToolSelector::~QToolSelector() {
+}
+
+void QToolSelector::select() {
+	overlay = activeScene->addRect( QRectF(), QPen( Qt::DashLine ), QBrush( QColor( 0, 50, 0, 50 ) ) );
+}
+
+void QToolSelector::unselect() {
+	delete overlay;
+	overlay = NULL;
+}
+
+void QToolSelector::complete() {
+}
+
+void QToolSelector::mouseMoveEvent( QGraphicsSceneMouseEvent * mouseEvent ) {
+	if ( mouseEvent->buttons() & Qt::LeftButton ) {
+		const QPointF p0 = mouseEvent->buttonDownScenePos( Qt::LeftButton );
+		const QPointF p1 = mouseEvent->scenePos();
+
+		qDebug() << p0 << p1;
+
+		overlay->setRect( QRectF( p0, QSize( 1, 1 ) ).unite( QRectF( p1, QSize( 1, 1 ) ) ) );
+	}	
+}
+
+void QToolSelector::mousePressEvent( QGraphicsSceneMouseEvent * mouseEvent ) {
+	mouseEvent->accept();
+}
+
+void QToolSelector::mouseReleaseEvent( QGraphicsSceneMouseEvent * mouseEvent ) {
+	if ( overlay->rect().isValid() ) {
+		QPainterPath selectPath;
+		selectPath.addRect( overlay->rect() );
+		activeScene->setSelectionArea( selectPath, Qt::IntersectsItemShape );
+
+		// clear the selection overlay
+		overlay->setRect( QRectF() );
+	}
+}
+
+QAction * QToolSelector::setupAction( QToolBar * toolbar, const QKeySequence & key ) {
+	QAction * action = toolbar->addAction( QApplication::style()->standardIcon( QStyle::SP_CommandLink ), "Select" );
+	action->setToolTip( "Select" );
+	action->setShortcut( key );
+	action->setData( QVariant::fromValue<QTool*>( this ) );
+	return action;
+}
+
+//////////////////////////////////////////////////////////////////////////
+
 QToolPaintTile::QToolPaintTile( QObject * parent ) :
 	QTool( parent ),
 	overlay( NULL ) {
@@ -73,30 +128,43 @@ void QToolPaintTile::mouseMoveEvent( QGraphicsSceneMouseEvent * mouseEvent ) {
 		
 		QGameTileMap * tileMap = activeScene->getMapAtPosition( mouseEvent->scenePos() );
 		if ( tileMap != NULL ) {
-			tileMap->snapToGrid( overlay, overlay->scenePos() );
+			lastMap = tileMap;
+		} 
+		
+		if ( lastMap != NULL ) {
+			lastMap->snapToGrid( overlay, overlay->scenePos() );
+		}
+
+		// if button is held, we want to paint to new cells
+		if ( mouseEvent->buttons() & Qt::LeftButton ) {
+			
 		}
 	}
+	mouseEvent->accept();
 }
 
 void QToolPaintTile::mousePressEvent( QGraphicsSceneMouseEvent * mouseEvent ) {
 	if ( overlay != NULL ) {
-		QGraphicsPixmapItem * pix = activeScene->addPixmap( overlay->pixmap() );
-		pix->setPos( overlay->pos() );
-
 		QGameTileMap * tileMap = activeScene->getMapAtPosition( mouseEvent->scenePos() );
 		if ( tileMap != NULL ) {
-			tileMap->snapToGrid( pix, pix->scenePos() );
+			lastMap = tileMap;
+		} 
+
+		if ( lastMap != NULL ) {
+			QGraphicsPixmapItem * pix = activeScene->addPixmap( overlay->pixmap() );
+			
+			pix->setParentItem( lastMap );
+
+			lastMap->snapToGrid( pix, mouseEvent->scenePos() );
 		}
 	}
+	mouseEvent->accept();
 }
 
-void QToolPaintTile::mouseReleaseEvent( QGraphicsSceneMouseEvent * mouseEvent ) {
-}
-
-QAction * QToolPaintTile::setupAction( QToolBar * toolbar, const QObject * receiver, const char * member ) {
-	QAction * action = toolbar->addAction( QApplication::style()->standardIcon( QStyle::SP_CommandLink ), "Paint", receiver, member );
+QAction * QToolPaintTile::setupAction( QToolBar * toolbar, const QKeySequence & key ) {
+	QAction * action = toolbar->addAction( QApplication::style()->standardIcon( QStyle::SP_CommandLink ), "Paint" );
 	action->setToolTip( "Paint Tooltip" );
-	action->setShortcut( QKeySequence( "1" ) );
+	action->setShortcut( key );
 	action->setData( QVariant::fromValue<QTool*>( this ) );
 	return action;
 }
@@ -161,9 +229,6 @@ void QToolCreatePolygon::updateOverlay() {
 	}
 }
 
-void QToolCreatePolygon::mouseMoveEvent( QGraphicsSceneMouseEvent * mouseEvent ) {
-}
-
 void QToolCreatePolygon::mousePressEvent( QGraphicsSceneMouseEvent * mouseEvent ) {
 	if ( overlay == NULL ) {
 		overlay = activeScene->addPath( QPainterPath(), QPen( QColor( "white" ), Qt::DashLine ), QBrush( QColor( 0, 0, 255, 50 ) ) );
@@ -171,15 +236,13 @@ void QToolCreatePolygon::mousePressEvent( QGraphicsSceneMouseEvent * mouseEvent 
 
 	vertices.append( mouseEvent->scenePos() );
 	updateOverlay();
+	mouseEvent->accept();
 }
 
-void QToolCreatePolygon::mouseReleaseEvent( QGraphicsSceneMouseEvent * mouseEvent ) {
-}
-
-QAction * QToolCreatePolygon::setupAction( QToolBar * toolbar, const QObject *receiver, const char* member ) {
-	QAction * action = toolbar->addAction( QApplication::style()->standardIcon( QStyle::SP_CommandLink ), "Polygon", receiver, member );
+QAction * QToolCreatePolygon::setupAction( QToolBar * toolbar, const QKeySequence & key ) {
+	QAction * action = toolbar->addAction( QApplication::style()->standardIcon( QStyle::SP_CommandLink ), "Polygon" );
 	action->setToolTip( "Polygon Tooltip" );
-	action->setShortcut( QKeySequence( "2" ) );
+	action->setShortcut( key );
 	action->setData( QVariant::fromValue<QTool*>( this ) );
 	return action;
 }

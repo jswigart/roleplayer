@@ -20,13 +20,17 @@ QGameCharacter::~QGameCharacter() {
 }
 
 void QGameCharacter::paint( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget *widget ) {
-	/*QPen gridPen( QColor( "red" ) );
-	painter->setPen( gridPen );
-	painter->drawRect( boundingRect() );*/
+	if ( isSelected() ) {		
+		painter->setPen( QPen( QColor( "blue" ), Qt::DashLine ) );
+		painter->drawRect( boundingRect() );
+	}
 	QDeclarativeItem::paint( painter, option, widget );	
 }
 
-void QGameCharacter::mousePressEvent( QGraphicsSceneMouseEvent *event ) {	
+void QGameCharacter::mousePressEvent( QGraphicsSceneMouseEvent *event ) {
+	scene()->clearSelection();
+	setSelected( true );
+	QDeclarativeItem::mousePressEvent( event );
 }
 
 void QGameCharacter::mouseMoveEvent( QGraphicsSceneMouseEvent * event ) {
