@@ -15,7 +15,9 @@
 //////////////////////////////////////////////////////////////////////////
 
 QGameLayer::QGameLayer( QObject * parent ) :
-	QObject( parent ) {
+	QObject( parent ),
+	isHidden( false ),
+	isLocked( false ) {
 }
 
 QGameLayer::~QGameLayer() {
@@ -51,27 +53,10 @@ QGameLayer * QGameScene::getLayer( const QString & name, const bool create ) {
 	if ( layer == NULL ) {
 		layer = new QGameLayer( rootLayers );
 		layer->setObjectName( name );
-		layer->setProperty( "locked", false );
-		layer->setProperty( "hidden", false );
 
 		emit layersChanged();
 	}
 	return layer;
-}
-
-bool QGameScene::isLayerDeletable( const QString & name ) {
-	QObject * layer = getLayer( name );
-	return layer && layer->property( "removable" ).toBool();
-}
-
-bool QGameScene::isLayerLocked( const QString & name ) {
-	QObject * layer = getLayer( name );
-	return layer && layer->property( "locked" ).toBool() ;
-}
-
-bool QGameScene::isLayerHidden( const QString & name ) {
-	QObject * layer = getLayer( name );
-	return layer && layer->property( "hidden" ).toBool() ;
 }
 
 void QGameScene::save( const QUrl & file ) {
@@ -130,6 +115,7 @@ void QGameScene::keyPressEvent ( QKeyEvent * keyEvent ) {
 	if ( currentTool != NULL ) {
 		if ( keyEvent->key() == Qt::Key_Escape ) {
 			currentTool->unselect();
+			currentTool = NULL;
 			return;
 		}
 		if ( keyEvent->key() == Qt::Key_Enter || keyEvent->key() == Qt::Key_Return ) {
@@ -138,28 +124,48 @@ void QGameScene::keyPressEvent ( QKeyEvent * keyEvent ) {
 		}
 		currentTool->keyPressEvent( keyEvent );
 	}
+
+	if ( !keyEvent->isAccepted() ) {
+		QGraphicsScene::keyPressEvent( keyEvent );
+	}
 }
 
-void QGameScene::keyReleaseEvent ( QKeyEvent * keyEvent ) {
+void QGameScene::keyReleaseEvent( QKeyEvent * keyEvent ) {
 	if ( currentTool != NULL ) {
 		currentTool->keyReleaseEvent( keyEvent );
 	}
+
+	if ( !keyEvent->isAccepted() ) {
+		QGraphicsScene::keyReleaseEvent( keyEvent );
+	}
 }
 
-void QGameScene::mouseMoveEvent ( QGraphicsSceneMouseEvent * mouseEvent ) {
+void QGameScene::mouseMoveEvent( QGraphicsSceneMouseEvent * mouseEvent ) {
 	if ( currentTool != NULL ) {
 		currentTool->mouseMoveEvent( mouseEvent );
 	}
-}
 
-void QGameScene::mousePressEvent ( QGraphicsSceneMouseEvent * mouseEvent ) {
-	if ( currentTool != NULL ) {
-		currentTool->mousePressEvent( mouseEvent );
+	if ( !mouseEvent->isAccepted() ) {
+		QGraphicsScene::mouseMoveEvent( mouseEvent );
 	}
 }
 
-void QGameScene::mouseReleaseEvent ( QGraphicsSceneMouseEvent * mouseEvent ) {
+void QGameScene::mousePressEvent( QGraphicsSceneMouseEvent * mouseEvent ) {
+	if ( currentTool != NULL ) {
+		currentTool->mousePressEvent( mouseEvent );
+	}
+
+	if ( !mouseEvent->isAccepted() ) {
+		QGraphicsScene::mousePressEvent( mouseEvent );
+	}
+}
+
+void QGameScene::mouseReleaseEvent( QGraphicsSceneMouseEvent * mouseEvent ) {
 	if ( currentTool != NULL ) {
 		currentTool->mouseReleaseEvent( mouseEvent );
+	}
+
+	if ( !mouseEvent->isAccepted() ) {
+		QGraphicsScene::mouseReleaseEvent( mouseEvent );
 	}
 }

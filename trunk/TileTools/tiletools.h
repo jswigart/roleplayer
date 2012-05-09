@@ -64,17 +64,17 @@ public:
 		QtKeySequencePropertyManager	* editKeySequence;
 	} propManagers;
 public:
-	QtProperty * AddBool( QtProperty * parent, const char * tooltip, const char * name, const bool val );
-	QtProperty * AddColor( QtProperty * parent, const char * tooltip, const char * name, const QColor & val );
-	QtProperty * AddDate( QtProperty * parent, const char * tooltip, const char * name, const QDate & val );
-	QtProperty * AddDateTime( QtProperty * parent, const char * tooltip, const char * name, const QDateTime & val );
-	QtProperty * AddFloat( QtProperty * parent, const char * tooltip, const char * name, const float val, const float valMin = FLT_MIN, const float valMax = FLT_MAX );
-	QtProperty * AddIntSlider( QtProperty * parent, const char * tooltip, const char * name, const int val, const int valMin = INT_MIN, const int valMax = INT_MAX );
-	QtProperty * AddIntSpinBox( QtProperty * parent, const char * tooltip, const char * name, const int val, const int valMin = INT_MIN, const int valMax = INT_MAX );
-	QtProperty * AddGroup( QtProperty * parent, const char * tooltip, const char * name );
-	QtProperty * AddString( QtProperty * parent, const char * tooltip, const char * name, const char * val );
-	QtProperty * AddVariant( QtProperty * parent, const char * tooltip, const char * name, const int propType, const QVariant & val );
-	QtProperty * AddKeySequence( QtProperty * parent, const char * tooltip, const char * name, const QKeySequence & val );
+	QtProperty * AddBool( QtProperty * parent, const QString & tooltip, const QString & name, const bool val );
+	QtProperty * AddColor( QtProperty * parent, const QString & tooltip, const QString & name, const QColor & val );
+	QtProperty * AddDate( QtProperty * parent, const QString & tooltip, const QString & name, const QDate & val );
+	QtProperty * AddDateTime( QtProperty * parent, const QString & tooltip, const QString & name, const QDateTime & val );
+	QtProperty * AddFloat( QtProperty * parent, const QString & tooltip, const QString & name, const float val, const float valMin = FLT_MIN, const float valMax = FLT_MAX );
+	QtProperty * AddIntSlider( QtProperty * parent, const QString & tooltip, const QString & name, const int val, const int valMin = INT_MIN, const int valMax = INT_MAX );
+	QtProperty * AddIntSpinBox( QtProperty * parent, const QString & tooltip, const QString & name, const int val, const int valMin = INT_MIN, const int valMax = INT_MAX );
+	QtProperty * AddGroup( QtProperty * parent, const QString & tooltip, const QString & name );
+	QtProperty * AddString( QtProperty * parent, const QString & tooltip, const QString & name, const char * val );
+	QtProperty * AddVariant( QtProperty * parent, const QString & tooltip, const QString & name, const int propType, const QVariant & val );
+	QtProperty * AddKeySequence( QtProperty * parent, const QString & tooltip, const QString & name, const QKeySequence & val );
 
 	QPropertyTree( QWidget *parent = 0 );
 	~QPropertyTree();

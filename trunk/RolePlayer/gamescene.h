@@ -54,12 +54,7 @@ public:
 	void				getLayerNames( QStringList & names );
 
 	QGameLayer *		getLayer( const QString & name, const bool create = false );
-	
-	// todo: make a custom layer QObject
-	bool				isLayerDeletable( const QString & name );
-	bool				isLayerLocked( const QString & name );
-	bool				isLayerHidden( const QString & name );
-	
+		
 	void				save( const QUrl & file );
 	void				load( const QUrl & file );
 

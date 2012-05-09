@@ -4,6 +4,7 @@
 #include <QPointer>
 #include <QWidget>
 #include <QMetaType>
+#include <QKeyEvent>
 #include <QGraphicsSceneEvent>
 #include <QGraphicsSceneMouseEvent>
 #include <QGraphicsPolygonItem>
@@ -13,6 +14,7 @@
 class QAction;
 class QToolBar;
 class QGameScene;
+class QGameTileMap;
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -25,14 +27,14 @@ public:
 	virtual void	unselect() = 0;
 	virtual void	complete() = 0;
 
-	virtual void	keyPressEvent ( QKeyEvent * keyEvent ) {}
-	virtual void	keyReleaseEvent ( QKeyEvent * keyEvent ) {}
+	virtual void	keyPressEvent ( QKeyEvent * keyEvent ) { }
+	virtual void	keyReleaseEvent ( QKeyEvent * keyEvent ) { }
 
-	virtual void	mouseMoveEvent ( QGraphicsSceneMouseEvent * mouseEvent ) {}
-	virtual void	mousePressEvent ( QGraphicsSceneMouseEvent * mouseEvent ) {}
-	virtual void	mouseReleaseEvent ( QGraphicsSceneMouseEvent * mouseEvent ) {}
+	virtual void	mouseMoveEvent( QGraphicsSceneMouseEvent * mouseEvent ) { }
+	virtual void	mousePressEvent( QGraphicsSceneMouseEvent * mouseEvent ) { }
+	virtual void	mouseReleaseEvent( QGraphicsSceneMouseEvent * mouseEvent ) { }
 
-	virtual QAction * setupAction( QToolBar * toolbar, const QObject *receiver = NULL, const char* member = NULL ) = 0;
+	virtual QAction * setupAction( QToolBar * toolbar, const QKeySequence & key ) = 0;
 	
 	QTool( QObject * parent );
 	~QTool();
@@ -40,6 +42,28 @@ signals:
 public slots:
 protected:
 	QGameScene *	activeScene;
+};
+
+//////////////////////////////////////////////////////////////////////////
+
+class QToolSelector : public QTool {
+	Q_OBJECT
+public:
+	virtual void		select();
+	virtual void		unselect();
+	virtual void		complete();
+
+	virtual void		mouseMoveEvent( QGraphicsSceneMouseEvent * mouseEvent );
+	virtual void		mousePressEvent( QGraphicsSceneMouseEvent * mouseEvent );
+	virtual void		mouseReleaseEvent( QGraphicsSceneMouseEvent * mouseEvent );
+
+	virtual QAction *	setupAction( QToolBar * toolbar, const QKeySequence & key );
+
+	QToolSelector( QObject * parent );
+	~QToolSelector();
+private:
+	QGraphicsRectItem * overlay;
+	
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -53,14 +77,14 @@ public:
 
 	virtual void		mouseMoveEvent( QGraphicsSceneMouseEvent * mouseEvent );
 	virtual void		mousePressEvent( QGraphicsSceneMouseEvent * mouseEvent );
-	virtual void		mouseReleaseEvent( QGraphicsSceneMouseEvent * mouseEvent );
 
-	virtual QAction *	setupAction( QToolBar * toolbar, const QObject * receiver = NULL, const char * member = NULL );
+	virtual QAction *	setupAction( QToolBar * toolbar, const QKeySequence & key );
 
 	QToolPaintTile( QObject * parent );
 	~QToolPaintTile();
 private:
-	QGraphicsPixmapItem *		overlay;	
+	QGraphicsPixmapItem *		overlay;
+	QPointer<QGameTileMap>		lastMap;
 	QPointer<QLabelClickable>	selectedTile;
 signals:
 public slots:
@@ -81,13 +105,11 @@ public:
 	virtual void		unselect();
 	virtual void		complete();
 
-	virtual void		mouseMoveEvent( QGraphicsSceneMouseEvent * mouseEvent );
 	virtual void		mousePressEvent( QGraphicsSceneMouseEvent * mouseEvent );
-	virtual void		mouseReleaseEvent( QGraphicsSceneMouseEvent * mouseEvent );
 
-	virtual QAction *	setupAction( QToolBar * toolbar, const QObject *receiver = NULL, const char* member = NULL );
+	virtual QAction *	setupAction( QToolBar * toolbar, const QKeySequence & key );
 
-	QToolCreatePolygon( QObject * parent, polyMode_t mode = MODE_CHAIN );
+	QToolCreatePolygon( QObject * parent, polyMode_t mode = MODE_POLYGON );
 	~QToolCreatePolygon();
 private:
 	void				updateOverlay();

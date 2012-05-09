@@ -19,6 +19,7 @@ class QLabelClickable;
 class QStandardItem;
 class QFileSystemWatcher;
 class QStandardItemModel;
+class QDeclarativeComponent;
 
 class RolePlayer : public QMainWindow {
 	Q_OBJECT
@@ -41,6 +42,7 @@ private Q_SLOTS:
 	void				Slot_ImageLoadedAt( int index );
 	void				Slot_ImageLoadFinished();
 	void				Slot_TileSelected( QLabelClickable * label );
+	void				Slot_RefreshPropertyList();
 
 	// menu actions
 	void				Action_MapProperties();
@@ -72,10 +74,12 @@ private:
 	QList< QImage >				masterTileList;
 	
 	QPointer<QToolBar>			toolBarTools;
-
+	
 	void				CacheIcons();
 	void				SetupToolBars();
 	void				ConnectSlots();
+	void				InitObjectPallette();
+	QDeclarativeComponent * CacheQMLComponent( QDeclarativeEngine * engine, const QUrl & file );
 
 	void				AddMapEditTab( const QString & name );
 

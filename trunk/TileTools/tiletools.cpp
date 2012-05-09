@@ -247,9 +247,9 @@ QPropertyTree::QPropertyTree( QWidget *parent ) :
 QPropertyTree::~QPropertyTree() {
 }
 
-QtProperty * QPropertyTree::AddBool( QtProperty * parent, const char * tooltip, const char * name, const bool val ) {
+QtProperty * QPropertyTree::AddBool( QtProperty * parent, const QString & tooltip, const QString & name, const bool val ) {
 	QtProperty * prop = propManagers.editBool->addProperty( name );
-	prop->setToolTip( tooltip ? tooltip : "" );
+	prop->setToolTip( tooltip );
 	propManagers.editBool->setValue( prop, val );
 	if ( parent != NULL ) {
 		parent->addSubProperty( prop );
@@ -259,9 +259,9 @@ QtProperty * QPropertyTree::AddBool( QtProperty * parent, const char * tooltip, 
 	return prop;
 }
 
-QtProperty * QPropertyTree::AddColor( QtProperty * parent, const char * tooltip, const char * name, const QColor & val ) {
+QtProperty * QPropertyTree::AddColor( QtProperty * parent, const QString & tooltip, const QString & name, const QColor & val ) {
 	QtProperty * prop = propManagers.editColor->addProperty( name );
-	prop->setToolTip( tooltip ? tooltip : "" );
+	prop->setToolTip( tooltip );
 	propManagers.editColor->setValue( prop, val );
 	if ( parent != NULL ) {
 		parent->addSubProperty( prop );
@@ -271,9 +271,9 @@ QtProperty * QPropertyTree::AddColor( QtProperty * parent, const char * tooltip,
 	return prop;
 }
 
-QtProperty * QPropertyTree::AddDate( QtProperty * parent, const char * tooltip, const char * name, const QDate & val ) {
+QtProperty * QPropertyTree::AddDate( QtProperty * parent, const QString & tooltip, const QString & name, const QDate & val ) {
 	QtProperty * prop = propManagers.editDate->addProperty( name );
-	prop->setToolTip( tooltip ? tooltip : "" );
+	prop->setToolTip( tooltip );
 	propManagers.editDate->setValue( prop, val );
 	if ( parent != NULL ) {
 		parent->addSubProperty( prop );
@@ -283,9 +283,9 @@ QtProperty * QPropertyTree::AddDate( QtProperty * parent, const char * tooltip, 
 	return prop;
 }
 
-QtProperty * QPropertyTree::AddDateTime( QtProperty * parent, const char * tooltip, const char * name, const QDateTime & val ) {
+QtProperty * QPropertyTree::AddDateTime( QtProperty * parent, const QString & tooltip, const QString & name, const QDateTime & val ) {
 	QtProperty * prop = propManagers.editDateTime->addProperty( name );
-	prop->setToolTip( tooltip ? tooltip : "" );
+	prop->setToolTip( tooltip );
 	propManagers.editDateTime->setValue( prop, val );
 	if ( parent != NULL ) {
 		parent->addSubProperty( prop );
@@ -295,9 +295,9 @@ QtProperty * QPropertyTree::AddDateTime( QtProperty * parent, const char * toolt
 	return prop;
 }
 
-QtProperty * QPropertyTree::AddFloat( QtProperty * parent, const char * tooltip, const char * name, const float val, const float valMin, const float valMax ) {
+QtProperty * QPropertyTree::AddFloat( QtProperty * parent, const QString & tooltip, const QString & name, const float val, const float valMin, const float valMax ) {
 	QtProperty * prop = propManagers.editDouble->addProperty( name );
-	prop->setToolTip( tooltip ? tooltip : "" );
+	prop->setToolTip( tooltip );
 	propManagers.editDouble->setRange( prop, valMin, valMax );
 	propManagers.editDouble->setValue( prop, val );
 	if ( parent != NULL ) {
@@ -308,9 +308,9 @@ QtProperty * QPropertyTree::AddFloat( QtProperty * parent, const char * tooltip,
 	return prop;
 }
 
-QtProperty * QPropertyTree::AddIntSlider( QtProperty * parent, const char * tooltip, const char * name, const int val, const int valMin, const int valMax ) {
+QtProperty * QPropertyTree::AddIntSlider( QtProperty * parent, const QString & tooltip, const QString & name, const int val, const int valMin, const int valMax ) {
 	QtProperty * prop = propManagers.editIntSlider->addProperty( name );
-	prop->setToolTip( tooltip ? tooltip : "" );
+	prop->setToolTip( tooltip );
 	propManagers.editIntSpinBox->setRange( prop, valMin, valMax );
 	propManagers.editIntSlider->setValue( prop, val );
 	if ( parent != NULL ) {
@@ -321,9 +321,9 @@ QtProperty * QPropertyTree::AddIntSlider( QtProperty * parent, const char * tool
 	return prop;
 }
 
-QtProperty * QPropertyTree::AddIntSpinBox( QtProperty * parent, const char * tooltip, const char * name, const int val, const int valMin, const int valMax ) {
+QtProperty * QPropertyTree::AddIntSpinBox( QtProperty * parent, const QString & tooltip, const QString & name, const int val, const int valMin, const int valMax ) {
 	QtProperty * prop = propManagers.editIntSpinBox->addProperty( name );
-	prop->setToolTip( tooltip ? tooltip : "" );
+	prop->setToolTip( tooltip );
 	propManagers.editIntSpinBox->setRange( prop, valMin, valMax );
 	propManagers.editIntSpinBox->setValue( prop, val );
 	if ( parent != NULL ) {
@@ -334,9 +334,9 @@ QtProperty * QPropertyTree::AddIntSpinBox( QtProperty * parent, const char * too
 	return prop;
 }
 
-QtProperty * QPropertyTree::AddGroup( QtProperty * parent, const char * tooltip, const char * name ) {
+QtProperty * QPropertyTree::AddGroup( QtProperty * parent, const QString & tooltip, const QString & name ) {
 	QtProperty * prop = propManagers.editGroup->addProperty( name );
-	prop->setToolTip( tooltip ? tooltip : "" );
+	prop->setToolTip( tooltip );
 	if ( parent != NULL ) {
 		parent->addSubProperty( prop );
 	} else {
@@ -345,9 +345,9 @@ QtProperty * QPropertyTree::AddGroup( QtProperty * parent, const char * tooltip,
 	return prop;
 }
 
-QtProperty * QPropertyTree::AddString( QtProperty * parent, const char * tooltip, const char * name, const char * val ) {
+QtProperty * QPropertyTree::AddString( QtProperty * parent, const QString & tooltip, const QString & name, const char * val ) {
 	QtProperty * prop = propManagers.editString->addProperty( name );
-	prop->setToolTip( tooltip ? tooltip : "" );
+	prop->setToolTip( tooltip );
 	propManagers.editString->setValue( prop, val );
 	if ( parent != NULL ) {
 		parent->addSubProperty( prop );
@@ -357,9 +357,9 @@ QtProperty * QPropertyTree::AddString( QtProperty * parent, const char * tooltip
 	return prop;
 }
 
-QtProperty * QPropertyTree::AddVariant( QtProperty * parent, const char * tooltip, const char * name, const int propType, const QVariant & val ) {
+QtProperty * QPropertyTree::AddVariant( QtProperty * parent, const QString & tooltip, const QString & name, const int propType, const QVariant & val ) {
 	QtProperty * prop = propManagers.editVariant->addProperty( propType, name );
-	prop->setToolTip( tooltip ? tooltip : "" );
+	prop->setToolTip( tooltip );
 	propManagers.editVariant->setValue( prop, val );
 	if ( parent != NULL ) {
 		parent->addSubProperty( prop );
@@ -369,9 +369,9 @@ QtProperty * QPropertyTree::AddVariant( QtProperty * parent, const char * toolti
 	return prop;
 }
 
-QtProperty * QPropertyTree::AddKeySequence( QtProperty * parent, const char * tooltip, const char * name, const QKeySequence & val ) {
+QtProperty * QPropertyTree::AddKeySequence( QtProperty * parent, const QString & tooltip, const QString & name, const QKeySequence & val ) {
 	QtProperty * prop = propManagers.editKeySequence->addProperty( name );
-	prop->setToolTip( tooltip ? tooltip : "" );
+	prop->setToolTip( tooltip );
 	propManagers.editKeySequence->setValue( prop, val );
 	if ( parent != NULL ) {
 		parent->addSubProperty( prop );
