@@ -1,7 +1,9 @@
 #ifndef GAME_TILESET_H
 #define GAME_TILESET_H
 
+#include <QImage>
 #include <QPointer>
+#include <QFileInfo>
 #include <QDeclarativeItem>
 
 //////////////////////////////////////////////////////////////////////////
@@ -10,27 +12,37 @@ class QGameTileSet;
 class QGameTile : public QDeclarativeItem {
 Q_OBJECT
 public:
+	QPixmap		GetPixMap();
+
 	QGameTile( QDeclarativeItem *parent = 0 );
 	~QGameTile();
+signals:
+	void		TileSelected( QGameTile * tile );
+protected:
+	void		mousePressEvent( QGraphicsSceneMouseEvent *event );
+	void		paint( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget *widget );
+private:
+	QImage		cachedImage;
 };
 
 //////////////////////////////////////////////////////////////////////////
 
 class QGameTileSet : public QDeclarativeItem {
 	Q_OBJECT	
-public:
-	void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0 );
+public:	
+	const QImage & GetImage() const { return tileSetImage; }
 	
-	QGameTileSet( const QList< QImage > & tiles, QDeclarativeItem *parent = 0 );
+	QGameTileSet( const QFileInfo & file, const QImage & image );
 	~QGameTileSet();
-private:
 signals:
-public slots:
+	void	TileSelected( QGameTile * tile );
+private slots:
+	void	Slot_TileSelected( QGameTile * tile );
 protected:
-	void mousePressEvent( QGraphicsSceneMouseEvent *event );
+	void paint( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget *widget );
 private:
-	QImage							atlas;
-	QPointer<QDeclarativeItem>		selectedChild;
+	QFileInfo			tileSetFile;
+	QImage				tileSetImage;
 };
 
 #endif // GAME_TILESET_H

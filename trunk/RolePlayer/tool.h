@@ -15,6 +15,7 @@ class QAction;
 class QToolBar;
 class QGameScene;
 class QGameTileMap;
+class QGameTile;
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -85,10 +86,10 @@ public:
 private:
 	QGraphicsPixmapItem *		overlay;
 	QPointer<QGameTileMap>		lastMap;
-	QPointer<QLabelClickable>	selectedTile;
+	QPointer<QGameTile>			selectedTile;
 signals:
 public slots:
-	void Slot_TileSelected( QLabelClickable * label );
+	void Slot_TileSelected( QGameTile * tile );
 };
 
 //////////////////////////////////////////////////////////////////////////

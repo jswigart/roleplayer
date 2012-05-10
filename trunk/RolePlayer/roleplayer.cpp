@@ -13,6 +13,7 @@
 #include "tiletools.h"
 #include "gamecharacter.h"
 #include "gametilemap.h"
+#include "gametileset.h"
 #include "roleplayer.h"
 #include "flowlayout.h"
 #include "texturepacker.h"
@@ -52,7 +53,8 @@ RolePlayer::RolePlayer(QWidget *parent, Qt::WFlags flags)
 	QApplication::setStyle(new QWindowsStyle);
 	
 	ui.setupUi(this);	
-	ui.tileScrollAreaContents->setLayout( new QFlowLayout() );
+	
+	importPaths.append( "./resources/plugins" );
 	
 	// always work from the executable path
 	QDir::setCurrent( QApplication::applicationDirPath() );
@@ -70,7 +72,7 @@ RolePlayer::RolePlayer(QWidget *parent, Qt::WFlags flags)
 	SetupToolBars();
 	ConnectSlots();
 		
-	Slot_PopulateTileList();
+	Slot_PopulateTileSetList();
 
 	InitObjectPallette();
 
@@ -98,17 +100,14 @@ void RolePlayer::SetupToolBars() {
 	toolBarTools = new QToolBar( this );
 	toolBarTools->setToolButtonStyle( Qt::ToolButtonTextUnderIcon );
 
-	QToolSelector * toolSelect = new QToolSelector( this );
-	QToolPaintTile * toolPaint = new QToolPaintTile( this );
-	QToolCreatePolygon * toolPolygon = new QToolCreatePolygon( this );
+	tools.select = new QToolSelector( this );
+	tools.paintTile = new QToolPaintTile( this );
+	tools.createPoly = new QToolCreatePolygon( this );
 
-	toolSelect->setupAction( toolBarTools, QKeySequence( "1" ) );
-	toolPaint->setupAction( toolBarTools, QKeySequence( "2" ) );
-	toolPolygon->setupAction( toolBarTools, QKeySequence( "3" ) );
+	tools.select->setupAction( toolBarTools, QKeySequence( "1" ) );
+	tools.paintTile->setupAction( toolBarTools, QKeySequence( "2" ) );
+	tools.createPoly->setupAction( toolBarTools, QKeySequence( "3" ) );
 	
-	// the tile tool must be notified when the tile selection changes
-	connect( this, SIGNAL(TileSelected(QLabelClickable*)), toolPaint, SLOT(Slot_TileSelected(QLabelClickable*)));
-
 	addToolBar( Qt::LeftToolBarArea, toolBarTools );
 }
 
@@ -126,8 +125,8 @@ void RolePlayer::ConnectSlots() {
 
 	connect( ui.dockWidgetTiles, SIGNAL(visibilityChanged(bool)), ui.action_WindowTiles, SLOT(setChecked(bool)) );
 	connect( ui.dockWidgetAssets, SIGNAL(visibilityChanged(bool)), ui.action_WindowResources, SLOT(setChecked(bool)) );	
-	connect( &fileList.async_LoadTiles, SIGNAL(resultReadyAt(int)), this, SLOT(Slot_ImageLoadedAt(int)) );
-	connect( &fileList.async_LoadTiles, SIGNAL(finished()), this, SLOT(Slot_ImageLoadFinished()) );
+	connect( &fileList.async_LoadTilesets, SIGNAL(resultReadyAt(int)), this, SLOT(Slot_TileSetLoadedAt(int)) );
+	connect( &fileList.async_LoadTilesets, SIGNAL(finished()), this, SLOT(Slot_TileSetLoadFinished()) );
 	connect( ui.treeViewLayers, SIGNAL(expanded(QModelIndex)),this,SLOT(Slot_TreeItemExpanded(QModelIndex)) );
 	connect( ui.treeViewLayers, SIGNAL(collapsed(QModelIndex)),this,SLOT(Slot_TreeItemCollapse(QModelIndex)) );
 	connect( &fileWatcher, SIGNAL(directoryChanged(QString)), this, SLOT(Slot_DirectoryChanged(QString)) );
@@ -136,7 +135,7 @@ void RolePlayer::ConnectSlots() {
 	connect( ui.editorTabs, SIGNAL(tabCloseRequested(int)), this, SLOT(Slot_TabCloseRequested(int)));
 	connect( ui.editorTabs, SIGNAL(currentChanged(int)), this, SLOT(Slot_TabChanged(int)));
 
-	connect( toolBarTools, SIGNAL(actionTriggered(QAction*)), this, SLOT(Slot_ToolTriggered(QAction*)) );
+	connect( toolBarTools, SIGNAL(actionTriggered(QAction*)), this, SLOT(Slot_ToolTriggered(QAction*)) );	
 }
 
 QDeclarativeComponent * RolePlayer::CacheQMLComponent( QDeclarativeEngine * engine, const QUrl & file ) {
@@ -165,11 +164,29 @@ void RolePlayer::InitObjectPallette() {
 
 	FindAllFileTypes( QDir( "./resources/ruleset/heroquest/objects/" ).path(), QStringList( "*.qml" ), objectFiles );
 
+	const qreal spacing = 1;
+	const qreal margin = 1;
+	qreal x = margin;
+	qreal y = margin;
+	qreal biggestY = 0;
+
 	for ( int i = 0; i < objectFiles.count(); ++i ) {
 		QDeclarativeComponent * component = CacheQMLComponent( ui.viewObjectPalette->engine(), QUrl::fromLocalFile( objectFiles[ i ].canonicalFilePath() ) );
 		if ( component != NULL ) {
 			QDeclarativeItem * item = qobject_cast<QDeclarativeItem*>( component->create() );
 			ui.viewObjectPalette->scene()->addItem( item );
+			
+			//item->setProperty( "ComponentName" );
+
+			item->setPos( x, y );
+
+			x += item->width() + spacing;
+			biggestY = ( item->height() > biggestY ) ? item->height() : biggestY;
+			if ( x > ui.viewObjectPalette->rect().width() ) {
+				x = margin;
+				y += biggestY + spacing;
+				biggestY = 0;
+			}
 		}
 	};
 }
@@ -192,11 +209,7 @@ void RolePlayer::AddMapEditTab( const QString & name ) {
 		}
 	}	
 
-	QStringList importPaths;
-	importPaths.append( "./resources/plugins" );
-
-	QGameView * editView = new QGameView( ui.editorTabs );
-	
+	QGameView * editView = new QGameView( ui.editorTabs );	
 	editView->setMouseTracking( true );
 	editView->setScene( new QGameScene( this, ui.editorTabs ) );
 	editView->engine()->setImportPathList( importPaths );
@@ -211,6 +224,31 @@ void RolePlayer::AddMapEditTab( const QString & name ) {
 	ui.editorTabs->addTab( editView, tabName );
 	
 	connect( editView->scene(), SIGNAL(selectionChanged()), this, SLOT(Slot_RefreshPropertyList()));
+}
+
+void RolePlayer::AddTileSetTab( const QFileInfo & file, const QImage & image, bool focus ) {
+	QDeclarativeView * tileView = new QDeclarativeView( ui.editorTabs );	
+	//tileView->setMouseTracking( true );
+	//tileView->setScene( new QGameScene( this, ui.editorTabs ) );
+	tileView->engine()->setImportPathList( importPaths );
+	tileView->setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOn );
+	tileView->setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOn );
+	tileView->setSource( QUrl( "./resources/maps/default.qml" ) );
+	//tileView->setResizeMode()
+	tileView->setBackgroundBrush( QBrush( Qt::gray ) );
+	//tileView->setDragMode( QGraphicsView::ScrollHandDrag );
+	tileView->setObjectName( file.canonicalFilePath() );
+	tileView->setResizeAnchor( QGraphicsView::AnchorViewCenter );
+
+	QGameTileSet * tileSet = new QGameTileSet( file, image );
+	//tileSet->setObjectName( "tileset" );
+	tileView->scene()->addItem( tileSet );	
+	tileView->setBackgroundBrush( QBrush( Qt::gray ) );
+
+	ui.tabWidgetTileSets->addTab( tileView, file.baseName() );
+
+	connect( tileSet, SIGNAL(TileSelected(QGameTile*)),
+		tools.paintTile, SLOT(Slot_TileSelected(QGameTile*)));
 }
 
 void RolePlayer::AppendToLog( const QString & msg ) {
@@ -346,26 +384,17 @@ void RolePlayer::Slot_TreeItemExpanded( const QModelIndex & index ) {
 }
 
 void RolePlayer::Slot_TreeItemCollapse( const QModelIndex & index ) {
-	/*QStandardItem * treeItem = layers.model->itemFromIndex( index );
-	if ( treeItem != NULL ) {
-		treeItem->setIcon( icons.folderClosed );
-	}*/
 }
 
-void RolePlayer::Slot_PopulateTileList() {
-	QList<QWidget *> widgets = ui.tileScrollAreaContents->findChildren<QWidget *>();
-	foreach(QWidget * widget, widgets) {
-		delete widget;
-	}
-
-	fileList.tiles.clear();
+void RolePlayer::Slot_PopulateTileSetList() {
+	fileList.tilesets.clear();
 
 	QStringList imageExtensions;
 	imageExtensions << "*.png" << "*.jpg" << "*.jpeg" << "*.tga";
-	FindAllFileTypes( QDir( "./resources/images/tiles" ).path(), imageExtensions, fileList.tiles );
+	FindAllFileTypes( QDir( "./resources/images/tileset" ).path(), imageExtensions, fileList.tilesets );
 
-	if ( !fileList.tiles.isEmpty() ) {
-		fileList.async_LoadTiles.setFuture( QtConcurrent::mapped( fileList.tiles, &RolePlayer::Async_LoadImages ) );
+	if ( !fileList.tilesets.isEmpty() ) {
+		fileList.async_LoadTilesets.setFuture( QtConcurrent::mapped( fileList.tilesets, &RolePlayer::Async_LoadImages ) );
 	}
 }
 
@@ -383,100 +412,14 @@ void RolePlayer::FindAllFileTypes( const QString & path, const QStringList & fil
 	}
 }
 
-void RolePlayer::Slot_ImageLoadedAt( int index ) {
-	qDebug() << "async_ImageLoadedAt:( " << index << " / " << fileList.tiles.count() <<  " ) : " << fileList.tiles.at( index ).canonicalFilePath();
+void RolePlayer::Slot_TileSetLoadedAt( int index ) {
+	qDebug() << "Slot_TileSetLoadedAt:( " << index << " / " << fileList.tilesets.count() <<  " ) : " << fileList.tilesets.at( index ).canonicalFilePath();
+
+	AddTileSetTab( fileList.tilesets.at( index ), fileList.async_LoadTilesets.resultAt( index ) );	
 }
 
-void RolePlayer::Slot_ImageLoadFinished() {
-	qDebug() << "async_ImageLoadFinished";
-	RebuildTileThumbnails();
-}
-
-void RolePlayer::RebuildTileThumbnails() {
-	masterTileList.clear();
-	
-	for ( int i = 0; i < fileList.async_LoadTiles.future().resultCount(); ++i ) {
-		QImage image = fileList.async_LoadTiles.resultAt( i );
-		if ( !image.isNull() ) {
-			// ignore dupes
-			int dupeIndex = -1;
-			for ( int m = 0; m < masterTileList.count(); ++m ) {
-				if ( masterTileList[ m ] == image ) {
-					dupeIndex = m;
-					break;
-				}
-			}
-			
-			if ( dupeIndex != -1 ) {
-				QString error = QString( "Dupe Image <a href=\"%1\">%2</a> same as <a href=\"%3\">%4</a>, ignoring" )
-					.arg( fileList.tiles.at( i ).dir().canonicalPath() )
-					.arg( fileList.tiles.at( i ).canonicalFilePath() )
-					.arg( fileList.tiles.at( dupeIndex ).dir().canonicalPath() )
-					.arg( fileList.tiles.at( dupeIndex ).canonicalFilePath() );
-				ui.textBrowserLog->append( error );
-
-				ui.tabWidgetResources->setTabIcon( 0, icons.critical );
-				continue;
-			}
-
-			masterTileList.append( image );
-
-			/*QLabelClickable * label = new QLabelClickable( this );
-			QPixmap thumb = QPixmap::fromImage( image, Qt::AutoColor | Qt::NoOpaqueDetection );
-			label->setScaledContents( true );
-			label->setPixmap( thumb );
-			label->setAlignment( Qt::AlignCenter );
-			label->setFixedSize( thumb.width(), thumb.height() );
-			label->setToolTip( fileList.tiles.at( i ).baseName() );
-
-			connect( label, SIGNAL(clicked(QLabelClickable*)), this, SLOT(Slot_TileSelected(QLabelClickable*)));
-
-			ui.tileScrollAreaContents->layout()->addWidget( label );*/
-		}
-	}
-	
-	using namespace TEXTURE_PACKER;
-	TexturePacker * packer = createTexturePacker();
-
-	packer->setTextureCount( masterTileList.count() );
-	for ( int i = 0; i < masterTileList.count(); ++i ) {
-		packer->addTexture( masterTileList[ i ].width(), masterTileList[ i ].height() );
-	}
-	int packedWidth = 0, packedHeight = 0;
-
-	TexturePacker::options_t options;
-	options.allowRotationToFit = false;
-	options.minWidth = 1024;
-	packer->packTextures( packedWidth, packedHeight, options );
-
-	QImage atlas( packedWidth, packedHeight, QImage::Format_RGB32 );
-	
-	QPainter painter;
-	painter.begin( &atlas );
-	painter.fillRect( atlas.rect(), QColor( 0, 0, 0, 0 ) );
-	
-	for ( int i = 0; i < masterTileList.count(); ++i ) {
-		int x, y, w, h;
-		packer->getTextureLocation( i, x, y, w, h );
-		painter.drawImage( x, y, masterTileList[ i ] );
-	}
-
-	painter.end();
-
-	releaseTexturePacker( packer );
-
-	//ui.tileScrollAreaContents->layout()->invalidate();
-
-	QLabelClickable * label = new QLabelClickable( this );
-	QPixmap thumb = QPixmap::fromImage( atlas, Qt::AutoColor | Qt::NoOpaqueDetection );
-	label->setScaledContents( true );
-	label->setPixmap( thumb );
-	label->setAlignment( Qt::AlignCenter );
-	label->setFixedSize( thumb.width(), thumb.height() );
-
-	//connect( label, SIGNAL(clicked(QLabelClickable*)), this, SLOT(Slot_TileSelected(QLabelClickable*)));
-
-	ui.tileScrollAreaContents->layout()->addWidget( label );
+void RolePlayer::Slot_TileSetLoadFinished() {
+	qDebug() << "Slot_TileSetLoadFinished";	
 }
 
 void RolePlayer::Action_NewFile() {
@@ -583,17 +526,7 @@ void RolePlayer::Action_ImportTiles() {
 			QList< QDialogImportTiles::tileInfo_t > newTiles;
 			dlg.getImportedTiles( newTiles );
 			
-			// save the imported tiles out as individual tiles
-			for ( int i = 0; i < newTiles.count(); ++i ) {
-				QString tileFile = "./resources/images/tiles/" + QFileInfo( fileName ).completeBaseName() + "_" + newTiles[ i ].name + ".png";
-				newTiles[ i ].tile.save( tileFile );
-			}
-
-			Slot_PopulateTileList();
+			
 		}
 	}
-}
-
-void RolePlayer::Slot_TileSelected( QLabelClickable * label ) {
-	emit TileSelected( label );
 }

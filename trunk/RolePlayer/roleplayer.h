@@ -21,6 +21,10 @@ class QFileSystemWatcher;
 class QStandardItemModel;
 class QDeclarativeComponent;
 
+class QToolSelector;
+class QToolPaintTile;
+class QToolCreatePolygon;
+
 class RolePlayer : public QMainWindow {
 	Q_OBJECT
 public:
@@ -31,20 +35,24 @@ public:
 	QToolBar *			GetToolsToolBar() { return toolBarTools; }	
 
 	void				AppendToLog( const QString & msg );
+protected:
+private:
+	void				AddTileSetTab( const QFileInfo & file, const QImage & image, bool focus = false );
 signals:
 	void				TileSelected( QLabelClickable * label );
-private Q_SLOTS:
+private slots:
 	void				Slot_ToolTriggered( QAction * action );
-	void				Slot_PopulateTileList();
+	void				Slot_PopulateTileSetList();
 	void				Slot_TabChanged( int index );
 	void				Slot_TabCloseRequested( int index );
 	void				Slot_DirectoryChanged( const QString & path );
 	void				Slot_FileChanged( const QString & path );
 	void				Slot_TreeItemExpanded( const QModelIndex & index );
 	void				Slot_TreeItemCollapse( const QModelIndex & index );
-	void				Slot_ImageLoadedAt( int index );
-	void				Slot_ImageLoadFinished();
-	void				Slot_TileSelected( QLabelClickable * label );
+
+	void				Slot_TileSetLoadedAt( int index );
+	void				Slot_TileSetLoadFinished();
+
 	void				Slot_RefreshPropertyList();
 
 	// menu actions
@@ -68,9 +76,17 @@ private:
 	} icons;
 	
 	struct fileList_t {
-		QFileInfoList				tiles;
-		QFutureWatcher<QImage>		async_LoadTiles;
+		QFileInfoList				tilesets;
+		QFutureWatcher<QImage>		async_LoadTilesets;
 	} fileList;
+
+	struct tools_t {
+		QToolSelector *			select;
+		QToolPaintTile *		paintTile;
+		QToolCreatePolygon *	createPoly;
+	} tools;
+
+	QStringList					importPaths;
 
 	QFileSystemWatcher 			fileWatcher;
 	QTimer						fileRefresh;
@@ -89,7 +105,7 @@ private:
 
 	void				FindAllFileTypes( const QString & path, const QStringList & fileTypes, QFileInfoList & files );
 
-	void				RebuildTileThumbnails();
+	//void				RebuildTileThumbnails();
 
 	static QImage		Async_LoadImages( const QFileInfo & file );
 };
