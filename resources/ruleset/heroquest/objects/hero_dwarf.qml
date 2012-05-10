@@ -4,12 +4,12 @@ import TileTools 1.0
 
 GameCharacter {
     id: character
-    objectName: "Barbarian"
+    objectName: "Dwarf"
     width: 64
     height: 64
     Image {
         width: parent.width
         height: parent.height
-        source: "../images/tokens/herobarbarian.png"
+        source: "../images/tokens/herodwarf.png"
     }
 }

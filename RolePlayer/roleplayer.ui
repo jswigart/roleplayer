@@ -109,7 +109,7 @@
    </property>
    <property name="minimumSize">
     <size>
-     <width>129</width>
+     <width>135</width>
      <height>300</height>
     </size>
    </property>
@@ -133,7 +133,7 @@
         <enum>QTabWidget::South</enum>
        </property>
        <property name="currentIndex">
-        <number>1</number>
+        <number>0</number>
        </property>
        <widget class="QWidget" name="tabTiles">
         <attribute name="title">
@@ -146,21 +146,11 @@
          <property name="spacing">
           <number>0</number>
          </property>
-         <item row="0" column="0">
-          <widget class="QScrollArea" name="scrollArea">
-           <property name="widgetResizable">
+         <item row="1" column="0">
+          <widget class="QTabWidget" name="tabWidgetTileSets">
+           <property name="tabsClosable">
             <bool>true</bool>
            </property>
-           <widget class="QWidget" name="tileScrollAreaContents">
-            <property name="geometry">
-             <rect>
-              <x>0</x>
-              <y>0</y>
-              <width>98</width>
-              <height>28</height>
-             </rect>
-            </property>
-           </widget>
           </widget>
          </item>
         </layout>
@@ -302,12 +292,21 @@
               <property name="text">
                <string>Add Layer</string>
               </property>
+              <property name="default">
+               <bool>false</bool>
+              </property>
+              <property name="flat">
+               <bool>false</bool>
+              </property>
              </widget>
             </item>
             <item>
              <widget class="QPushButton" name="buttonLayerDelete">
               <property name="text">
                <string>Delete Layer</string>
+              </property>
+              <property name="flat">
+               <bool>false</bool>
               </property>
              </widget>
             </item>

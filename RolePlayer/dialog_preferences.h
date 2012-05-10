@@ -16,7 +16,9 @@ public:
 private:
 	Ui::DialogPreferences				ui;
 
+	void AddKeyGroup( const QString & name, const QString & tooltip, QMenuBar * bar );
 	void AddKeyGroup( const QString & name, const QString & tooltip, QToolBar * bar );
+	void AddKeyGroup_r( QtProperty * group, const QString & name, const QString & tooltip, QAction * action );
 private slots:
 	void Key_Changed( QtProperty * prop, const QKeySequence & key );
 };

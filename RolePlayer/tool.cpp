@@ -3,12 +3,11 @@
 #include <QToolBar>
 #include <QApplication>
 
-#include "widget_labelclickable.h"
-
 #include "roleplayer.h"
 #include "tool.h"
 #include "gamescene.h"
 #include "gametilemap.h"
+#include "gametileset.h"
 
 QTool::QTool( QObject * parent ) : 
 	activeScene( NULL ) {
@@ -87,31 +86,9 @@ QToolPaintTile::QToolPaintTile( QObject * parent ) :
 QToolPaintTile::~QToolPaintTile() {
 }
 
-void QToolPaintTile::Slot_TileSelected( QLabelClickable * label ) {
-	if ( selectedTile == label ) {
-		
-	} else {
-		// clear the old overlay
-		if ( !selectedTile.isNull() ) {
-			selectedTile->setOverlay( QPixmap() );
-		}
-
-		selectedTile = label;
-
-		QPixmap highlight( label->pixmap()->size() );
-		highlight.fill( QColor( 255, 0, 0, 100 ) );
-		selectedTile->setOverlay( highlight );
-
-		// if the tool is active, update the pixmap
-		if ( overlay != NULL ) {
-			overlay->setPixmap( *label->pixmap() );
-		}
-	}
-}
-
 void QToolPaintTile::select() {
-	const QPixmap * pixMap = selectedTile ? selectedTile->pixmap() : NULL;
-	overlay = activeScene->addPixmap( pixMap != NULL ? *pixMap : QPixmap() );
+	const QPixmap pixMap = selectedTile ? selectedTile->GetPixMap() : QPixmap();
+	overlay = activeScene->addPixmap( pixMap );
 }
 
 void QToolPaintTile::unselect() {
@@ -120,6 +97,28 @@ void QToolPaintTile::unselect() {
 }
 
 void QToolPaintTile::complete() {
+}
+
+void QToolPaintTile::Slot_TileSelected( QGameTile * tile ) {
+	if ( selectedTile == tile ) {
+		
+	} else {
+		// clear the old overlay
+		/*if ( !selectedTile.isNull() ) {
+			selectedTile->setOverlay( QPixmap() );
+		}*/
+
+		selectedTile = tile;
+
+		/*QPixmap highlight( label->pixmap()->size() );
+		highlight.fill( QColor( 255, 0, 0, 100 ) );
+		selectedTile->setOverlay( highlight );*/
+
+		// if the tool is active, update the pixmap
+		if ( overlay != NULL ) {
+			overlay->setPixmap( selectedTile->GetPixMap() );
+		}
+	}
 }
 
 void QToolPaintTile::mouseMoveEvent( QGraphicsSceneMouseEvent * mouseEvent ) {
