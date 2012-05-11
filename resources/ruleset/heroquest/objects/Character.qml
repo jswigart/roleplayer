@@ -1,15 +1,51 @@
 import QtQuick 1.1
 //import TileTools 1.0
+import QtDesktop 0.1
 
- import "Character.js" as Code
+ //import "Character.js" as Code
 
 //GameCharacter {
 Item {
     id: character
-    width: sheet.width
-    height: sheet.height
+    width: avatar.width
+    height: avatar.height
 
     CharacterInventory { id: inventory }
+
+    Window {
+        id: popup
+        width: sheet.width
+        height: sheet.height
+        minimumHeight: sheet.height
+        maximumHeight: sheet.height
+        minimumWidth: sheet.width
+        maximumWidth: sheet.width
+        windowDecoration: true
+        modal: false
+        deleteOnClose: false
+
+        CharacterSheet {
+            id: sheet
+        }
+    }
+
+    property alias sheet: sheet
+
+    Image {
+        id: avatar
+        width: 32
+        height: 32
+        source: "../images/tokens/herodwarf.png"
+    }
+
+    MouseArea {
+         anchors.fill: avatar
+         hoverEnabled: true
+//         onEntered: { sheet.visible = true }
+//         onExited: { sheet.visible = false }
+         onClicked: popup.visible = true
+
+     }
 
     property string name: "NoName";
 
@@ -31,19 +67,9 @@ Item {
 
     property alias inventory: inventory
 
-    // alias the property sheet so other files can access it through me
-    property alias sheet: sheet
+    property alias avatarImage: avatar.source
+    property string profileImage: ""
 
     Component.onCompleted: {
-    }
-
-    CharacterSheet {
-        id :sheet
-    }
-    Image {
-        id: avatar
-        width: 32
-        height: 32
-        source: "../images/tokens/herodwarf.png"
     }
 }

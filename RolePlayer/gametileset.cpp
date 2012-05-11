@@ -32,6 +32,9 @@ void QGameTile::paint( QPainter * painter, const QStyleOptionGraphicsItem * opti
 	if ( isSelected() ) {		
 		painter->setPen( QPen( QColor( "blue" ), Qt::DashLine ) );
 		painter->drawRect( boundingRect() );
+
+		painter->setPen( QPen( QColor( "magenta" ) ) );
+		painter->drawPoint( pos() );
 	}
 	QDeclarativeItem::paint( painter, option, widget );	
 }

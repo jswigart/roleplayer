@@ -75,6 +75,8 @@ RolePlayer::RolePlayer(QWidget *parent, Qt::WFlags flags)
 	Slot_PopulateTileSetList();
 
 	InitObjectPallette();
+	
+	//statusBar()->showMessage( "Status", 10000 );
 
 	// add a default edit window
 	// todo: open last edited files from save info
@@ -169,23 +171,25 @@ void RolePlayer::InitObjectPallette() {
 	qreal x = margin;
 	qreal y = margin;
 	qreal biggestY = 0;
-
+	
 	for ( int i = 0; i < objectFiles.count(); ++i ) {
-		QDeclarativeComponent * component = CacheQMLComponent( ui.viewObjectPalette->engine(), QUrl::fromLocalFile( objectFiles[ i ].canonicalFilePath() ) );
-		if ( component != NULL ) {
-			QDeclarativeItem * item = qobject_cast<QDeclarativeItem*>( component->create() );
-			ui.viewObjectPalette->scene()->addItem( item );
-			
-			//item->setProperty( "ComponentName" );
+		QDeclarativeComponent * c = CacheQMLComponent( ui.viewObjectPalette->engine(), QUrl::fromLocalFile( objectFiles[ i ].canonicalFilePath() ) );
+		if ( c != NULL ) {
+			QDeclarativeItem * item = qobject_cast<QDeclarativeItem*>( c->create() );
+			if ( item->property( "placeable" ).toBool() ) {
+				ui.viewObjectPalette->scene()->addItem( item );
 
-			item->setPos( x, y );
+				item->setPos( x, y );
 
-			x += item->width() + spacing;
-			biggestY = ( item->height() > biggestY ) ? item->height() : biggestY;
-			if ( x > ui.viewObjectPalette->rect().width() ) {
-				x = margin;
-				y += biggestY + spacing;
-				biggestY = 0;
+				x += item->width() + spacing;
+				biggestY = ( item->height() > biggestY ) ? item->height() : biggestY;
+				if ( x > ui.viewObjectPalette->rect().width() ) {
+					x = margin;
+					y += biggestY + spacing;
+					biggestY = 0;
+				}
+			} else {
+				delete item;
 			}
 		}
 	};
@@ -234,14 +238,12 @@ void RolePlayer::AddTileSetTab( const QFileInfo & file, const QImage & image, bo
 	tileView->setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOn );
 	tileView->setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOn );
 	tileView->setSource( QUrl( "./resources/maps/default.qml" ) );
-	//tileView->setResizeMode()
 	tileView->setBackgroundBrush( QBrush( Qt::gray ) );
-	//tileView->setDragMode( QGraphicsView::ScrollHandDrag );
 	tileView->setObjectName( file.canonicalFilePath() );
 	tileView->setResizeAnchor( QGraphicsView::AnchorViewCenter );
-
+	tileView->setDragMode( QGraphicsView::ScrollHandDrag );
+	
 	QGameTileSet * tileSet = new QGameTileSet( file, image );
-	//tileSet->setObjectName( "tileset" );
 	tileView->scene()->addItem( tileSet );	
 	tileView->setBackgroundBrush( QBrush( Qt::gray ) );
 
