@@ -9,6 +9,8 @@ Item {
     width: character.width
     height: character.height
 
+    property bool placeable: true
+
     Character { id: character }
     property alias character: character
 
@@ -16,6 +18,8 @@ Item {
         character.className = "Elf"
         character.classDesc = "You are the Elf. You know how to use all weapon types, except those which may only be used by the wizard. You also have some knowledge of magic, allowing you to cast spells from one Spell College."
         character.classKeywords = [ "elf" ]
+        character.avatarImage = "../images/tokens/heroelf.png"
+        character.profileImage = "../images/sheets/profile_elf.jpg"
         character.statBaseAttack = 2
         character.statBaseDefend = 2
         character.statBaseBody = 5

@@ -3,8 +3,13 @@ import QtQuick 1.1
 
 Rectangle {
     id: sheet
-    width: 1600
-    height: 1236
+    x: 0
+    y : 0
+    width: bg.width * scale
+    height: bg.height * scale
+    transformOrigin: Item.TopLeft
+
+    scale: 0.5
 
     property string name : "Default Character Name"
     property string statProfileImage: "elf.jpg"
@@ -45,12 +50,13 @@ Rectangle {
         id: bg
         x: 0
         y: 0
-        width: 1600
-        height: 1236
+        width: sourceSize.width
+        height: sourceSize.height
+        transformOrigin: Item.Center
         visible: true
-        sourceSize.height: 1236
-        sourceSize.width: 1600
-        source: "character_sheet_custom_1.jpg"
+
+        source: "charactersheet.jpg"
+        fillMode: Image.Stretch
 
         Item {
             id: skills
@@ -233,356 +239,312 @@ Rectangle {
 
         }
 
-Item {
-    id: stats
-    anchors.fill: parent
+        Item {
+            id: stats
+            anchors.fill: parent
 
-    Text {
-        id: charismaModHalfLevel
-        x: 418
-        y: 524
-        text: sheet.statCharismaModHalfLevel
-        font.pixelSize: 28
-        font.bold: true
-        horizontalAlignment: Text.AlignHCenter
-    }
+            Text {
+                id: charismaModHalfLevel
+                x: 418
+                y: 524
+                text: sheet.statCharismaModHalfLevel
+                font.pixelSize: 28
+                font.bold: true
+                horizontalAlignment: Text.AlignHCenter
+            }
 
-    Text {
-            id: charismaMod
-            x: 296
-            y: 524
-            text: sheet.statCharismaMod
-            font.pixelSize: 28
-            font.bold: true
-            horizontalAlignment: Text.AlignHCenter
-    }
+            Text {
+                    id: charismaMod
+                    x: 296
+                    y: 524
+                    text: sheet.statCharismaMod
+                    font.pixelSize: 28
+                    font.bold: true
+                    horizontalAlignment: Text.AlignHCenter
+            }
 
-    Text {
-        id: charisma
-        x: 53
-        y: 524
-        text: sheet.statCharisma
-        font.pixelSize: 28
-        font.bold: true
-        horizontalAlignment: Text.AlignHCenter
-    }
+            Text {
+                id: charisma
+                x: 53
+                y: 524
+                text: sheet.statCharisma
+                font.pixelSize: 28
+                font.bold: true
+                horizontalAlignment: Text.AlignHCenter
+            }
 
-    Text {
-        id: wisdomModHalfLevel
-        x: 418
-            y: 478
-            text: sheet.statWisdomModHalfLevel
-            font.pixelSize: 28
-            font.bold: true
-            horizontalAlignment: Text.AlignHCenter
-    }
+            Text {
+                id: wisdomModHalfLevel
+                x: 418
+                    y: 478
+                    text: sheet.statWisdomModHalfLevel
+                    font.pixelSize: 28
+                    font.bold: true
+                    horizontalAlignment: Text.AlignHCenter
+            }
 
-    Text {
-        id: wisdomMod
-        x: 296
-        y: 478
-        text: sheet.statWisdomMod
-        font.pixelSize: 28
-        font.bold: true
-        horizontalAlignment: Text.AlignHCenter
-    }
+            Text {
+                id: wisdomMod
+                x: 296
+                y: 478
+                text: sheet.statWisdomMod
+                font.pixelSize: 28
+                font.bold: true
+                horizontalAlignment: Text.AlignHCenter
+            }
 
-    Text {
-        id: wisdom
-        x: 53
-        y: 478
-        text: sheet.statWisdom
-        font.pixelSize: 28
-            font.bold: true
-            horizontalAlignment: Text.AlignHCenter
-    }
+            Text {
+                id: wisdom
+                x: 53
+                y: 478
+                text: sheet.statWisdom
+                font.pixelSize: 28
+                    font.bold: true
+                    horizontalAlignment: Text.AlignHCenter
+            }
 
-    Text {
-        id: intelligenceModHalfLevel
-        x: 418
-        y: 413
-        text: sheet.statIntelligenceModHalfLevel
-        font.pixelSize: 28
-            font.bold: true
-            horizontalAlignment: Text.AlignHCenter
-    }
+            Text {
+                id: intelligenceModHalfLevel
+                x: 418
+                y: 413
+                text: sheet.statIntelligenceModHalfLevel
+                font.pixelSize: 28
+                    font.bold: true
+                    horizontalAlignment: Text.AlignHCenter
+            }
 
-    Text {
-        id: intelligenceMod
-        x: 296
-        y: 413
-        text: sheet.statIntelligenceMod
-        font.pixelSize: 28
-        font.bold: true
-        horizontalAlignment: Text.AlignHCenter
-    }
+            Text {
+                id: intelligenceMod
+                x: 296
+                y: 413
+                text: sheet.statIntelligenceMod
+                font.pixelSize: 28
+                font.bold: true
+                horizontalAlignment: Text.AlignHCenter
+            }
 
-    Text {
-        id: intelligence
-        x: 53
-        y: 413
-        text: sheet.statIntelligence
-        font.pixelSize: 28
-        font.bold: true
-        horizontalAlignment: Text.AlignHCenter
-    }
+            Text {
+                id: intelligence
+                x: 53
+                y: 413
+                text: sheet.statIntelligence
+                font.pixelSize: 28
+                font.bold: true
+                horizontalAlignment: Text.AlignHCenter
+            }
 
-    Text {
-        id: dexterityModHalfLevel
-        x: 418
-        y: 367
-        text: sheet.statDexterityModHalfLevel
-        font.pixelSize: 28
-        font.bold: true
-        horizontalAlignment: Text.AlignHCenter
-    }
+            Text {
+                id: dexterityModHalfLevel
+                x: 418
+                y: 367
+                text: sheet.statDexterityModHalfLevel
+                font.pixelSize: 28
+                font.bold: true
+                horizontalAlignment: Text.AlignHCenter
+            }
 
-    Text {
-        id: dexterityMod
-            x: 296
-            y: 367
-            text: sheet.statDexterityMod
-            font.pixelSize: 28
-            font.bold: true
-            horizontalAlignment: Text.AlignHCenter
-    }
+            Text {
+                id: dexterityMod
+                    x: 296
+                    y: 367
+                    text: sheet.statDexterityMod
+                    font.pixelSize: 28
+                    font.bold: true
+                    horizontalAlignment: Text.AlignHCenter
+            }
 
-    Text {
-        id: dexterity
-        x: 53
-        y: 367
-        text: sheet.statDexterity
-        font.pixelSize: 28
-        font.bold: true
-        horizontalAlignment: Text.AlignHCenter
-    }
+            Text {
+                id: dexterity
+                x: 53
+                y: 367
+                text: sheet.statDexterity
+                font.pixelSize: 28
+                font.bold: true
+                horizontalAlignment: Text.AlignHCenter
+            }
 
-    Text {
-        id: constitutionModHalfLevel
-        x: 418
-        y: 299
-        text: sheet.statConstitutionModHalfLevel
-        font.pixelSize: 28
-        font.bold: true
-        horizontalAlignment: Text.AlignHCenter
-    }
+            Text {
+                id: constitutionModHalfLevel
+                x: 418
+                y: 299
+                text: sheet.statConstitutionModHalfLevel
+                font.pixelSize: 28
+                font.bold: true
+                horizontalAlignment: Text.AlignHCenter
+            }
 
-    Text {
-        id: constitutionMod
-        x: 296
-        y: 299
-        text: sheet.statConstitutionMod
-        font.pixelSize: 28
-        font.bold: true
-        horizontalAlignment: Text.AlignHCenter
-    }
+            Text {
+                id: constitutionMod
+                x: 296
+                y: 299
+                text: sheet.statConstitutionMod
+                font.pixelSize: 28
+                font.bold: true
+                horizontalAlignment: Text.AlignHCenter
+            }
 
-    Text {
-        id: constitution
-        x: 53
-        y: 299
-        text: sheet.statConstitution
-        font.pixelSize: 28
-        font.bold: true
-        horizontalAlignment: Text.AlignHCenter
+            Text {
+                id: constitution
+                x: 53
+                y: 299
+                text: sheet.statConstitution
+                font.pixelSize: 28
+                font.bold: true
+                horizontalAlignment: Text.AlignHCenter
+                }
+
+            Text {
+                id: strengthModHalfLevel
+                x: 418
+                y: 253
+                text: sheet.statStrengthModHalfLevel
+                font.pixelSize: 28
+                font.bold: true
+                horizontalAlignment: Text.AlignHCenter
+            }
+
+            Text {
+                id: strengthMod
+                x: 296
+                y: 253
+                text: sheet.statStrengthMod
+                font.pixelSize: 28
+                font.bold: true
+                horizontalAlignment: Text.AlignHCenter
+            }
+
+            Text {
+                id: strength
+                x: 53
+                y: 253
+                text: "15"
+                textFormat: Text.RichText
+                verticalAlignment: Text.AlignTop
+                font.pixelSize: 28
+                font.bold: true
+                horizontalAlignment: Text.AlignHCenter
+            }
+
+            Text {
+                id: level
+                x: 1048
+                y: 74
+                text: sheet.statLevel
+                font.pixelSize: 24
+                font.bold: true
+                horizontalAlignment: Text.AlignHCenter
+            }
+
+            Text {
+                id: characterName
+                x: 722
+                y: 32
+                text: sheet.name
+                font.bold: true
+                horizontalAlignment: Text.AlignHCenter
+                font.pixelSize: 28
+            }
+
+            Text {
+                id: initiativeScore
+                x: 58
+                y: 118
+                text: sheet.statInitiativeScore
+                font.pixelSize: 28
+                font.bold: true
+                horizontalAlignment: Text.AlignHCenter
+            }
+
+            Text {
+                id: totalXP
+                x: 1479
+                y: 35
+                text: sheet.stateTotalXP
+                font.pixelSize: 24
+                font.bold: true
+                horizontalAlignment: Text.AlignHCenter
+            }
+
+            Text {
+                id: hitPointsMax
+                x: 1073
+                y: 847
+                text: sheet.statHitPointsMax
+                font.pixelSize: 24
+                font.bold: true
+                horizontalAlignment: Text.AlignHCenter
+            }
+            Text {
+                id: hitPointsCurrent
+                x: 1293
+                y: 1029
+                text: sheet.statHitPointsCurrent
+                font.pixelSize: 30
+                font.bold: true
+                horizontalAlignment: Text.AlignHCenter
+            }
+            Text {
+                id: hitPointsBloodied
+                x: 1497
+                y: 847
+                text: sheet.statHitPointsBloodied
+                font.pixelSize: 24
+                font.bold: true
+                horizontalAlignment: Text.AlignHCenter
+            }
+
+            Text {
+                id: healSurgeValue
+                x: 1497
+                y: 895
+                text: sheet.stateHealSurgeValue
+                font.pixelSize: 24
+                font.bold: true
+                horizontalAlignment: Text.AlignHCenter
+            }
+
+            Text {
+                id: healSurgePerDay
+                x: 1497
+                y: 933
+                text: sheet.statHealSurgePerDay
+                font.pixelSize: 24
+                font.bold: true
+                horizontalAlignment: Text.AlignHCenter
+            }
+
+
+
+            Text {
+                id: hitPointsTemp
+                x: 1155
+                y: 1124
+                text: sheet.stateHitPointsTemp
+                font.pixelSize: 24
+                font.bold: true
+                horizontalAlignment: Text.AlignHCenter
+            }
+
+            Text {
+                id: healSurgeRemaining
+                x: 1464
+                y: 1124
+                text: sheet.stateHealSurgeRemaining
+                font.pixelSize: 24
+                font.bold: true
+                horizontalAlignment: Text.AlignHCenter
+            }
+
+            Image {
+                id: profilePic
+                x: 1112
+                y: 168
+                width: 382
+                height: 344
+                sourceSize.width: 304
+                fillMode: Image.PreserveAspectFit
+                source: sheet.statProfileImage
+            }
         }
-
-    Text {
-        id: strengthModHalfLevel
-        x: 418
-        y: 253
-        text: sheet.statStrengthModHalfLevel
-        font.pixelSize: 28
-        font.bold: true
-        horizontalAlignment: Text.AlignHCenter
     }
-
-    Text {
-        id: strengthMod
-        x: 296
-        y: 253
-        text: sheet.statStrengthMod
-        font.pixelSize: 28
-        font.bold: true
-        horizontalAlignment: Text.AlignHCenter
-    }
-
-    Text {
-        id: strength
-        x: 53
-        y: 253
-        text: "15"
-        textFormat: Text.RichText
-        verticalAlignment: Text.AlignTop
-        font.pixelSize: 28
-        font.bold: true
-        horizontalAlignment: Text.AlignHCenter
-    }
-
-    Text {
-        id: level
-        x: 1048
-        y: 74
-        text: sheet.statLevel
-        font.pixelSize: 24
-        font.bold: true
-        horizontalAlignment: Text.AlignHCenter
-    }
-
-    Text {
-        id: characterName
-        x: 722
-        y: 32
-        text: sheet.name
-        font.bold: true
-        horizontalAlignment: Text.AlignHCenter
-        font.pixelSize: 28
-    }
-
-    Text {
-        id: initiativeScore
-        x: 58
-        y: 118
-        text: sheet.statInitiativeScore
-        font.pixelSize: 28
-        font.bold: true
-        horizontalAlignment: Text.AlignHCenter
-    }
-
-    Text {
-        id: totalXP
-        x: 1479
-        y: 35
-        text: sheet.stateTotalXP
-        font.pixelSize: 24
-        font.bold: true
-        horizontalAlignment: Text.AlignHCenter
-    }
-
-    Text {
-        id: hitPointsMax
-        x: 1073
-        y: 847
-        text: sheet.statHitPointsMax
-        font.pixelSize: 24
-        font.bold: true
-        horizontalAlignment: Text.AlignHCenter
-    }
-    Text {
-        id: hitPointsCurrent
-        x: 1293
-        y: 1029
-        text: sheet.statHitPointsCurrent
-        font.pixelSize: 30
-        font.bold: true
-        horizontalAlignment: Text.AlignHCenter
-    }
-    Text {
-        id: hitPointsBloodied
-        x: 1497
-        y: 847
-        text: sheet.statHitPointsBloodied
-        font.pixelSize: 24
-        font.bold: true
-        horizontalAlignment: Text.AlignHCenter
-    }
-
-    Text {
-        id: healSurgeValue
-        x: 1497
-        y: 895
-        text: sheet.stateHealSurgeValue
-        font.pixelSize: 24
-        font.bold: true
-        horizontalAlignment: Text.AlignHCenter
-    }
-
-    Text {
-        id: healSurgePerDay
-        x: 1497
-        y: 933
-        text: sheet.statHealSurgePerDay
-        font.pixelSize: 24
-        font.bold: true
-        horizontalAlignment: Text.AlignHCenter
-    }
-
-
-
-    Text {
-        id: hitPointsTemp
-        x: 1155
-        y: 1124
-        text: sheet.stateHitPointsTemp
-        font.pixelSize: 24
-        font.bold: true
-        horizontalAlignment: Text.AlignHCenter
-    }
-
-    Text {
-        id: healSurgeRemaining
-        x: 1464
-        y: 1124
-        text: sheet.stateHealSurgeRemaining
-        font.pixelSize: 24
-        font.bold: true
-        horizontalAlignment: Text.AlignHCenter
-    }
-
-    Image {
-        id: profilePic
-        x: 1112
-        y: 168
-        width: 382
-        height: 344
-        sourceSize.width: 304
-        fillMode: Image.PreserveAspectFit
-        source: sheet.statProfileImage
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    }
-
-
-
-
-
 }
