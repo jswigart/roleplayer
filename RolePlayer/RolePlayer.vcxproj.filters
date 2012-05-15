@@ -82,16 +82,7 @@
     <ClCompile Include="GeneratedFiles\Release\moc_gamecharacter.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_gametilemap.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_gametilemap.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
     <ClCompile Include="gamecharacter.cpp">
-      <Filter>Source Files\Qml Object</Filter>
-    </ClCompile>
-    <ClCompile Include="gametilemap.cpp">
       <Filter>Source Files\Qml Object</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_widget_labelclickable.cpp">
@@ -151,6 +142,15 @@
     <ClCompile Include="GeneratedFiles\Release\moc_gametileset.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="gamescenario.cpp">
+      <Filter>Source Files\Qml Object</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_gamescenario.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_gamescenario.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="roleplayer.qrc">
@@ -177,9 +177,6 @@
     <CustomBuild Include="dialog_mapproperties.h">
       <Filter>Source Files\Dialogs</Filter>
     </CustomBuild>
-    <CustomBuild Include="gametilemap.h">
-      <Filter>Source Files\Qml Object</Filter>
-    </CustomBuild>
     <CustomBuild Include="gamecharacter.h">
       <Filter>Source Files\Qml Object</Filter>
     </CustomBuild>
@@ -202,6 +199,9 @@
       <Filter>UI Files</Filter>
     </CustomBuild>
     <CustomBuild Include="gametileset.h">
+      <Filter>Source Files\Qml Object</Filter>
+    </CustomBuild>
+    <CustomBuild Include="gamescenario.h">
       <Filter>Source Files\Qml Object</Filter>
     </CustomBuild>
   </ItemGroup>

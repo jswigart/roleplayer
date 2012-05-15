@@ -4,15 +4,26 @@ import QtQuick 1.1
 
 //GameCharacter {
 Item {
-    id: dwarf
+    id: self
     objectName: "Dwarf"
     width: character.width
     height: character.height
 
     property bool placeable: true
 
+    function startBattle() {
+        console.debug( character.name + " startBattle" );
+    }
+
+//    signal onTurnEnded;
+//    onTurnEnded: {
+//        console.debug( character.name + " turnEnded" );
+//    }
+
     Character { id: character }
     property alias character: character
+
+    property alias initiative: character.initiative
 
     Component.onCompleted: {
         character.className = "Dwarf"
@@ -29,5 +40,7 @@ Item {
         //character.ability = [ "disarmtraps" ]
 
         //console.log( "onCompleted " + character.className );
+
+        scenario.addGameObject( self );
     }
 }

@@ -3,27 +3,32 @@ import QtQuick 1.1
 Item {
     HeroBarbarian {
         id: barb
+
+        x: 0
+        y: 0
+
+//        IndicatorRange {
+//            x: parent.x
+//            y: parent.y
+//        }
     }
 
     HeroDwarf {
         id: dwarf
+
+        x: 100
+        y: 100
     }
 
-    MouseArea {
-        id: clickArea
-        x: 0
-        y: 0
-        width: 100
-        height: 100
-
-        onClicked: {
-            resolveAttack( barb, dwarf )
-        }
+    MonsterGoblin {
+        id: goblin
+        x: 50
+        y: 50
     }
 
-    function rollAttackDice( num ) {
+    function rollAttackDice( numDie ) {
         var attack = 0
-        for ( var i = 0; i < num; i++ ) {
+        for ( var i = 0; i < numDie; i++ ) {
             var result = ( Math.random() * 6 )
             if ( result < 3 ) {
                 ++attack;
@@ -31,9 +36,10 @@ Item {
         }
         return attack;
     }
-    function rollDefendDice( num ) {
+
+    function rollDefendDice( numDie ) {
         var defend = 0
-        for ( var i = 0; i < num; i++ ) {
+        for ( var i = 0; i < numDie; i++ ) {
             var result = ( Math.random() * 6 )
             if ( result > 4 ) {
                 ++defend;
@@ -48,6 +54,9 @@ Item {
     }
 
     function resolveAttack( attacker, defender ) {
+        console.log( attacker.character.name + " can move " + attacker.character.calculateMovementSquares() + " squares" )
+        console.log( defender.character.name + " can move " + defender.character.calculateMovementSquares() + " squares" )
+
         var attackDie = attacker.character.statCurrentAttack
         var defendDie = defender.character.statCurrentDefend
 
@@ -71,10 +80,5 @@ Item {
 
         barb.character.inventory.giveItem( "InventoryItemPlateMail.qml" )
         dwarf.character.inventory.giveItem( "InventoryItemChainMail.qml" )
-
-//        resolveAttack( barb, dwarf )
-//        resolveAttack( barb, dwarf )
-//        resolveAttack( barb, dwarf )
-//        resolveAttack( barb, dwarf )
     }
 }

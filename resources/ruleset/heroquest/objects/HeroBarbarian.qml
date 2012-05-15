@@ -1,10 +1,9 @@
-
 import QtQuick 1.1
 //import TileTools 1.0
 
 //GameCharacter {
 Item {
-    id: barbarian
+    id: self
     objectName: "Barbarian"
     width: character.width
     height: character.height
@@ -27,5 +26,7 @@ Item {
         character.statBaseMovement = 2
         character.inventory.giveItem( "InventoryItemBroadSword.qml" );
         //console.log( "onCompleted " + character.className );
+
+        scenario.addGameObject( self );
     }
 }

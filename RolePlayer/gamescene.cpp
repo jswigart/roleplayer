@@ -9,7 +9,6 @@
 
 #include "roleplayer.h"
 #include "gamescene.h"
-#include "gametilemap.h"
 #include "dialog_mapproperties.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -27,7 +26,10 @@ QGameLayer::~QGameLayer() {
 
 QGameScene::QGameScene( RolePlayer * app, QObject * parent ) :
 	QGraphicsScene( parent ),
-	rootApp( app ) {
+	rootApp( app ),
+	gridSize( 32.0f ), 
+	gridRender( true ),
+	gridColor( 127, 127, 127, 127 ) {
 
 	// create some child objects to help with sorting
 	rootLayers = new QObject( this );
@@ -97,19 +99,43 @@ void QGameScene::setCurrentTool( QTool * tool ) {
 	}
 }
 
-QGameTileMap * QGameScene::getMapAtPosition( const QPointF & scenePos ) {
-	QList<QGraphicsItem *> objects = items( scenePos, Qt::IntersectsItemShape, Qt::DescendingOrder );
-	for ( int i = 0; i < objects.count(); ++i ) {
-		QGameTileMap * tileMap = qobject_cast<QGameTileMap*>( objects[ i ] );
-		if ( tileMap != NULL ) {
-			return tileMap;
-		}
-	}
-	return NULL;
+void QGameScene::snapToGrid( QGraphicsItem * item, const QPointF & scenePos ) {
+	const int cellSizeX = item->boundingRect().width() / getGridSize();
+	const int cellSizeY = item->boundingRect().height() / getGridSize();
+
+	const int mapSizeX = ( sceneRect().width() / getGridSize() ) - cellSizeX;
+	const int mapSizeY = ( sceneRect().height() / getGridSize() ) - cellSizeY;
+
+	const int cellX = scenePos.x() / getGridSize();
+	const int cellY = scenePos.y() / getGridSize();
+
+	item->setPos( QPointF( cellX, cellY ) * getGridSize() );
 }
 
-//void QGameScene::render( QPainter * painter, const QRectF & target, const QRectF & source, Qt::AspectRatioMode aspectRatioMode ) {
-//}
+void QGameScene::drawBackground ( QPainter * painter, const QRectF & rect ) {
+	painter->fillRect( rect, QBrush( Qt::gray ) );
+	if ( getDrawGrid() ) {
+		//painter->setPen( Qt::DashLine );
+		//painter->setWorldMatrixEnabled(true);
+		QPen gridPen( gridColor );
+		painter->setPen( gridPen );
+		
+		qreal left = int( rect.left() ) - (int(rect.left()) % getGridSize() );
+		qreal top = int( rect.top() ) - (int(rect.top()) % getGridSize() );
+
+		QVarLengthArray<QLineF, 100> linesX;
+		for ( qreal x = left; x < rect.right(); x += getGridSize() )
+			linesX.append( QLineF(x, rect.top(), x, rect.bottom()) );
+
+		QVarLengthArray<QLineF, 100> linesY;
+		for ( qreal y = top; y < rect.bottom(); y += getGridSize() )
+			linesY.append( QLineF(rect.left(), y, rect.right(), y) );
+
+		painter->drawLines( linesX.data(), linesX.size() );
+		painter->drawLines( linesY.data(), linesY.size() );
+	}
+	QGraphicsScene::drawBackground( painter, rect );
+}
 
 void QGameScene::keyPressEvent ( QKeyEvent * keyEvent ) {
 	if ( currentTool != NULL ) {

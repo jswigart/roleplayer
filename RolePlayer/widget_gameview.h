@@ -6,14 +6,14 @@
 
 #include "gamescene.h"
 
-class QGameView : public QDeclarativeView
+class QGameView : public QGraphicsView
 {
 	Q_OBJECT
 public:
 	QGameScene *	getGameScene();
 
-	explicit QGameView(QWidget *parent = 0);
-	explicit QGameView(const QUrl &source, QWidget *parent = 0);
+	explicit QGameView( QWidget *parent = 0 );
+	explicit QGameView( QGraphicsScene * scene, QWidget * parent = 0 );
 	~QGameView();
 protected:
 	virtual void	contextMenuEvent ( QContextMenuEvent * event );
@@ -38,7 +38,7 @@ protected:
 	virtual bool	viewportEvent ( QEvent * event );
 	virtual void	wheelEvent ( QWheelEvent * event );
 private:
-	
+
 };
 
 #endif // WIDGET_VIEW

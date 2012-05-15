@@ -4,7 +4,7 @@ import QtQuick 1.1
 
 //GameCharacter {
 Item {
-    id: elf
+    id: self
     objectName: "Wizard"
     width: character.width
     height: character.height
@@ -29,5 +29,7 @@ Item {
         //character.spells = [ "" ]
 
         //console.log( "onCompleted " + character.className );
+
+        scenario.addGameObject( self );
     }
 }

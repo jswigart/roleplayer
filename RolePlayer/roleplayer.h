@@ -64,7 +64,7 @@ private slots:
 	void				Action_SaveFileAll();
 	void				Action_SaveFileMapImage();
 	void				Action_ImportTiles();
-
+	
 private:
 	Ui::RolePlayer			ui;
 

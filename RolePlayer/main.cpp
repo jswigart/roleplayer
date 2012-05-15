@@ -3,8 +3,8 @@
 
 #include "roleplayer.h"
 
-#include "gametilemap.h"
 #include "gamecharacter.h"
+#include "gamescenario.h"
 
 int main( int argc, char *argv[] ) {
 	QApplication a( argc, argv );
@@ -14,8 +14,8 @@ int main( int argc, char *argv[] ) {
 	libPaths.append( "./resources/plugins" );
 	QCoreApplication::setLibraryPaths( libPaths );
 
-	qmlRegisterType<QGameTileMap>( "TileTools", 1, 0, "GameTileMap" );
 	qmlRegisterType<QGameCharacter>( "TileTools", 1, 0, "GameCharacter" );
+	qmlRegisterType<QGameScenario>( "TileTools", 1, 0, "GameScenario" );
 
 	RolePlayer w;
 	w.show();

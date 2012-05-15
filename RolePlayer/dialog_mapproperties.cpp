@@ -5,7 +5,7 @@
 
 #include "dialog_mapproperties.h"
 #include "ui_dialog_mapproperties.h"
-#include "gametilemap.h"
+//#include "gametilemap.h"
 
 //////////////////////////////////////////////////////////////////////////
 class QDialogMapPropertiesImpl {
@@ -14,20 +14,20 @@ public:
 		tileMap( map ) {
 		ui.setupUi( widget );
 
-		QtProperty * group = ui.propTree->AddGroup( NULL, "Map Properties", "Map Properties" );
-		props.propGridSize = ui.propTree->AddIntSpinBox( NULL, "Map Grid Size", "Grid Size", tileMap->getGridSize() );
+		//QtProperty * group = ui.propTree->AddGroup( NULL, "Map Properties", "Map Properties" );
+		//props.propGridSize = ui.propTree->AddIntSpinBox( NULL, "Map Grid Size", "Grid Size", tileMap->getGridSize() );
 		//props.propBgColor = ui.propTree->AddColor( NULL, "Background Color For Map", "Background Color", view->backgroundBrush().color() );
 	}
 
 	void commitProperties() {
-		tileMap->setGridSize( ui.propTree->propManagers.editIntSpinBox->value( props.propGridSize ) );
+		//tileMap->setGridSize( ui.propTree->propManagers.editIntSpinBox->value( props.propGridSize ) );
 		//tileMap->setBackgroundBrush( QBrush( ui.propTree->propManagers.editColor->value( props.propBgColor ) ) ); 
 
-		tileMap->scene()->invalidate();
+		//tileMap->scene()->invalidate();
 	}
 private:
 	Ui::DialogMapProperties			ui;
-	QGameTileMap *						tileMap;
+	QGameTileMap *					tileMap;
 
 	struct properties_t {
 		QtProperty *	propGridSize;
