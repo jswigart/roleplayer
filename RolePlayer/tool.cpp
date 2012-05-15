@@ -148,7 +148,7 @@ void QToolPaintTile::mousePressEvent( QGraphicsSceneMouseEvent * mouseEvent ) {
 		if ( tileMap != NULL ) {
 			lastMap = tileMap;
 		} 
-
+		
 		if ( lastMap != NULL ) {
 			QGraphicsPixmapItem * pix = activeScene->addPixmap( overlay->pixmap() );
 			

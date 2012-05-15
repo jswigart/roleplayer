@@ -84,9 +84,9 @@ public:
 	QToolPaintTile( QObject * parent );
 	~QToolPaintTile();
 private:
-	QGraphicsPixmapItem *		overlay;
-	QPointer<QGameTileMap>		lastMap;
 	QPointer<QGameTile>			selectedTile;
+	QGraphicsPixmapItem *		overlay;
+	QPointer<QGameTileMap>		lastMap;	
 signals:
 public slots:
 	void Slot_TileSelected( QGameTile * tile );

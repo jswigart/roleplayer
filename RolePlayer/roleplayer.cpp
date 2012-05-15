@@ -117,6 +117,7 @@ void RolePlayer::ConnectSlots() {
 	connect( ui.action_Preferences, SIGNAL(triggered(bool)), this, SLOT(Action_Preferences()) );
 	connect( ui.action_MapProperties, SIGNAL(triggered(bool)), this, SLOT(Action_MapProperties()) );
 	connect( ui.action_New, SIGNAL(triggered(bool)), this, SLOT(Action_NewFile()) );
+	connect( ui.action_Open, SIGNAL(triggered(bool)), this, SLOT(Action_OpenFile()) );
 	connect( ui.action_Exit, SIGNAL(triggered(bool)), this, SLOT(close()) );
 	connect( ui.action_ImportTiles, SIGNAL(triggered(bool)), this, SLOT(Action_ImportTiles()) );
 	connect( ui.action_Save, SIGNAL(triggered(bool)), this, SLOT(Action_SaveFile()) );
@@ -195,7 +196,7 @@ void RolePlayer::InitObjectPallette() {
 	};
 }
 
-void RolePlayer::AddMapEditTab( const QString & name ) {
+int RolePlayer::AddMapEditTab( const QString & name ) {
 	// handle name collisions
 	int suffix = 1;
 	QString tabName;
@@ -219,15 +220,16 @@ void RolePlayer::AddMapEditTab( const QString & name ) {
 	editView->engine()->setImportPathList( importPaths );
 	editView->setHorizontalScrollBarPolicy( Qt::ScrollBarAsNeeded );
 	editView->setVerticalScrollBarPolicy( Qt::ScrollBarAsNeeded );
-	editView->setSource( QUrl( "./resources/maps/default.qml" ) );
+	//editView->setSource( QUrl( "./resources/maps/default.qml" ) );
 	//editView->setResizeMode()
 	editView->setBackgroundBrush( QBrush( Qt::gray ) );
 	//editView->setDragMode( QGraphicsView::ScrollHandDrag );
 	editView->setObjectName( "view" );
 	editView->setResizeAnchor( QGraphicsView::AnchorViewCenter );
-	ui.editorTabs->addTab( editView, tabName );
-	
+
 	connect( editView->scene(), SIGNAL(selectionChanged()), this, SLOT(Slot_RefreshPropertyList()));
+
+	return ui.editorTabs->addTab( editView, tabName );	
 }
 
 void RolePlayer::AddTileSetTab( const QFileInfo & file, const QImage & image, bool focus ) {
@@ -426,6 +428,19 @@ void RolePlayer::Slot_TileSetLoadFinished() {
 
 void RolePlayer::Action_NewFile() {
 	AddMapEditTab( "untitled" );
+}
+
+void RolePlayer::Action_OpenFile() {
+	QString openFile = QFileDialog::getOpenFileName( this, "Open File", "./resources/maps/", tr("Map Files (*.map *.tmx)") );
+	if ( !openFile.isEmpty() ) {
+		QFileInfo file( openFile );
+		
+		const int tab = AddMapEditTab( file.baseName() );
+		QGameView * currentView = qobject_cast<QGameView *>( ui.editorTabs->widget( tab ) );
+		if ( currentView != NULL ) {
+			currentView->getGameScene()->load( QUrl( openFile ) );
+		}
+	}
 }
 
 void RolePlayer::Action_SaveFile() {
