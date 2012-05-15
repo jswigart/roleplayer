@@ -1,14 +1,15 @@
 #include <QDebug>
 #include <QWheelEvent>
+#include <QVarLengthArray>
 
 #include "widget_gameview.h"
 
 QGameView::QGameView( QWidget *parent ) :
-	QDeclarativeView( parent ) {
+	QGraphicsView( parent ) {
 }
 
-QGameView::QGameView( const QUrl &source, QWidget *parent ) :
-	QDeclarativeView( source, parent ) {
+QGameView::QGameView( QGraphicsScene * scene, QWidget * parent ) :
+	QGraphicsView( scene, parent ) {
 }
 
 QGameView::~QGameView() {
@@ -19,43 +20,43 @@ QGameScene * QGameView::getGameScene() {
 }
 
 void QGameView::contextMenuEvent( QContextMenuEvent * event ) {
-	QDeclarativeView::contextMenuEvent( event );
+	QGraphicsView::contextMenuEvent( event );
 }
 
 void QGameView::dragEnterEvent( QDragEnterEvent * event ) {
-	QDeclarativeView::dragEnterEvent( event );
+	QGraphicsView::dragEnterEvent( event );
 }
 
 void QGameView::dragLeaveEvent( QDragLeaveEvent * event ) {
-	QDeclarativeView::dragLeaveEvent( event );
+	QGraphicsView::dragLeaveEvent( event );
 }
 
 void QGameView::dragMoveEvent( QDragMoveEvent * event ) {
-	QDeclarativeView::dragMoveEvent( event );
+	QGraphicsView::dragMoveEvent( event );
 }
 
 void QGameView::dropEvent( QDropEvent * event ) {
-	QDeclarativeView::dropEvent( event );
+	QGraphicsView::dropEvent( event );
 }
 
 void QGameView::focusInEvent( QFocusEvent * event ) {
-	QDeclarativeView::focusInEvent( event );
+	QGraphicsView::focusInEvent( event );
 }
 
 bool QGameView::focusNextPrevChild( bool next ) {
-	return QDeclarativeView::focusNextPrevChild( next );
+	return QGraphicsView::focusNextPrevChild( next );
 }
 
 void QGameView::focusOutEvent( QFocusEvent * event ) {
-	QDeclarativeView::focusOutEvent( event );
+	QGraphicsView::focusOutEvent( event );
 }
 
 void QGameView::inputMethodEvent( QInputMethodEvent * event ) {
-	QDeclarativeView::inputMethodEvent( event );
+	QGraphicsView::inputMethodEvent( event );
 }
 
 void QGameView::keyPressEvent( QKeyEvent * event ) {
-	QDeclarativeView::keyPressEvent( event );
+	QGraphicsView::keyPressEvent( event );
 }
 
 void QGameView::keyReleaseEvent( QKeyEvent * event ) {
@@ -68,15 +69,15 @@ void QGameView::keyReleaseEvent( QKeyEvent * event ) {
 		event->accept();
 		return;
 	}
-	QDeclarativeView::keyReleaseEvent( event );
+	QGraphicsView::keyReleaseEvent( event );
 }
 
 void QGameView::mouseDoubleClickEvent( QMouseEvent * event ) {
-	QDeclarativeView::mouseDoubleClickEvent( event );
+	QGraphicsView::mouseDoubleClickEvent( event );
 }
 
 void QGameView::mouseMoveEvent( QMouseEvent * event ) {
-	QDeclarativeView::mouseMoveEvent( event );
+	QGraphicsView::mouseMoveEvent( event );
 }
 
 void QGameView::mousePressEvent( QMouseEvent * event ) {
@@ -84,7 +85,7 @@ void QGameView::mousePressEvent( QMouseEvent * event ) {
 		setDragMode( QGraphicsView::ScrollHandDrag );
 		return;
 	}
-	QDeclarativeView::mousePressEvent( event );
+	QGraphicsView::mousePressEvent( event );
 }
 
 void QGameView::mouseReleaseEvent( QMouseEvent * event ) {
@@ -92,27 +93,27 @@ void QGameView::mouseReleaseEvent( QMouseEvent * event ) {
 		setDragMode( QGraphicsView::NoDrag );
 		return;
 	}
-	QDeclarativeView::mouseReleaseEvent( event );
+	QGraphicsView::mouseReleaseEvent( event );
 }
 
 void QGameView::paintEvent( QPaintEvent * event ) {
-	QDeclarativeView::paintEvent( event );
+	QGraphicsView::paintEvent( event );
 }
 
 void QGameView::resizeEvent( QResizeEvent * event ) {
-	QDeclarativeView::resizeEvent( event );
+	QGraphicsView::resizeEvent( event );
 }
 
 void QGameView::scrollContentsBy( int dx, int dy ) {
-	QDeclarativeView::scrollContentsBy( dx, dy );
+	QGraphicsView::scrollContentsBy( dx, dy );
 }
 
 void QGameView::showEvent( QShowEvent * event ) {
-	QDeclarativeView::showEvent( event );
+	QGraphicsView::showEvent( event );
 }
 
 bool QGameView::viewportEvent( QEvent * event ) {
-	return QDeclarativeView::viewportEvent( event );
+	return QGraphicsView::viewportEvent( event );
 }
 
 void QGameView::wheelEvent( QWheelEvent * event ) {

@@ -1,9 +1,9 @@
 #ifndef CHARACTER_H
 #define CHARACTER_H
 
-#include <QDeclarativeItem>
+#include "gamescenario.h"
 
-class QGameCharacter : public QDeclarativeItem
+class QGameCharacter : public QGameObject
 {
 	Q_OBJECT
 	//Q_PROPERTY( bool drawGrid READ getDrawGrid WRITE setDrawGrid DESIGNABLE true NOTIFY gridEnabledChanged );
@@ -16,9 +16,14 @@ private:
 Q_SIGNALS:
 private Q_SLOTS:
 protected:
-	void mousePressEvent( QGraphicsSceneMouseEvent *event );
-	void mouseMoveEvent( QGraphicsSceneMouseEvent * event );
+	void	mousePressEvent( QGraphicsSceneMouseEvent *event );
+	void	mouseMoveEvent( QGraphicsSceneMouseEvent * event );
 private:
+	struct widgets_t {
+		QGraphicsPathItem *	moveItem;
+	} widgets;
+	
+	bool	showMoveHelper;
 };
 
 #endif // MAP_OBJECT_H

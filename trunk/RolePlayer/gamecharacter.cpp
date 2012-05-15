@@ -5,15 +5,18 @@
 #include <QGraphicsSceneMouseEvent>
 
 #include "gamecharacter.h"
-#include "gametilemap.h"
+#include "gamescene.h"
 #include "dialog_mapproperties.h"
 
 QGameCharacter::QGameCharacter( QDeclarativeItem * parent ) :
-	QDeclarativeItem( parent ) {
+	QGameObject( parent ),
+	showMoveHelper( false ) {
 	setAcceptedMouseButtons( Qt::LeftButton );
 	setFlag( QGraphicsItem::ItemHasNoContents, false );
 	setFlag( QGraphicsItem::ItemIsMovable, true );
 	setFlag( QGraphicsItem::ItemIsSelectable, true );
+
+	memset( &widgets, 0, sizeof( widgets ) );
 }
 
 QGameCharacter::~QGameCharacter() {
@@ -21,9 +24,22 @@ QGameCharacter::~QGameCharacter() {
 
 void QGameCharacter::paint( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget *widget ) {
 	if ( isSelected() ) {		
-		painter->setPen( QPen( QColor( "blue" ), Qt::DashLine ) );
+		painter->setPen( QPen( QColor( Qt::blue ), Qt::DashLine ) );
 		painter->drawRect( boundingRect() );
 	}
+
+	showMoveHelper = true;
+	if ( showMoveHelper ) {
+		/*QGameScene * scene = qobject_cast<QGameScene *>( parentItem() );
+		if ( scene != NULL ) {
+			if ( widgets.moveItem == NULL ) {
+				QPainterPath path;
+				path.addRect();				
+				widgets.moveItem = scene->addPath();
+			}			
+		}*/
+	}
+
 	QDeclarativeItem::paint( painter, option, widget );	
 }
 
@@ -34,8 +50,8 @@ void QGameCharacter::mousePressEvent( QGraphicsSceneMouseEvent *event ) {
 }
 
 void QGameCharacter::mouseMoveEvent( QGraphicsSceneMouseEvent * event ) {
-	QGameTileMap * map = qobject_cast<QGameTileMap *>( parentItem() );
-	if ( map != NULL ) {
-		map->snapToGrid( this, event->scenePos() );
+	QGameScene * scene = qobject_cast<QGameScene *>( parentItem() );
+	if ( scene != NULL ) {
+		scene->snapToGrid( this, event->scenePos() );
 	}
 }

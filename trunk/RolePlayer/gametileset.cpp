@@ -29,11 +29,11 @@ void QGameTile::paint( QPainter * painter, const QStyleOptionGraphicsItem * opti
 	if ( tileSet != NULL ) {
 		painter->drawImage( 0, 0, tileSet->GetImage(), pos().x(), pos().y(), width(), height() );
 	}
-	if ( isSelected() ) {		
-		painter->setPen( QPen( QColor( "blue" ), Qt::DashLine ) );
+	if ( isSelected() ) {
+		painter->setPen( QPen( QColor( Qt::blue ), Qt::DashLine ) );
 		painter->drawRect( boundingRect() );
-
-		painter->setPen( QPen( QColor( "magenta" ) ) );
+		
+		painter->setPen( QPen( QColor( Qt::magenta ) ) );
 		painter->drawPoint( boundingRect().center() );
 	}
 	QDeclarativeItem::paint( painter, option, widget );	

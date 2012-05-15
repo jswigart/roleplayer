@@ -39,6 +39,13 @@ class QGameScene : public QGraphicsScene {
 	Q_OBJECT
 	Q_PROPERTY( QUrl saveFileUrl READ getSaveFileUrl DESIGNABLE true NOTIFY saveFileUrlChanged );
 public:
+	bool				gridEnabled() const { return gridRender; }
+	int					getGridSize() const { return gridSize; }
+	const QColor &		getGridColor() const { return gridColor; }
+	bool				getDrawGrid() const { return gridRender; }	
+
+	void				snapToGrid( QGraphicsItem * item, const QPointF & scenePos );
+
 	RolePlayer *		getApp() { return rootApp; };
 
 	QTool *				getCurrentTool() { return currentTool; }
@@ -46,10 +53,8 @@ public:
 	
 	const QUrl &		getSaveFileUrl() const { return saveFileUrl; }
 	void				setSaveFileUrl( const QUrl & url ) { saveFileUrl = url; } 
-
-	QGameTileMap *		getMapAtPosition( const QPointF & scenePos );
-
-	//void				render( QPainter * painter, const QRectF & target, const QRectF & source, Qt::AspectRatioMode aspectRatioMode );
+	
+	void				drawBackground ( QPainter * painter, const QRectF & rect );
 	
 	void				getLayerNames( QStringList & names );
 
@@ -91,6 +96,10 @@ private:
 	QPointer<QTool>			currentTool;
 
 	QUrl					saveFileUrl;
+	
+	int						gridSize;
+	bool					gridRender;
+	QColor					gridColor;
 };
 
 #endif // MAP_OBJECT_H

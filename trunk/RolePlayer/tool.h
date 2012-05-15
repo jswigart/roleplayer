@@ -14,7 +14,6 @@
 class QAction;
 class QToolBar;
 class QGameScene;
-class QGameTileMap;
 class QGameTile;
 
 //////////////////////////////////////////////////////////////////////////
@@ -86,7 +85,6 @@ public:
 private:
 	QPointer<QGameTile>			selectedTile;
 	QGraphicsPixmapItem *		overlay;
-	QPointer<QGameTileMap>		lastMap;	
 signals:
 public slots:
 	void Slot_TileSelected( QGameTile * tile );

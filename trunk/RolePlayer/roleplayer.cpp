@@ -9,10 +9,10 @@
 #include <QWindowsStyle.h>
 #include <QDeclarativeEngine>
 #include <QGraphicsWidget>
+#include <QDeclarativeContext>
 
 #include "tiletools.h"
 #include "gamecharacter.h"
-#include "gametilemap.h"
 #include "gametileset.h"
 #include "roleplayer.h"
 #include "flowlayout.h"
@@ -212,20 +212,40 @@ int RolePlayer::AddMapEditTab( const QString & name ) {
 			tabName = testTabName;
 			break;
 		}
-	}	
-
+	}
+	
 	QGameView * editView = new QGameView( ui.editorTabs );	
 	editView->setMouseTracking( true );
 	editView->setScene( new QGameScene( this, ui.editorTabs ) );
-	editView->engine()->setImportPathList( importPaths );
 	editView->setHorizontalScrollBarPolicy( Qt::ScrollBarAsNeeded );
 	editView->setVerticalScrollBarPolicy( Qt::ScrollBarAsNeeded );
-	//editView->setSource( QUrl( "./resources/maps/default.qml" ) );
-	//editView->setResizeMode()
-	editView->setBackgroundBrush( QBrush( Qt::gray ) );
-	//editView->setDragMode( QGraphicsView::ScrollHandDrag );
-	editView->setObjectName( "view" );
 	editView->setResizeAnchor( QGraphicsView::AnchorViewCenter );
+	
+	QDeclarativeEngine * declEngine = new QDeclarativeEngine( editView );
+	declEngine->setObjectName( "engine" );
+	declEngine->setImportPathList( importPaths );
+
+	// expose the context variables to QML
+	QDeclarativeContext * rootContext = declEngine->rootContext();
+	if ( rootContext != NULL ) {
+		rootContext->setContextProperty( "scenario", new QGameScenario( editView->scene() ) );
+		//rootContext->setContextObject
+	}
+
+	//////////////////////////////////////////////////////////////////////////
+	
+	QDeclarativeComponent * component = CacheQMLComponent( declEngine, QUrl::fromLocalFile("./resources/ruleset/heroquest/objects/BattleTest.qml") );
+	if ( component != NULL ) {
+		QObject * obj = component->create( rootContext ) ;
+		QGraphicsItem * gfxItem = qobject_cast<QGraphicsItem*>( obj );
+		if ( gfxItem != NULL ) {
+			editView->scene()->addItem( gfxItem );
+		} else if ( obj ) {
+			delete obj;
+		}
+	}
+
+	//////////////////////////////////////////////////////////////////////////
 
 	connect( editView->scene(), SIGNAL(selectionChanged()), this, SLOT(Slot_RefreshPropertyList()));
 
@@ -233,23 +253,22 @@ int RolePlayer::AddMapEditTab( const QString & name ) {
 }
 
 void RolePlayer::AddTileSetTab( const QFileInfo & file, const QImage & image, bool focus ) {
-	QDeclarativeView * tileView = new QDeclarativeView( ui.editorTabs );	
-	//tileView->setMouseTracking( true );
-	//tileView->setScene( new QGameScene( this, ui.editorTabs ) );
-	tileView->engine()->setImportPathList( importPaths );
-	tileView->setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOn );
-	tileView->setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOn );
-	tileView->setSource( QUrl( "./resources/maps/default.qml" ) );
-	tileView->setBackgroundBrush( QBrush( Qt::gray ) );
-	tileView->setObjectName( file.canonicalFilePath() );
-	tileView->setResizeAnchor( QGraphicsView::AnchorViewCenter );
-	tileView->setDragMode( QGraphicsView::ScrollHandDrag );
+	QGraphicsView * view = new QGraphicsView( ui.editorTabs );
+	view->setScene( new QGameScene( this, ui.editorTabs ) );
+	view->setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOn );
+	view->setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOn );
+	view->setObjectName( file.canonicalFilePath() );
+	view->setResizeAnchor( QGraphicsView::AnchorViewCenter );
+	view->setDragMode( QGraphicsView::ScrollHandDrag );
 	
-	QGameTileSet * tileSet = new QGameTileSet( file, image );
-	tileView->scene()->addItem( tileSet );	
-	tileView->setBackgroundBrush( QBrush( Qt::gray ) );
+	/*QDeclarativeEngine * declEngine = new QDeclarativeEngine( view );
+	declEngine->setImportPathList( importPaths );*/
 
-	ui.tabWidgetTileSets->addTab( tileView, file.baseName() );
+	QGameTileSet * tileSet = new QGameTileSet( file, image );
+	view->scene()->addItem( tileSet );	
+	view->setBackgroundBrush( QBrush( Qt::gray ) );
+
+	ui.tabWidgetTileSets->addTab( view, file.baseName() );
 
 	connect( tileSet, SIGNAL(TileSelected(QGameTile*)),
 		tools.paintTile, SLOT(Slot_TileSelected(QGameTile*)));
@@ -519,7 +538,7 @@ void RolePlayer::Action_SaveFileMapImage() {
 }
 
 void RolePlayer::Action_MapProperties() {
-	const int currentTab = ui.editorTabs->currentIndex();
+	/*const int currentTab = ui.editorTabs->currentIndex();
 	QGameView * currentView = qobject_cast<QGameView *>( ui.editorTabs->widget( currentTab ) );
 	if ( currentView != NULL ) {
 		QGameTileMap * mapItem = currentView->findChild<QGameTileMap*>( "map" );
@@ -527,7 +546,7 @@ void RolePlayer::Action_MapProperties() {
 			QDialogMapProperties dlg( mapItem, this );
 			dlg.exec();
 		}		
-	}
+	}*/
 }
 
 void RolePlayer::Action_Preferences() {

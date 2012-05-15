@@ -6,7 +6,6 @@
 #include "roleplayer.h"
 #include "tool.h"
 #include "gamescene.h"
-#include "gametilemap.h"
 #include "gametileset.h"
 
 QTool::QTool( QObject * parent ) : 
@@ -103,16 +102,7 @@ void QToolPaintTile::Slot_TileSelected( QGameTile * tile ) {
 	if ( selectedTile == tile ) {
 		
 	} else {
-		// clear the old overlay
-		/*if ( !selectedTile.isNull() ) {
-			selectedTile->setOverlay( QPixmap() );
-		}*/
-
 		selectedTile = tile;
-
-		/*QPixmap highlight( label->pixmap()->size() );
-		highlight.fill( QColor( 255, 0, 0, 100 ) );
-		selectedTile->setOverlay( highlight );*/
 
 		// if the tool is active, update the pixmap
 		if ( overlay != NULL ) {
@@ -125,18 +115,16 @@ void QToolPaintTile::mouseMoveEvent( QGraphicsSceneMouseEvent * mouseEvent ) {
 	if ( overlay != NULL ) {
 		overlay->setPos( mouseEvent->scenePos() );
 		
-		QGameTileMap * tileMap = activeScene->getMapAtPosition( mouseEvent->scenePos() );
-		if ( tileMap != NULL ) {
-			lastMap = tileMap;
-		} 
-		
-		if ( lastMap != NULL ) {
-			lastMap->snapToGrid( overlay, overlay->scenePos() );
-		}
+		activeScene->snapToGrid( overlay, overlay->scenePos() );
 
 		// if button is held, we want to paint to new cells
 		if ( mouseEvent->buttons() & Qt::LeftButton ) {
-			
+			QList<QGraphicsItem *> objects = activeScene->items( overlay->pos(), Qt::IntersectsItemShape, Qt::DescendingOrder );
+			objects.removeAll( overlay );
+			if ( objects.isEmpty() ) {
+				QGraphicsPixmapItem * pix = activeScene->addPixmap( overlay->pixmap() );			
+				activeScene->snapToGrid( pix, mouseEvent->scenePos() );
+			}
 		}
 	}
 	mouseEvent->accept();
@@ -144,18 +132,8 @@ void QToolPaintTile::mouseMoveEvent( QGraphicsSceneMouseEvent * mouseEvent ) {
 
 void QToolPaintTile::mousePressEvent( QGraphicsSceneMouseEvent * mouseEvent ) {
 	if ( overlay != NULL ) {
-		QGameTileMap * tileMap = activeScene->getMapAtPosition( mouseEvent->scenePos() );
-		if ( tileMap != NULL ) {
-			lastMap = tileMap;
-		} 
-		
-		if ( lastMap != NULL ) {
-			QGraphicsPixmapItem * pix = activeScene->addPixmap( overlay->pixmap() );
-			
-			pix->setParentItem( lastMap );
-
-			lastMap->snapToGrid( pix, mouseEvent->scenePos() );
-		}
+		QGraphicsPixmapItem * pix = activeScene->addPixmap( overlay->pixmap() );			
+		activeScene->snapToGrid( pix, mouseEvent->scenePos() );
 	}
 	mouseEvent->accept();
 }
@@ -196,9 +174,9 @@ void QToolCreatePolygon::complete() {
 	if ( overlay != NULL ) {
 		if ( vertices.count() > 2 ) {
 			if ( polyMode == MODE_POLYGON ) {
-				activeScene->addPolygon( QPolygonF( vertices ), QPen( QColor( "black" ) ), QBrush( "blue" ) );
+				activeScene->addPolygon( QPolygonF( vertices ), QPen( QColor( Qt::black ) ), QBrush( Qt::blue ) );
 			} else if ( polyMode == MODE_CHAIN ) {
-				activeScene->addPath( overlay->path(), QPen( QColor( "black" ) ) );
+				activeScene->addPath( overlay->path(), QPen( QColor( Qt::black ) ) );
 			}
 		}
 		
@@ -230,7 +208,7 @@ void QToolCreatePolygon::updateOverlay() {
 
 void QToolCreatePolygon::mousePressEvent( QGraphicsSceneMouseEvent * mouseEvent ) {
 	if ( overlay == NULL ) {
-		overlay = activeScene->addPath( QPainterPath(), QPen( QColor( "white" ), Qt::DashLine ), QBrush( QColor( 0, 0, 255, 50 ) ) );
+		overlay = activeScene->addPath( QPainterPath(), QPen( QColor( Qt::white ), Qt::DashLine ), QBrush( QColor( 0, 0, 255, 50 ) ) );
 	}
 
 	vertices.append( mouseEvent->scenePos() );
