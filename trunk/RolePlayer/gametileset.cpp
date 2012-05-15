@@ -34,7 +34,7 @@ void QGameTile::paint( QPainter * painter, const QStyleOptionGraphicsItem * opti
 		painter->drawRect( boundingRect() );
 
 		painter->setPen( QPen( QColor( "magenta" ) ) );
-		painter->drawPoint( pos() );
+		painter->drawPoint( boundingRect().center() );
 	}
 	QDeclarativeItem::paint( painter, option, widget );	
 }

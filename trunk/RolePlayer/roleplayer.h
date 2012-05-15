@@ -59,6 +59,7 @@ private slots:
 	void				Action_Preferences();
 	void				Action_MapProperties();
 	void				Action_NewFile();
+	void				Action_OpenFile();
 	void				Action_SaveFile();
 	void				Action_SaveFileAll();
 	void				Action_SaveFileMapImage();
@@ -101,7 +102,7 @@ private:
 	void				InitObjectPallette();
 	QDeclarativeComponent * CacheQMLComponent( QDeclarativeEngine * engine, const QUrl & file );
 
-	void				AddMapEditTab( const QString & name );
+	int					AddMapEditTab( const QString & name );
 
 	void				FindAllFileTypes( const QString & path, const QStringList & fileTypes, QFileInfoList & files );
 

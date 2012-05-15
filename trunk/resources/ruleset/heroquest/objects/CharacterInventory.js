@@ -42,8 +42,8 @@ function inventoryDirty() {
     var mindBonus = 0
     var moveBonus = 0
 
-    var weapon = ""
-    var armor = ""
+    var weapon = "None"
+    var armor = "None"
 
     // accumulate all stat bonuses for equipment
     for ( var i = 0; i < inventory.children.length; ++i ) {
@@ -53,10 +53,10 @@ function inventoryDirty() {
         bodyBonus += item.stats.bonusBody
         mindBonus += item.stats.bonusMind
         moveBonus += item.stats.bonusMove
-        if ( weapon == "" && item.stats.usesSlot( "weapon" ) ) {
+        if ( weapon == "None" && item.stats.usesSlot( "weapon" ) ) {
             weapon = item.stats.name;
         }
-        if ( armor == "" && item.stats.usesSlot( "chest" ) ) {
+        if ( armor == "None" && item.stats.usesSlot( "chest" ) ) {
             armor = item.stats.name;
         }
     }
