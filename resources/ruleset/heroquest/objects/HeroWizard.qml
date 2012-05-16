@@ -1,13 +1,12 @@
-
 import QtQuick 1.1
-//import TileTools 1.0
 
-//GameCharacter {
 Item {
     id: self
     objectName: "Wizard"
     width: character.width
     height: character.height
+
+    property variant classAbilities: [ "AbilityAttack.qml", "AbilityCastSpell.qml" ]
 
     property bool placeable: true
 
@@ -25,11 +24,10 @@ Item {
         character.statBaseBody = 4
         character.statBaseMind = 6
         character.statBaseMovement = 2
-        character.inventory.giveItem( "InventoryItemDagger.qml" );
+        //character.giveItem( "InventoryItemDagger.qml" );
         //character.spells = [ "" ]
+        character.addAbilities( [ "AbilityAttack.qml", "AbilityCastSpell.qml" ] )
 
         //console.log( "onCompleted " + character.className );
-
-        scenario.addGameObject( self );
     }
 }

@@ -6,6 +6,7 @@ Item {
 
     Component.onCompleted: {
         stats.name = "Chain Mail"
+        stats.category = [ 'armor' ]
         stats.slotsUsed = [ 'chest' ]
         stats.notUsableByClassKeywords = [ 'wizard' ]
         stats.bonusDefend = 1

@@ -1,11 +1,13 @@
-
 import QtQuick 1.1
 
-Item {
+QtObject {
     id: stats
 
     property string name: ""
     property string desc: ""
+
+    // armor, weapon, tool, potion, etc
+    property variant category: [ '' ]
 
     // valid slots: head, chest, boots, shield, weapon, offhand. can occupy multiple slots
     property variant slotsUsed: [ '' ]
@@ -42,9 +44,7 @@ Item {
     }
 
     Component.onCompleted: {
-        //console.log( "onCompleted item: " + name );
     }
-//    Component.onDestroyed: {
-//        console.log( "onDestroyed item: " + name );
-//    }
+    Component.onDestruction: {
+    }
 }

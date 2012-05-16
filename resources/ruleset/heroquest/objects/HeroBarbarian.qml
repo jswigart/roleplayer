@@ -1,7 +1,5 @@
 import QtQuick 1.1
-//import TileTools 1.0
 
-//GameCharacter {
 Item {
     id: self
     objectName: "Barbarian"
@@ -24,9 +22,7 @@ Item {
         character.statBaseBody = 8
         character.statBaseMind = 2
         character.statBaseMovement = 2
-        character.inventory.giveItem( "InventoryItemBroadSword.qml" );
+        //character.giveItem( "InventoryItemBroadSword.qml" );
         //console.log( "onCompleted " + character.className );
-
-        scenario.addGameObject( self );
     }
 }

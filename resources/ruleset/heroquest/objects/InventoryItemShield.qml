@@ -6,6 +6,7 @@ Item {
 
     Component.onCompleted: {
         stats.name = "Shield"
+        stats.category = [ 'armor', 'shield' ]
         stats.slotsUsed = [ 'offhand' ]
         stats.notUsableByClassKeywords = [ 'wizard' ]
         stats.bonusDefend = 1
