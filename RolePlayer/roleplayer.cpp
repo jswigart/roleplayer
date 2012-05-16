@@ -375,12 +375,12 @@ void RolePlayer::Slot_RefreshPropertyList() {
 		QList<QGraphicsItem *> selected = currentView->getGameScene()->selectedItems();
 
 		for( int i = 0; i < selected.count(); ++i ) {
-			QGameCharacter * gfxObj = qgraphicsitem_cast<QGameCharacter*>( selected[ i ] );
+			/*QGameCharacter * gfxObj = qgraphicsitem_cast<QGameCharacter*>( selected[ i ] );
 			if ( gfxObj != NULL ) {
 				ui.propTree->AddGroup( NULL, 
 					gfxObj->objectName(), 
 					gfxObj->objectName() );	
-			}
+			}*/
 		}
 	}
 }

@@ -3,37 +3,12 @@ import QtQuick 1.1
 Item {
     id: root
     z: -10
-    visible: false
 
     property real range: 7
     property real step: 32
 
     ////////////////////////////////////////////////////////
-    // TEST
-    Timer {
-        id: testtoggle
-        interval: 2000; running: true; repeat: true
-        onTriggered: {
-            root.visible = !root.visible
-        }
-    }
-    ////////////////////////////////////////////////////////
-//    Timer {
-//        id: deleter
-//        interval: 10; running: false; repeat: true
 
-//        property int d: 0
-
-//        onTriggered: {
-//            for ( var i = 0; i < root.children.length; ++i ) {
-//                if ( root.children[ i ].d == d ) {
-//                    root.children[ i ].destroy()
-//                }
-//            }
-//            --d;
-//        }
-//    }
-    ////////////////////////////////////////////////////////
     Component {
         id: block
 
@@ -60,32 +35,14 @@ Item {
 
             Timer {
                 id: expander
-                interval: 10; running: true; repeat: false
+                interval: 1; running: true; repeat: false
                 onTriggered: {
-                    if ( root.visible ) {
-                        expand( b )
-                    }
+                    expand( b )
                  }
              }
 
             Component.onCompleted: {
-                console.log( "item created at " + x + " x " + y + " y " + d + " distance" );
-            }
-
-            onVisibleChanged: {
-                if ( visible ) {
-                    //deleter.stop()
-                    expand( b )
-                } else {
-                    var highestBlock = 1
-                    for ( var i = 0; i < root.children.length; ++i ) {
-                        if ( root.children[ i ].d > highestBlock ) {
-                            highestBlock = root.children[ i ].d
-                        }
-                    }
-                    deleter.d = highestBlock
-                    deleter.start();
-                }
+                //console.log( "item created at " + x + " x " + y + " y " + d + " distance" );
             }
         }
     }
@@ -99,8 +56,6 @@ Item {
         element.objectName = "obj_" + x + "_" + y
 
         var expandd = element.d + 1
-
-        console.log( "expand" );
 
         if ( element.d <= root.range ) {
             for ( var i = -1; i <= 1; i++ ) {

@@ -14,8 +14,8 @@ int main( int argc, char *argv[] ) {
 	libPaths.append( "./resources/plugins" );
 	QCoreApplication::setLibraryPaths( libPaths );
 
-	qmlRegisterType<QGameCharacter>( "TileTools", 1, 0, "GameCharacter" );
 	qmlRegisterType<QGameScenario>( "TileTools", 1, 0, "GameScenario" );
+	qmlRegisterType<QGameRangeIndicator>( "TileTools", 1, 0, "RangeIndicator" );	
 
 	RolePlayer w;
 	w.show();
