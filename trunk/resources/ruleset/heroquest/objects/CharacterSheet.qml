@@ -106,7 +106,7 @@ Item {
                 y: 98
                 width: 40
                 height: 30
-                text: inventory.activeWeapon
+                text: activeWeapon
                 font.pixelSize: 20
                 anchors.verticalCenterOffset: 86
                 anchors.verticalCenter: parent.verticalCenter
@@ -120,7 +120,7 @@ Item {
                 y: 128
                 width: 40
                 height: 30
-                text: inventory.activeArmor
+                text: activeArmor
                 font.pixelSize: 20
                 anchors.verticalCenterOffset: 116
                 anchors.verticalCenter: parent.verticalCenter

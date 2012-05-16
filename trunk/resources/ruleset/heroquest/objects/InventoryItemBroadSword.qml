@@ -4,8 +4,12 @@ Item {
     InventoryItem { id: stats }
     property alias stats: stats
 
+    AbilityAttack {
+    }
+
     Component.onCompleted: {
         stats.name = "Broad Sword"
+        stats.category = [ 'weapon' ]
         stats.slotsUsed = [ 'weapon' ]
         stats.notUsableByClassKeywords = [ 'wizard' ]
         stats.bonusAttack = 3

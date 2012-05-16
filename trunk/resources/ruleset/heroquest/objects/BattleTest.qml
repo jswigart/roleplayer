@@ -5,75 +5,76 @@ Item {
         id: barb
         x: 0
         y: 0
+
+        Component.onCompleted: {
+            character.name = "Aragorn"
+            character.giveItem( "InventoryItemBroadSword.qml" );
+            character.giveItem( "InventoryItemPlateMail.qml" )
+        }
+
+        MouseArea {
+            anchors.fill: parent
+            onClicked: {
+                resolveAttack( barb, goblin )
+            }
+        }
     }
 
     HeroDwarf {
         id: dwarf
-        x: 100
-        y: 100
+        x: 32
+        y: 0
+
+        Component.onCompleted: {
+            character.name = "Gimli"
+            character.giveItem( "InventoryItemShortSword.qml" );
+            character.giveItem( "InventoryItemChainMail.qml" )
+        }
+    }
+
+    HeroElf {
+        id: elf
+        x: 64
+        y: 0
+
+        Component.onCompleted: {
+            character.name = "Legolas"
+            character.giveItem( "InventoryItemShortSword.qml" );
+        }
+    }
+
+    HeroWizard {
+        id: wizard
+        x: 96
+        y: 0
+
+        Component.onCompleted: {
+            character.name = "Gandalf"
+            character.giveItem( "InventoryItemDagger.qml" );
+        }
     }
 
     MonsterGoblin {
         id: goblin
-        x: 50
-        y: 50
-    }
+        x: 0
+        y: 64
 
-    function rollAttackDice( numDie ) {
-        var attack = 0
-        for ( var i = 0; i < numDie; i++ ) {
-            var result = ( Math.random() * 6 )
-            if ( result < 3 ) {
-                ++attack;
-            }
+        Component.onCompleted: {
+            character.name = "Gobez"
         }
-        return attack;
     }
 
-    function rollDefendDice( numDie ) {
-        var defend = 0
-        for ( var i = 0; i < numDie; i++ ) {
-            var result = ( Math.random() * 6 )
-            if ( result > 4 ) {
-                ++defend;
-            }
+    MonsterGargoyle {
+        id: garg
+        x: 32
+        y: 64
 
-            // for monsters
-            //if ( result == 4 ) {
-            //  ++defend;
-            //}
-        }
-        return defend;
-    }
-
-    function resolveAttack( attacker, defender ) {
-        console.log( attacker.character.name + " can move " + attacker.character.calculateMovementSquares() + " squares" )
-        console.log( defender.character.name + " can move " + defender.character.calculateMovementSquares() + " squares" )
-
-        var attackDie = attacker.character.statCurrentAttack
-        var defendDie = defender.character.statCurrentDefend
-
-        var attack = rollAttackDice( attackDie )
-        var defend = rollDefendDice( defendDie )
-
-        console.log( attacker.character.name + " rolled " + attackDie + " attack die for " + attack + " hits"  )
-        console.log( defender.character.name + " rolled " + defendDie + " defend die for " + defend + " blocks"  )
-
-        var damage = attack - defend;
-        if ( damage > 0 ) {
-            console.log( defender.character.name + " took " + damage + " damage points " )
-        } else {
-            console.log( defender.character.name + " blocked all damage " )
+        Component.onCompleted: {
+            character.name = "Gargoyle"
         }
     }
 
     Component.onCompleted: {
-        barb.character.name = "Conan"
-        dwarf.character.name = "Gimli"
-
-        barb.character.inventory.giveItem( "InventoryItemPlateMail.qml" )
-        dwarf.character.inventory.giveItem( "InventoryItemChainMail.qml" )
-
-        scenario.startBattle()
+        //scenario.startBattle()
     }
 }

@@ -1,8 +1,5 @@
-
 import QtQuick 1.1
-//import TileTools 1.0
 
-//GameCharacter {
 Item {
     id: self
     objectName: "Elf"
@@ -25,11 +22,10 @@ Item {
         character.statBaseBody = 5
         character.statBaseMind = 5
         character.statBaseMovement = 2
-        character.inventory.giveItem( "InventoryItemShortSword.qml" );
+        //character.giveItem( "InventoryItemShortSword.qml" );
         //character.spells = [ "" ]
+        character.addAbilities( [ "AbilityAttack.qml", "AbilityCastSpell.qml" ] )
 
         //console.log( "onCompleted " + character.className );
-
-        scenario.addGameObject( self );
     }
 }

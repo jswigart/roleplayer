@@ -8,7 +8,8 @@ Item {
         stats.name = "Tool Kit"
         stats.desc = "None"
         stats.costBuy = 250
+        stats.category = [ 'tool' ]
 
-        // todo: implement disarm functionality
+        parent.addAbility( "AbilityDisarmTrap.qml" )
     }
 }
