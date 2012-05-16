@@ -6,29 +6,91 @@
 
 #include "gamescenario.h"
 
-QGameObject::QGameObject( QDeclarativeItem * parent ) :
-	QDeclarativeItem( parent ) {
+QGameRangeIndicator::QGameRangeIndicator( QGraphicsItem * parent ) :
+	QGraphicsObject( parent ),
+	range( 0 ),
+	rangeStep( 0 ) {
+	connect( this, SIGNAL(rangeChanged()), this, SLOT(Slot_UpdateIndicator()) );
+	connect( this, SIGNAL(rangeStepChanged()), this, SLOT(Slot_UpdateIndicator()) );
 }
 
-void QGameObject::startBattle( QGameScenario * scenario ) {
-	connect( this, SIGNAL(turnEnded(QGameObject*)), scenario, SLOT(Slot_GameObjectTurnFinished(QGameObject*)) );
+int QGameRangeIndicator::getRange() const { 
+	return range; 
+}
+void QGameRangeIndicator::setRange( int r ) { 
+	if ( range != r ) {
+		range = r;
+		emit rangeChanged();
+	}
+}
 
-	setProperty( "turnTaken", false );
+int QGameRangeIndicator::getRangeStep() const {
+	return rangeStep;
+}
+void QGameRangeIndicator::setRangeStep( int r ) {
+	if ( rangeStep != r ) {
+		rangeStep = r;
+		emit rangeStepChanged();
+	}	
+}
+
+QRectF QGameRangeIndicator::boundingRect() const {
+	return QRectF( 
+		-( rangeStep + rangeStep * range ) * 0.5,
+		-( rangeStep + rangeStep * range ) * 0.5,
+		(rangeStep + rangeStep * range)+1,
+		(rangeStep + rangeStep * range)+1);
+}
+
+void QGameRangeIndicator::paint( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget *widget ) {
+	painter->drawPixmap( pos(), indicator );
+}
+
+void QGameRangeIndicator::Slot_UpdateIndicator() {
+	indicator = QPixmap( rangeStep + rangeStep * range, rangeStep + rangeStep * range );
+	indicator.fill( QColor( Qt::transparent ) );
 	
-	// let the QML calculate the round start
-	emit startRound();
+	QPainter painter( &indicator );
+	painter.setPen( QColor( Qt::black ) );
+	painter.drawRect( boundingRect() );
+	
+	Expand_r( painter, indicator.rect().center(), 1 );
 }
 
-void QGameObject::endBattle( QGameScenario * scenario ) {
-	disconnect( scenario, SLOT(Slot_GameObjectTurnFinished(QGameObject*)) );
+void QGameRangeIndicator::Expand_r( QPainter & painter, const QPointF & pt, const int currentRange ) {
+	const qreal radius = 10.0f;
+	
+	if ( currentRange <= range ) {
+		for ( int i = -1; i <= 1; i++ ) {
+			if ( i == 0 ) {
+				continue;
+			}
+			
+			const qreal expandx = pt.x() + rangeStep * i;
+			const qreal expandy = pt.y();
+			QObject * existingItem = NULL;//root.childAt( expandx, expandy )
+			if ( existingItem == NULL ) {
+				QRectF rect( expandx, expandy, rangeStep, rangeStep );
+				painter.drawRoundedRect( rect, radius, radius, Qt::AbsoluteSize );
+				painter.drawText( rect, Qt::AlignCenter, QString( "%1" ).arg( currentRange ) );
+			}
+		}
 
-	setProperty( "turnTaken", false );
-}
+		for ( int i = -1; i <= 1; i++ ) {
+			if ( i == 0 ) {
+				continue;
+			}
 
-void QGameObject::turnNotify( QGameScenario * scenario ) {
-	/*QMetaObject::invokeMethod(this, "takeTurn",
-		Q_RETURN_ARG(QVariant, returnedValue),
-		Q_ARG(QVariant, msg));*/
+			const qreal expandx = pt.x();
+			const qreal expandy = pt.y() + rangeStep * i;
+			QObject * existingItem = NULL;//root.childAt( expandx, expandy )
+			if ( existingItem == NULL ) {
+				QRectF rect( expandx, expandy, rangeStep, rangeStep );
+				painter.drawRoundedRect( rect, radius, radius, Qt::AbsoluteSize );
+				painter.drawText( rect, Qt::AlignCenter, QString( "%1" ).arg( currentRange ) );
+			}
+		}
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -61,7 +123,7 @@ void QGameScenario::startBattle() {
 		QMetaObject::invokeMethod( gameObjects[ i ], "startBattle" );
 
 		// we want notification when the object finishes its turn
-		connect( gameObjects[ i ], SIGNAL(turnEnded(QGameObject*)), this, SLOT(Slot_GameObjectTurnFinished(QGameObject*)) );
+		//connect( gameObjects[ i ], SIGNAL(turnEnded(QGameObject*)), this, SLOT(Slot_GameObjectTurnFinished(QGameObject*)) );
 	}
 
 	NotifyNextBestGameObjectOfTurn();
@@ -77,14 +139,14 @@ void QGameScenario::endBattle() {
 }
 
 void QGameScenario::Slot_GameObjectDestroyed( QObject * obj ) {
-	gameObjects.removeAll( qobject_cast<QGameObject*>( obj ) );
+	gameObjects.removeAll( obj );
 }
 
-void QGameScenario::Slot_GameObjectTurnFinished( QGameObject * obj ) {
-	obj->setProperty( "turnTaken", true );
-
-	NotifyNextBestGameObjectOfTurn();
-}
+//void QGameScenario::Slot_GameObjectTurnFinished( QGameObject * obj ) {
+//	obj->setProperty( "turnTaken", true );
+//
+//	NotifyNextBestGameObjectOfTurn();
+//}
 
 void QGameScenario::NotifyNextBestGameObjectOfTurn() {
 	float bestInitiative = 0.0f;

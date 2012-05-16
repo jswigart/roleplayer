@@ -1,5 +1,5 @@
 import QtQuick 1.1
-//import TileTools 1.0
+import TileTools 1.0
 //import QtDesktop 0.1
 
  import "Character.js" as Code
@@ -9,6 +9,13 @@ Item {
     id: character
     width: avatar.width
     height: avatar.height
+
+    Behavior on rotation {
+        RotationAnimation {
+            duration: 500
+            direction: RotationAnimation.Shortest
+        }
+    }
 
 //    Window {
 //        id: popup
@@ -68,10 +75,22 @@ Item {
     }
 
     // Gui Elements
-    IndicatorRange {
-         id: moveRangeIndicator
-         range: calculateMovementSquares()
-         visible: false
+//    IndicatorRange {
+//         id: moveRangeIndicator
+//         range: calculateMovementSquares()
+//         opacity: 0
+
+//         Behavior on opacity {
+//             NumberAnimation { duration: 500 }
+//         }
+//    }
+    RangeIndicator {
+        id: moveRangeIndicator
+        range: calculateMovementSquares()
+        rangeStep: character.width
+        Behavior on opacity {
+            NumberAnimation { duration: 500 }
+        }
     }
 
     MouseArea {
@@ -85,24 +104,32 @@ Item {
         }
         onEntered: {
             console.log( "entered " + name );
-            moveRangeIndicator.visible = true
+            moveRangeIndicator.opacity = 1
         }
         onExited: {
             console.log( "exited " + name );
-            moveRangeIndicator.visible = false
+            moveRangeIndicator.opacity = 0
         }
         onPositionChanged: {
-            console.log( "moved " + name );
+            //console.log( "moved " + name );
         }
         onPressAndHold: {
-            console.log( "hold " + name );
+            //console.log( "hold " + name );
         }
         onPressed: {
-            console.log( "pressed " + name );
+            //console.log( "pressed " + name );
         }
         onReleased: {
             console.log( "released " + name );
         }
+    }
+
+    function startBattle() {
+        console.log( "startBattle " + name );
+        if ( isMonster ) {
+            initiative = 2;
+        }
+        initiative = 1
     }
 
     Component.onCompleted: {

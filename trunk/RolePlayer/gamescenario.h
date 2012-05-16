@@ -10,23 +10,35 @@
 //////////////////////////////////////////////////////////////////////////
 
 class QGameScenario;
-class QGameObject : public QDeclarativeItem {
+class QGameRangeIndicator : public QGraphicsObject {
 	Q_OBJECT
-	//Q_PROPERTY( QString ruleset READ getRuleSet WRITE setRuleSet DESIGNABLE true NOTIFY ruleSetChanged );
+	Q_PROPERTY( int range READ getRange WRITE setRange DESIGNABLE true NOTIFY rangeChanged );
+	Q_PROPERTY( int rangeStep READ getRangeStep WRITE setRangeStep DESIGNABLE true NOTIFY rangeStepChanged );
 public:
+	int getRange() const;
+	void setRange( int r );
 
-	void	startBattle( QGameScenario * scenario );
-	void	endBattle( QGameScenario * scenario );
-	void	turnNotify( QGameScenario * scenario );
-	
-	QGameObject( QDeclarativeItem * parent = 0 );
+	int getRangeStep() const;
+	void setRangeStep( int r );
+
+	QGameRangeIndicator( QGraphicsItem * parent = 0 );
 protected:
+
+	QRectF		boundingRect() const;
+
+	void		paint( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget *widget );
 private:
-	QUrl	componentUrl;
+	int		range;
+	int		rangeStep;
+
+	QPixmap	indicator;
+
+	void	Expand_r( QPainter & painter, const QPointF & pt, const int range );
 signals:
-	void	startRound();
-	void	turnEnded();
-	void	yourTurn();
+	void	rangeChanged();
+	void	rangeStepChanged();
+private slots:
+	void	Slot_UpdateIndicator();
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -48,7 +60,6 @@ signals:
 	void			ruleSetChanged();
 private slots:
 	void			Slot_GameObjectDestroyed( QObject * obj );
-	void			Slot_GameObjectTurnFinished( QGameObject * obj );
 private:
 	//QString								ruleset;
 

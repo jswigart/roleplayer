@@ -3,19 +3,12 @@ import QtQuick 1.1
 Item {
     HeroBarbarian {
         id: barb
-
         x: 0
         y: 0
-
-//        IndicatorRange {
-//            x: parent.x
-//            y: parent.y
-//        }
     }
 
     HeroDwarf {
         id: dwarf
-
         x: 100
         y: 100
     }
@@ -80,5 +73,7 @@ Item {
 
         barb.character.inventory.giveItem( "InventoryItemPlateMail.qml" )
         dwarf.character.inventory.giveItem( "InventoryItemChainMail.qml" )
+
+        scenario.startBattle()
     }
 }
