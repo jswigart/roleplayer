@@ -177,7 +177,7 @@ void RolePlayer::InitObjectPallette() {
 		QDeclarativeComponent * c = CacheQMLComponent( ui.viewObjectPalette->engine(), QUrl::fromLocalFile( objectFiles[ i ].canonicalFilePath() ) );
 		if ( c != NULL ) {
 			QDeclarativeItem * item = qobject_cast<QDeclarativeItem*>( c->create() );
-			if ( item->property( "placeable" ).toBool() ) {
+			if ( item != NULL && item->property( "placeable" ).toBool() ) {
 				ui.viewObjectPalette->scene()->addItem( item );
 
 				item->setPos( x, y );

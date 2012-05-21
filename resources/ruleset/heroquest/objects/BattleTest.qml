@@ -10,6 +10,7 @@ Item {
             character.name = "Aragorn"
             character.giveItem( "InventoryItemBroadSword.qml" );
             character.giveItem( "InventoryItemPlateMail.qml" )
+            character.turnEnabled = true
         }
 
         MouseArea {
@@ -29,6 +30,7 @@ Item {
             character.name = "Gimli"
             character.giveItem( "InventoryItemShortSword.qml" );
             character.giveItem( "InventoryItemChainMail.qml" )
+            character.turnEnabled = true
         }
     }
 
@@ -40,6 +42,7 @@ Item {
         Component.onCompleted: {
             character.name = "Legolas"
             character.giveItem( "InventoryItemShortSword.qml" );
+            character.turnEnabled = true
         }
     }
 
