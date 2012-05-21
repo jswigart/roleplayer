@@ -1,6 +1,6 @@
 import QtQuick 1.1
 import TileTools 1.0
-//import QtDesktop 0.1
+import QtDesktop 0.1
 
  import "Character.js" as Code
 
@@ -32,11 +32,6 @@ Item {
 //        }
 //    }
 //    property alias sheet: sheet
-//    MouseArea {
-//        anchors.fill: avatar
-//        hoverEnabled: true
-//        onClicked: popup.visible = true
-//    }
 
     Image {
         id: avatar
@@ -62,7 +57,9 @@ Item {
     property alias avatarImage: avatar.source
     property string profileImage: ""
     property bool isMonster: false;
+
     property int initiative: 0
+    property bool turnEnabled: false
 
     ///////////////////////////////////////
     // equipment
@@ -113,6 +110,7 @@ Item {
 
     MouseArea {
         anchors.fill: parent
+        visible: turnEnabled
         hoverEnabled: true
         onClicked: {
             //console.log( "clicked " + name );
@@ -122,13 +120,13 @@ Item {
         }
         onEntered: {
             //console.log( "entered " + name );
-            //attackRangeIndicator.opacity = 1
-            //moveRangeIndicator.opacity = 1
+            attackRangeIndicator.opacity = 1
+            moveRangeIndicator.opacity = 1
         }
         onExited: {
             //console.log( "exited " + name );
-            //attackRangeIndicator.opacity = 0
-            //moveRangeIndicator.opacity = 0
+            attackRangeIndicator.opacity = 0
+            moveRangeIndicator.opacity = 0
         }
         onPositionChanged: {
             //console.log( "moved " + name );

@@ -104,7 +104,7 @@ void QGameRangeIndicator::Slot_UpdateIndicator() {
 
 	const float size = ( range + 1 ) * rangeStep * 2.0f + penWidth;
 	indicator = QPixmap( size, size );
-	//indicator.fill( QColor( Qt::transparent ) );
+	indicator.fill( QColor( Qt::transparent ) );
 	
 	QPainter painter( &indicator );		
 	
@@ -127,7 +127,7 @@ void QGameRangeIndicator::Slot_UpdateIndicator() {
 			basePt.x() + curNode.pt.x() * rangeStep, 
 			basePt.y() + curNode.pt.y() * rangeStep, rangeStep, rangeStep );
 
-		painter.setPen( rangeColor.lighter( 100 + 100 * curNode.range / range ) ); 
+		painter.setPen( rangeColor ); 
 		painter.drawRoundedRect( rect, cellRadius, cellRadius, Qt::AbsoluteSize );
 		painter.drawText( rect, Qt::AlignCenter, QString( "%1" ).arg( curNode.range ) );
 
