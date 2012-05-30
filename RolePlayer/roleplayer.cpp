@@ -12,6 +12,8 @@
 #include <QDeclarativeContext>
 
 #include "tiletools.h"
+#include "roleplayertools.h"
+
 #include "gamecharacter.h"
 #include "gametileset.h"
 #include "roleplayer.h"
@@ -55,6 +57,8 @@ RolePlayer::RolePlayer(QWidget *parent, Qt::WFlags flags)
 	ui.setupUi(this);	
 	
 	importPaths.append( "./resources/plugins" );
+
+	ui.viewObjectPalette->engine()->setImportPathList( importPaths );
 	
 	// always work from the executable path
 	QDir::setCurrent( QApplication::applicationDirPath() );
@@ -227,10 +231,9 @@ int RolePlayer::AddMapEditTab( const QString & name ) {
 
 	// expose the context variables to QML
 	QDeclarativeContext * rootContext = declEngine->rootContext();
-	if ( rootContext != NULL ) {
+	/*if ( rootContext != NULL ) {
 		rootContext->setContextProperty( "scenario", new QGameScenario( editView->scene() ) );
-		//rootContext->setContextObject
-	}
+	}*/
 
 	//////////////////////////////////////////////////////////////////////////
 	

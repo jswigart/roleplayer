@@ -7,6 +7,7 @@
 TileWidgets::TileWidgets( QObject *parent ) {
 	widgets.append( new QPropertyTreePlugin( this ) );
 }
+
 QList<QDesignerCustomWidgetInterface*> TileWidgets::customWidgets() const {
 	return widgets;
 }

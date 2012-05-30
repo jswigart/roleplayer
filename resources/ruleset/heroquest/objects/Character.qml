@@ -1,6 +1,6 @@
 import QtQuick 1.1
-import TileTools 1.0
-import QtDesktop 0.1
+import RolePlayerTools 1.0
+//import QtDesktop 0.1
 
  import "Character.js" as Code
 
@@ -48,7 +48,7 @@ Item {
     property int statBaseDefend: 0
     property int statBaseBody: 0
     property int statBaseMind: 0
-    property int statBaseMovement: 0
+    property int statBaseMovement: 2
     property int statCurrentAttack: statBaseAttack + equipmentAttackBonus
     property int statCurrentDefend: statBaseAttack + equipmentDefendBonus
     property int statCurrentBody: statBaseBody + equipmentBodyBonus
@@ -59,7 +59,7 @@ Item {
     property bool isMonster: false;
 
     property int initiative: 0
-    property bool turnEnabled: false
+    property bool turnEnabled: true
 
     ///////////////////////////////////////
     // equipment
@@ -76,33 +76,30 @@ Item {
     signal inventoryUpdated
     onInventoryUpdated: { Code.inventoryDirty() }
 
+    ///////////////////////////////////////
     function buyItem( itemName ) { Code.buyItem( itemName ) }
     function giveItem( itemName ) { Code.giveItem( itemName ) }
     ///////////////////////////////////////
     function addAbilities( abilityNames ) { Code.addAbilities( abilityNames ) }
     function addAbility( abilityName ) { Code.addAbility( abilityName ) }
     ///////////////////////////////////////
-
-    function calculateMovementSquares() {
-        if ( isMonster ) {
-            return statCurrentMovement
-        }
-        return statCurrentMovement * Math.floor( Math.random() * 6 )
-    }
+    function calculateMovementSquares() { return Code.calculateMovementSquares() }
+    ///////////////////////////////////////
 
     // Gui Elements
     RangeIndicator {
         id: moveRangeIndicator
         opacity: 0
         range: calculateMovementSquares()
-        rangeStep: character.width
+        rangeStep: avatar.width
         Behavior on opacity { NumberAnimation { duration: 500 } }
     }
+
     RangeIndicator {
         id: attackRangeIndicator
         opacity: 0
         range: 1
-        rangeStep: character.width
+        rangeStep: avatar.width
         rangeColor: "red"
         includeDiagonal: true
         Behavior on opacity { NumberAnimation { duration: 500 } }
@@ -112,34 +109,14 @@ Item {
         anchors.fill: parent
         visible: turnEnabled
         hoverEnabled: true
-        onClicked: {
-            //console.log( "clicked " + name );
-        }
-        onDoubleClicked: {
-            //console.log( "dbl clicked " + name );
-        }
-        onEntered: {
-            //console.log( "entered " + name );
-            attackRangeIndicator.opacity = 1
-            moveRangeIndicator.opacity = 1
-        }
-        onExited: {
-            //console.log( "exited " + name );
-            attackRangeIndicator.opacity = 0
-            moveRangeIndicator.opacity = 0
-        }
-        onPositionChanged: {
-            //console.log( "moved " + name );
-        }
-        onPressAndHold: {
-            //console.log( "hold " + name );
-        }
-        onPressed: {
-            //console.log( "pressed " + name );
-        }
-        onReleased: {
-            //console.log( "released " + name );
-        }
+        onClicked:          { Code.mouseClicked() }
+        onDoubleClicked:    { Code.mouseDoubleClicked() }
+        onEntered:          { Code.mouseEntered() }
+        onExited:           { Code.mouseExited() }
+        onPositionChanged:  { Code.mousePositionChanged() }
+        onPressAndHold:     { Code.mousePressAndHold() }
+        onPressed:          { Code.mousePressed() }
+        onReleased:         { Code.mouseReleased() }
     }
 
     function startBattle() {

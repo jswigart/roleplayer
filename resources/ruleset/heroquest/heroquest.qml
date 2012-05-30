@@ -1,4 +1,5 @@
 import QtQuick 1.1
+import Box2D
 
 // Hero options
 // Movement - roll move d 6
@@ -17,11 +18,8 @@ import QtQuick 1.1
 //  - Attack an adjacent hero
 //  - Cast a spell on hero that can be seen by monster
 
-Rectangle {
-    width: 360
-    height: 360
-    Text {
-        anchors.centerIn: parent
-        text: "Hello World"
-    }
+World {
+    id: physworld
+
+
 }

@@ -87,7 +87,8 @@
       <AdditionalDependencies>qtmaind.lib;QtDesignerd4.lib;QtCored4.lib;QtGuid4.lib;QtDeclaratived4.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy /y $(OutDir)\$(ProjectName).dll $(SolutionDir)resources\plugins\$(ProjectName).dll</Command>
+      <Command>copy /y $(OutDir)\$(ProjectName).dll $(SolutionDir)resources\plugins\$(ProjectName)\$(ProjectName)d.dll
+copy /y $(OutDir)\$(ProjectName).dll $(QTDIR)\plugins\designer\$(ProjectName).dll</Command>
       <Message>Copy To Plugins</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -125,7 +126,8 @@
       <AdditionalDependencies>qtmain.lib;QtDesigner4.lib;QtCore4.lib;QtGui4.lib;QtDeclarative4.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>copy /y $(OutDir)\$(ProjectName).dll $(SolutionDir)resources\plugins\$(ProjectName).dll</Command>
+      <Command>copy /y $(OutDir)\$(ProjectName).dll $(SolutionDir)resources\plugins\$(ProjectName)\$(ProjectName).dll
+copy /y $(OutDir)\$(ProjectName).dll $(QTDIR)\plugins\designer\$(ProjectName).dll</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>Copy To Plugins</Message>
@@ -665,7 +667,7 @@
   </ImportGroup>
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties UicDir=".\GeneratedFiles" MocDir=".\GeneratedFiles\$(ConfigurationName)" MocOptions="" RccDir=".\GeneratedFiles" lupdateOnBuild="0" lupdateOptions="" lreleaseOptions="" QtVersion_x0020_Win32="4.8.1" IsDesignerPlugin="True" />
+      <UserProperties UicDir=".\GeneratedFiles" MocDir=".\GeneratedFiles\$(ConfigurationName)" MocOptions="" RccDir=".\GeneratedFiles" lupdateOnBuild="0" lupdateOptions="" lreleaseOptions="" QtVersion_x0020_Win32="$(DefaultQtVersion)" IsDesignerPlugin="True" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>

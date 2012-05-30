@@ -2,6 +2,13 @@ var equipment = new Array
 var classAbilityNames = new Array
 var abilities = new Array
 
+function calculateMovementSquares() {
+    if ( isMonster ) {
+        return statCurrentMovement
+    }
+    return statCurrentMovement * Math.floor( Math.random() * 6 )
+}
+
 function addAbilities( abilityNames ) {
     for( var i = 0; i < abilityNames.length; i++ ) {
         addAbility( abilityNames[ i ] )
@@ -24,13 +31,10 @@ function buyItem( itemName ) {
             item.destroy()
         } else {
             equipment.push( item );
-
-            inventoryUpdated()
-
             gold = gold - item.stats.costBuy
-
             console.log( character.name + " bought " + item.stats.name + " for " + item.stats.costBuy )
             console.log( character.name + " has " + gold + " left" )
+            inventoryUpdated()
         }
     } else {
         console.debug( "buyItem " + component.errorString() );
@@ -45,10 +49,8 @@ function giveItem( itemName ) {
             console.log( "can't give " + itemName )
         } else {
             equipment.push( item );
-
-            inventoryUpdated()
             console.log( "gave " + character.name + " a " + item.stats.name )
-
+            inventoryUpdated()
             return item
         }
     } else {
@@ -115,4 +117,38 @@ function inventoryDirty() {
     activeArmor = armor
 }
 
+function mouseClicked() {
+    //console.log( "clicked " + name );
+}
 
+function mouseDoubleClicked() {
+    //console.log( "dbl clicked " + name );
+}
+
+function mouseEntered() {
+    //console.log( "entered " + name );
+    attackRangeIndicator.opacity = 1
+    moveRangeIndicator.opacity = 1
+}
+
+function mouseExited() {
+    //console.log( "exited " + name );
+    attackRangeIndicator.opacity = 0
+    moveRangeIndicator.opacity = 0
+}
+
+function mousePositionChanged() {
+    //console.log( "moved " + name );
+}
+
+function mousePressAndHold() {
+    //console.log( "press&hold " + name );
+}
+
+function mousePressed() {
+    //console.log( "pressed " + name );
+}
+
+function mouseReleased() {
+    //console.log( "released " + name );
+}
