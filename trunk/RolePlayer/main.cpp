@@ -9,14 +9,13 @@
 int main( int argc, char *argv[] ) {
 	QApplication a( argc, argv );
 
+	//////////////////////////////////////////////////////////////////////////
 	//QLibraryInfo::location(QLibraryInfo::PluginsPath)
-	QStringList libPaths;
+	/*QStringList libPaths;
 	libPaths.append( "./resources/plugins" );
-	QCoreApplication::setLibraryPaths( libPaths );
-
-	qmlRegisterType<QGameScenario>( "TileTools", 1, 0, "GameScenario" );
-	qmlRegisterType<QGameRangeIndicator>( "TileTools", 1, 0, "RangeIndicator" );	
-
+	QCoreApplication::setLibraryPaths( libPaths );*/
+	//////////////////////////////////////////////////////////////////////////
+	
 	RolePlayer w;
 	w.show();
 	return a.exec();
